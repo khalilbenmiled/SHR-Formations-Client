@@ -1,0 +1,11 @@
+.row{
+    margin-top: 40px;
+}
+.container-dashboard{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.container-dashboard > .row{
+    margin-bottom: 30px;
+}
