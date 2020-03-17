@@ -41,7 +41,8 @@ class Besoins extends Component{
             alertBesoinSupprimer : false,
             alertAnnuler : false,
             besoinToAnnuler : "",
-            alertBesoinAnnuler : false
+            alertBesoinAnnuler : false,
+            listBesoinsPublier : []
         }
     }
     componentDidMount(){
@@ -126,6 +127,16 @@ class Besoins extends Component{
             })
         }
      
+        if(JSON.parse(localStorage.user).role === "MANAGER"){
+            axios.get("http://localhost:8686/besoinsPublier/").then(res => {
+        
+                if(res.data.BesoinsPublier){
+                    this.setState({
+                        listBesoinsPublier : res.data.BesoinsPublier
+                    })
+                }
+            })
+        }
 
 
     }
@@ -502,6 +513,24 @@ class Besoins extends Component{
                     alertBesoinAnnuler : true
                 })
             } 
+            
+        })
+
+        axios.post("http://localhost:8686/besoinsPublier/retirer",
+        querystring.stringify(obj), {
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        }).then(res => {
+          
+           if(res.data.BesoinPublier.listBesoins.length === 0){
+            const listBesoinsPublier = this.state.listBesoinsPublier
+            const index = listBesoinsPublier.findIndex(besoin => besoin.id === res.data.BesoinPublier.id)
+            listBesoinsPublier.splice(index , 1 )
+            this.setState({
+                listBesoinsPublier : listBesoinsPublier
+            })
+           }
         })
     }
 
@@ -525,6 +554,23 @@ class Besoins extends Component{
                   alertValiderBesoin : true
               })
         })
+
+        
+        axios.post("http://localhost:8686/besoinsPublier/publier",
+        querystring.stringify(obj), {
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        }).then(res => {
+           const listBesoinsPublier = this.state.listBesoinsPublier
+           const index = listBesoinsPublier.findIndex(besoin => besoin.id === res.data.BesoinPublier.id)
+           listBesoinsPublier.splice(index , 1 , res.data.BesoinPublier)
+           this.setState({
+               listBesoinsPublier : listBesoinsPublier
+           })
+        })
+
+        
 
     }
 
@@ -560,6 +606,7 @@ class Besoins extends Component{
                                openAlertAnnulerBesoin = {this.openAlertAnnulerBesoin.bind(this)}
                                validerByManager = {this.validerByManager.bind(this)}
                                annulerByManager = {this.annulerByManager.bind(this)}
+                               listBesoinsPublier = {this.state.listBesoinsPublier}
                             
                         />
                     </div>

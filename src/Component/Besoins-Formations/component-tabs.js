@@ -14,7 +14,12 @@ import ComponentListBesoins from "./component-list-besoins"
 import DescriptionIcon from '@material-ui/icons/Description';
 import ComponentFilterRapports from "./component-filter-rapport"
 import PublishIcon from '@material-ui/icons/Publish';
-
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
+import besoinPublier from "../../images/besoinPublier.jpg"
+import ComponentModalDetailsBesoin from "./component-modal-detailsBesoin"
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -46,12 +51,53 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     
   },
+  rootCard : {
+    backgroundImage : `url(${besoinPublier})`,
+  
+    boxShadow: "0px 0px 3px",
+    margin : "8px 0"
+  },
+  bullet: {
+    display: 'inline-block',
+    margin: '0 2px',
+    transform: 'scale(0.8)',
+  },
+  title: {
+    fontSize: 14,
+  },
+  pos: {
+    marginBottom: 12,
+  },
+  buttonDetails : {
+    backgroundColor : "#E67A0A",
+    color : "white",
+    "&:focus" : {
+      outline : "none"
+    },
+    "&:hover" : {
+      backgroundColor : "#E67A0A",
+      color : "white"
+    }
+  },
+  buttonPublier : {
+    backgroundColor : "#B51B10",
+    color : "white",
+    "&:focus" : {
+      outline : "none"
+    },
+    "&:hover" : {
+      backgroundColor : "#B51B10",
+      color : "white"
+    }
+  }
 }));
 
 export default function FullWidthTabs(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
+  const [open, setOpen] = React.useState(false);
+  const [besoinPublier, setBesoinPublier] = React.useState(false);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -60,6 +106,17 @@ export default function FullWidthTabs(props) {
   const handleChangeIndex = index => {
     setValue(index);
   };
+
+  const openModalDetails = besoinPublier => {
+    setBesoinPublier(besoinPublier)
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  
 
   return (
     <div className={classes.root} >
@@ -85,7 +142,43 @@ export default function FullWidthTabs(props) {
 
         <TabPanel value={value} index={0} dir={theme.direction} >
             {JSON.parse(localStorage.user).role === "MANAGER" ?
-            <div></div>
+            
+            <div className="row">
+              {props.listBesoinsPublier.map((besoinPublier,index) => {
+                  return (
+                    <div key = {index} className="col-lg-3">
+                    <Card className={classes.rootCard}>
+                      <CardContent>
+                        <div style={{display : "flex" , flexDirection : "row" , justifyContent : "space-between"}}>
+                        <Typography className={classes.title} color="textSecondary" gutterBottom>
+                          Action de formation
+                        </Typography>
+                        <PublishIcon  className = {classes.buttonPublier} size="small"/>
+                        </div>
+                        
+                        <Typography style = {{color : "#B51B10"}} variant="h5" component="h2">
+                          {besoinPublier.theme}
+                        </Typography>
+                        <Typography className={classes.pos} color="textSecondary">
+                          Quarter {besoinPublier.quarter}
+                        </Typography>
+                        <Typography variant="body2" component="p">
+                         
+                       
+                        </Typography>
+                      </CardContent>
+                      <CardActions style = {{float : "right"}}>
+                        <Button  className = {classes.buttonDetails} onClick={openModalDetails.bind(this,besoinPublier)} size="small">Détails</Button>
+                      </CardActions>
+                    </Card>
+                  </div>
+
+                  )
+              })}
+                   
+            </div>
+         
+
           :
                 <ComponentStepper 
                 themes={props.themes} 
@@ -128,6 +221,9 @@ export default function FullWidthTabs(props) {
         </TabPanel>
 
       </SwipeableViews>
+      <ComponentModalDetailsBesoin open={open} handleClose={handleClose} besoinPublier={besoinPublier}/>
     </div>
+
+    
   );
 }
