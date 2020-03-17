@@ -13,6 +13,7 @@ import CreateIcon from '@material-ui/icons/Create';
 import ComponentListBesoins from "./component-list-besoins"
 import DescriptionIcon from '@material-ui/icons/Description';
 import ComponentFilterRapports from "./component-filter-rapport"
+import PublishIcon from '@material-ui/icons/Publish';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -71,7 +72,7 @@ export default function FullWidthTabs(props) {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab style={{outline : "none"}} label="Saisis des besoins" icon = {<CreateIcon />}/>
+          <Tab style={{outline : "none"}} label={JSON.parse(localStorage.user).role ==="MANAGER" ? "Publier les besoins" : "Saisis des besoins" } icon = {JSON.parse(localStorage.user).role === "MANAGER" ? <PublishIcon /> : <CreateIcon />}/>
           <Tab style={{outline : "none"}}  label="Consulter les besoins"  icon = {<ListAltIcon />} />
           <Tab style={{outline : "none"}}label="Rapports" icon = {<DescriptionIcon />} />
         </Tabs>
@@ -83,26 +84,31 @@ export default function FullWidthTabs(props) {
       >
 
         <TabPanel value={value} index={0} dir={theme.direction} >
-            <ComponentStepper 
-                 themes={props.themes} 
-                 onChangeTheme={props.onChangeTheme}
-                 actionSelected={props.actionSelected}
-                 modules = {props.modules}
-                 projets = {props.projets}
-                 radioSelected = {props.radioSelected}
-                 stepper = {props.stepper}
-                 moduleSelected = {props.moduleSelected}
-                 getModules = {props.getModules}
-                 getNbrPrevus = {props.getNbrPrevus}
-                 getPriorite = {props.getPriorite}
-                 getProjet = {props.getProjet}
-                 addBesoin = {props.addBesoin}
-                 addAction = {props.addAction}
-                 addModule = {props.addModule}
-                 addProjet = {props.addProjet}
-                 onChangeTrimeter = {props.onChangeTrimeter}
-              
-            />
+            {JSON.parse(localStorage.user).role === "MANAGER" ?
+            <div></div>
+          :
+                <ComponentStepper 
+                themes={props.themes} 
+                onChangeTheme={props.onChangeTheme}
+                actionSelected={props.actionSelected}
+                modules = {props.modules}
+                projets = {props.projets}
+                radioSelected = {props.radioSelected}
+                stepper = {props.stepper}
+                moduleSelected = {props.moduleSelected}
+                getModules = {props.getModules}
+                getNbrPrevus = {props.getNbrPrevus}
+                getPriorite = {props.getPriorite}
+                getProjet = {props.getProjet}
+                addBesoin = {props.addBesoin}
+                addAction = {props.addAction}
+                addModule = {props.addModule}
+                addProjet = {props.addProjet}
+                onChangeTrimeter = {props.onChangeTrimeter}
+            
+              />
+          }
+       
         </TabPanel>
 
         <TabPanel value={value} index={1} dir={theme.direction}>
@@ -112,6 +118,8 @@ export default function FullWidthTabs(props) {
                 onValiderBesoin = {props.onValiderBesoin}
                 openAlertRemoveBesoin = {props.openAlertRemoveBesoin}
                 openAlertAnnulerBesoin = {props.openAlertAnnulerBesoin}
+                validerByManager = {props.validerByManager}
+                annulerByManager = {props.annulerByManager}
             />
         </TabPanel>
 

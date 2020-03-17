@@ -52,7 +52,7 @@ const useStyles = makeStyles(theme => ({
 export default function TransitionsModal(props) {
   const classes = useStyles();
   const [projet, setProjet] = React.useState("");
-  const [priorite, setPriorite] = React.useState("");
+  const [trimstre, setTrimestre] = React.useState("");
   const handleClose = () => {
     props.handleClose();
   };
@@ -60,9 +60,9 @@ export default function TransitionsModal(props) {
      props.onChangeProjet(JSON.parse(e.target.value).id)
      setProjet(e.target.value)
  }
- const onChangePriorite = (e) => {
-     props.onChangePriorite(e.target.value)
-     setPriorite(e.target.value)
+ const onChangeTrimestre = (e) => {
+     props.onChangeTrimestre(e.target.value)
+     setTrimestre(e.target.value)
  }
 
   return (
@@ -104,18 +104,19 @@ export default function TransitionsModal(props) {
                                 </div>
                                 <div className="input-group mb-3 ">
                                         <div  className="input-group-prepend" >
-                                            <label style={{width : 100}} className="input-group-text" >Priorité</label>
+                                            <label style={{width : 100}} className="input-group-text" >Trimestre</label>
                                         </div>
-                                        <select style={{width : 180 }} className="custom-select" onChange={onChangePriorite} >
+                                        <select style={{width : 180 }} className="custom-select" onChange={onChangeTrimestre} >
                                             <option defaultValue value="NONE">Choisir...</option>
-                                            <option value="1">BASSE</option>
-                                            <option value="2">MOYENNE</option>
-                                            <option value="3">HAUTE</option>
+                                            <option value="1">Trimestre 1</option>
+                                            <option value="2">Trimestre 2</option>
+                                            <option value="3">Trimestre 3</option>
+                                            <option value="4">Trimestre 4</option>
                                         </select>
                                 </div>
                                 <div style={{marginLeft: 336,display : "flex" , flexDirection : "row" , justifyContent : "space-between" , width : 170}}>
                                   <Button  size="small" variant="contained" className = {classes.buttonAnnuler} onClick={handleClose}> Annuler</Button>
-                                  <Button disabled={projet === "" || priorite === "" || projet === "0" || priorite === "NONE" ? true : false} size="small" variant="contained" className = {classes.buttonConfirmer} onClick={props.onValiderBesoin}> Valider</Button>
+                                  <Button disabled={projet === "" || trimstre === "" || projet === "0" || trimstre === "NONE" ? true : false} size="small" variant="contained" className = {classes.buttonConfirmer} onClick={props.onValiderBesoin}> Valider</Button>
                                 </div>
                             </div>
                         </div>

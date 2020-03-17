@@ -112,6 +112,18 @@ class Besoins extends Component{
                 }
             })
 
+        }else {
+            axios.post("http://localhost:8686/besoins/byMG" , querystring.stringify(user) , {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
+                if(res.data.BesoinsMG){
+                    this.setState({
+                        listBesoins : res.data.BesoinsMG
+                    })
+                }
+            })
         }
      
 
@@ -264,11 +276,21 @@ class Besoins extends Component{
 
             const listBesoins = this.state.listBesoins
             const index = listBesoins.findIndex(besoin => besoin.id === res.data.Besoin.id)
-            listBesoins.splice(index , 1 , res.data.Besoin)
-            this.setState({
-                listBesoins : listBesoins,
-                alertBesoin : true
-            })
+            if(index === -1){
+                const listBesoins = this.state.listBesoins
+                listBesoins.push(res.data.Besoin)
+                this.setState({
+                    listBesoins : listBesoins,
+                    alertBesoin : true
+                })
+            }else {
+                listBesoins.splice(index , 1 , res.data.Besoin)
+                this.setState({
+                    listBesoins : listBesoins,
+                    alertBesoin : true
+                })
+            }
+        
             
         })
 
@@ -460,6 +482,52 @@ class Besoins extends Component{
         })
     }
 
+    annulerByManager(besoin) {
+        const id = besoin.id
+        const obj = {
+            idBesoin : besoin.id
+        }
+        axios.post("http://localhost:8686/besoins/annulerValidationMG",
+        querystring.stringify(obj), {
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        }).then(res => {
+            if(res.data.Besoin){
+                const listBesoins = this.state.listBesoins
+                const index = listBesoins.findIndex(besoin => besoin.id === id)
+                listBesoins.splice(index , 1 , res.data.Besoin)
+                this.setState({
+                    listBesoins : listBesoins,
+                    alertBesoinAnnuler : true
+                })
+            } 
+        })
+    }
+
+    validerByManager(besoin) {
+        const obj = {
+            idBesoin : besoin.id
+        }
+
+
+        axios.post("http://localhost:8686/besoins/validerMG",
+        querystring.stringify(obj), {
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        }).then(res => {
+              const listBesoins = this.state.listBesoins
+              const index = listBesoins.findIndex(besoin => besoin.id === res.data.Besoin.id)
+              listBesoins.splice(index , 1 , res.data.Besoin)
+              this.setState({
+                  listBesoins : listBesoins,
+                  alertValiderBesoin : true
+              })
+        })
+
+    }
+
     render(){
         return(
             <>
@@ -490,6 +558,8 @@ class Besoins extends Component{
                                onValiderBesoin = {this.onValiderBesoin.bind(this)}
                                openAlertRemoveBesoin = {this.openAlertRemoveBesoin.bind(this)}
                                openAlertAnnulerBesoin = {this.openAlertAnnulerBesoin.bind(this)}
+                               validerByManager = {this.validerByManager.bind(this)}
+                               annulerByManager = {this.annulerByManager.bind(this)}
                             
                         />
                     </div>
