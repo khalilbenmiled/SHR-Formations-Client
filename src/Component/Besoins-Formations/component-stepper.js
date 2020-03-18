@@ -232,18 +232,6 @@ export default function VerticalLinearStepper(props) {
                         </div>
                         <TextField defaultValue="0" type ="number" style={{width : 270}} size="small" id="outlined-basic" label="Nombre prévus" variant="outlined" onChange={props.getNbrPrevus} />                               
               </div>
-
-              <div hidden = {JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false} style={{width : 420}} className="input-group mb-3">
-                        <div  className="input-group-prepend" >
-                            <label style={{width : 150}} className="input-group-text" >Priorité</label>
-                        </div>
-                        <select className="custom-select" id="inputGroupSelect01" onChange={props.getPriorite} >
-                            <option defaultValue value="0">Choisir...</option>
-                            <option value="1">BASSE</option>
-                            <option value="2">MOYENNE</option>
-                            <option value="3">HAUTE</option>
-                        </select>
-              </div>
                            
               <div hidden = {JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false} style={{width : 420}} className="input-group mb-3">
                         <div className="input-group-prepend">

@@ -218,12 +218,12 @@ export default function CustomPaginationActionsTable(props) {
 
                     <TableCell > <VisibilityIcon className={classess.iconInfo} onClick={openInfos.bind(this,row)} /> </TableCell>
                     
-                    {JSON.parse(localStorage.user).role === "TEAMLEAD" ?
+                    {JSON.parse(localStorage.user).role === "TEAMLEAD" && JSON.parse(localStorage.user).id !== row.idUser ?
                       <TableCell hidden = {JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false}>
                           {row.validerTL === false ? 
                               <CheckCircleIcon className={classess.iconCheck} onClick={openModalValider.bind(this,row)}/> 
                             :
-                              <RemoveCircleIcon onClick={props.openAlertAnnulerBesoin.bind(this,row)} className={classess.iconAnnuler} />
+                              <RemoveCircleIcon  onClick={props.openAlertAnnulerBesoin.bind(this,row)} className={classess.iconAnnuler} />
                           }
                               
                       </TableCell>

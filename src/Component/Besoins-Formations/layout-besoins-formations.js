@@ -27,7 +27,6 @@ class Besoins extends Component{
             quarter : "",
             listModulesSelected : [],
             nbrPrevusSelected : "",
-            prioriteSelected : "",
             projetSelected : {},
             themeSelected : {},
             listBesoins : [],
@@ -42,7 +41,10 @@ class Besoins extends Component{
             alertAnnuler : false,
             besoinToAnnuler : "",
             alertBesoinAnnuler : false,
-            listBesoinsPublier : []
+            listBesoinsPublier : [],
+            alertBesoinPublier : false,
+            besoinToPublier : "",
+            snackBesoinPublier: false,
         }
     }
     componentDidMount(){
@@ -233,11 +235,7 @@ class Besoins extends Component{
             nbrPrevusSelected : e.target.value
         })
     }
-    getPriorite(e){
-        this.setState({
-            prioriteSelected : e.target.value
-        })
-    }
+ 
     getProjet(e){
         this.setState({
             projetSelected : JSON.parse(e.target.value)
@@ -266,7 +264,7 @@ class Besoins extends Component{
                 validerMG : false,
                 dateDebut : this.state.dateDebutSelected,
                 quarter : this.state.quarter,
-                priorite : this.state.prioriteSelected,
+                nbrPrevu : this.state.nbrPrevusSelected,
                 theme : {
                     nom : this.state.themeSelected.nom,
                     type : this.state.themeSelected.type,
@@ -523,14 +521,24 @@ class Besoins extends Component{
         }
         }).then(res => {
           
-           if(res.data.BesoinPublier.listBesoins.length === 0){
-            const listBesoinsPublier = this.state.listBesoinsPublier
-            const index = listBesoinsPublier.findIndex(besoin => besoin.id === res.data.BesoinPublier.id)
-            listBesoinsPublier.splice(index , 1 )
-            this.setState({
-                listBesoinsPublier : listBesoinsPublier
-            })
-           }
+            if(res.data.BesoinPublier){
+                if(res.data.BesoinPublier.listBesoins.length === 0){
+                    const listBesoinsPublier = this.state.listBesoinsPublier
+                    const index = listBesoinsPublier.findIndex(besoin => besoin.id === res.data.BesoinPublier.id)
+                    listBesoinsPublier.splice(index , 1 )
+                    this.setState({
+                        listBesoinsPublier : listBesoinsPublier
+                    })
+                   }
+            }else {
+                const listBesoinsPublier = this.state.listBesoinsPublier
+                const index = listBesoinsPublier.findIndex(besoin => besoin.id === res.data.Success)
+                listBesoinsPublier.splice(index , 1 )
+                this.setState({
+                    listBesoinsPublier : listBesoinsPublier
+                })
+            }
+     
         })
     }
 
@@ -562,16 +570,111 @@ class Besoins extends Component{
             "Content-Type": "application/x-www-form-urlencoded"
         }
         }).then(res => {
-           const listBesoinsPublier = this.state.listBesoinsPublier
-           const index = listBesoinsPublier.findIndex(besoin => besoin.id === res.data.BesoinPublier.id)
-           listBesoinsPublier.splice(index , 1 , res.data.BesoinPublier)
-           this.setState({
-               listBesoinsPublier : listBesoinsPublier
-           })
+
+            if(res.data.BesoinPublier.listBesoins.length === 1){
+                const listBesoinsPublier = this.state.listBesoinsPublier
+                listBesoinsPublier.push(res.data.BesoinPublier)
+                this.setState({
+                    listBesoinsPublier : listBesoinsPublier
+                })
+            }else{
+                const listBesoinsPublier = this.state.listBesoinsPublier
+                const index = listBesoinsPublier.findIndex(besoin => besoin.id === res.data.BesoinPublier.id)
+                listBesoinsPublier.splice(index , 1 , res.data.BesoinPublier)
+                this.setState({
+                    listBesoinsPublier : listBesoinsPublier
+                })
+            }
+         
         })
 
         
 
+    }
+
+    closeAlertBesoinPublier(){
+        this.setState({
+            alertBesoinPublier : false
+        })
+    }
+
+    openPublierBesoin (besoin) {
+        this.setState({
+            besoinToPublier : besoin.id,
+            alertBesoinPublier : true
+        })
+    }
+    publierBesoin() {
+      
+        const obj = {
+            id : this.state.besoinToPublier
+        }
+        axios.post("http://localhost:8686/besoinsPublier/publierBesoin",
+        querystring.stringify(obj), {
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        }).then(res => {
+            res.data.BesoinPublier.listBesoins.map(b => {
+                const obj = {
+                    id : b.id
+                }
+                axios.post("http://localhost:8686/besoins/remove",
+                querystring.stringify(obj), {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+                }).then(res => {
+                    if(res.data.Success){
+                        const listBesoins = this.state.listBesoins
+                        const index = listBesoins.findIndex(besoin => besoin.id === b.id)
+                        listBesoins.splice(index , 1)
+                        this.setState({
+                            listBesoins : listBesoins
+                        })
+                    } 
+                })
+                return null
+            })
+            const listBesoinsPublier = this.state.listBesoinsPublier
+            const index = listBesoinsPublier.findIndex(besoin => besoin.id === res.data.BesoinPublier.id)
+            listBesoinsPublier.splice(index , 1 )
+            this.setState({
+                listBesoinsPublier : listBesoinsPublier
+            })
+        })
+        // this.state.besoinPublier.listBesoins.map(besoinP =>{
+
+        //     const obj = {
+        //         id : besoinP.id
+        //     }
+        //     axios.post("http://localhost:8686/besoins/remove",
+        //     querystring.stringify(obj), {
+        //     headers: {
+        //         "Content-Type": "application/x-www-form-urlencoded"
+        //     }
+        //     }).then(res => {
+        //         if(res.data.Success){
+        //             const listBesoins = this.state.listBesoins
+        //             const index = listBesoins.findIndex(besoin => besoin.id === besoinP.id)
+        //             listBesoins.splice(index , 1)
+        //             this.setState({
+        //                 listBesoins : listBesoins
+        //             })
+        //         } 
+        //     })
+        //     return null
+        // })
+        this.setState({
+            alertBesoinPublier : false,
+            snackBesoinPublier : true
+        })
+    }
+
+    closeSnackBesoinPublier(){
+        this.setState({
+            snackBesoinPublier : false
+        })
     }
 
     render(){
@@ -593,7 +696,6 @@ class Besoins extends Component{
                                moduleSelected = {this.state.moduleSelected}
                                getModules = {this.getModules.bind(this)}
                                getNbrPrevus ={this.getNbrPrevus.bind(this)}
-                               getPriorite = {this.getPriorite.bind(this)}
                                getProjet = {this.getProjet.bind(this)}
                                addBesoin = {this.addBesoin.bind(this)}
                                addAction = {this.addAction.bind(this)}
@@ -607,6 +709,7 @@ class Besoins extends Component{
                                validerByManager = {this.validerByManager.bind(this)}
                                annulerByManager = {this.annulerByManager.bind(this)}
                                listBesoinsPublier = {this.state.listBesoinsPublier}
+                               openPublierBesoin = {this.openPublierBesoin.bind(this)}
                             
                         />
                     </div>
@@ -645,6 +748,11 @@ class Besoins extends Component{
             <Snackbar open={this.state.alertBesoinAnnuler} autoHideDuration={5000} onClose={this.closeAlertBesoinAnnuler.bind(this)}>
                     <Alert  onClose={this.closeAlertBesoinAnnuler.bind(this)} icon = {<CheckCircleIcon style={{color : "white" }}/>} style={{backgroundColor : "#4CAF50" , color : "white" , width : 400 , fontSize : 16}}>
                             Besoin annuler
+                    </Alert>
+            </Snackbar>
+            <Snackbar open={this.state.snackBesoinPublier} autoHideDuration={5000} onClose={this.closeSnackBesoinPublier.bind(this)}>
+                    <Alert  onClose={this.closeSnackBesoinPublier.bind(this)} icon = {<CheckCircleIcon style={{color : "white" }}/>} style={{backgroundColor : "#4CAF50" , color : "white" , width : 400 , fontSize : 16}}>
+                            Besoin publier
                     </Alert>
             </Snackbar>
             <Dialog
@@ -690,6 +798,28 @@ class Besoins extends Component{
                     </Button>
                     </DialogActions>
             </Dialog>
+
+            <Dialog
+                open={this.state.alertBesoinPublier}
+                onClose={this.closeAlertBesoinPublier.bind(this)}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                    <DialogTitle className="titleDialog">Publier besoin</DialogTitle>
+                    <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Voulez-vous vraiment publier ce besoin de formation ?
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button className="annulerBtn" onClick={this.closeAlertBesoinPublier.bind(this)} style={{backgroundColor : "#E67A0A" , color : "white"}}>
+                        Retour
+                    </Button>
+                    <Button className="supprimerBtn" onClick={this.publierBesoin.bind(this)} style={{backgroundColor : "#B51B10" , color : "white" }} >
+                        Publier
+                    </Button>
+                    </DialogActions>
+            </Dialog>   
 
             </>
         )

@@ -52,8 +52,7 @@ const useStyles = makeStyles(theme => ({
     
   },
   rootCard : {
-    backgroundImage : `url(${besoinPublier})`,
-  
+    backgroundImage : `url(${besoinPublier})`,  
     boxShadow: "0px 0px 3px",
     margin : "8px 0"
   },
@@ -80,6 +79,7 @@ const useStyles = makeStyles(theme => ({
     }
   },
   buttonPublier : {
+    cursor : "pointer",
     backgroundColor : "#B51B10",
     color : "white",
     "&:focus" : {
@@ -89,7 +89,8 @@ const useStyles = makeStyles(theme => ({
       backgroundColor : "#B51B10",
       color : "white"
     }
-  }
+  },
+
 }));
 
 export default function FullWidthTabs(props) {
@@ -98,6 +99,7 @@ export default function FullWidthTabs(props) {
   const [value, setValue] = React.useState(0);
   const [open, setOpen] = React.useState(false);
   const [besoinPublier, setBesoinPublier] = React.useState(false);
+  const [nbrPrevus, setNbrPrevus] = React.useState();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -108,7 +110,18 @@ export default function FullWidthTabs(props) {
   };
 
   const openModalDetails = besoinPublier => {
+    let inc = 0
+    besoinPublier.listBesoins.map(b => {
+      if (b.nbrPrevu === 0){
+        inc ++
+      }else {
+        inc = inc + b.nbrPrevu
+      }
+      return null
+    })
+    
     setBesoinPublier(besoinPublier)
+    setNbrPrevus(inc)
     setOpen(true)
   }
 
@@ -146,18 +159,19 @@ export default function FullWidthTabs(props) {
             <div className="row">
               {props.listBesoinsPublier.map((besoinPublier,index) => {
                   return (
-                    <div key = {index} className="col-lg-3">
-                    <Card className={classes.rootCard}>
+                    <div key = {index} className="col-lg-3" >
+                      
+                    <Card  className={classes.rootCard} >
                       <CardContent>
                         <div style={{display : "flex" , flexDirection : "row" , justifyContent : "space-between"}}>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
                           Action de formation
                         </Typography>
-                        <PublishIcon  className = {classes.buttonPublier} size="small"/>
+                        <PublishIcon  onClick={props.openPublierBesoin.bind(this,besoinPublier)} className = {classes.buttonPublier} size="small"/>
                         </div>
                         
                         <Typography style = {{color : "#B51B10"}} variant="h5" component="h2">
-                          {besoinPublier.theme}
+                          {besoinPublier.theme}  
                         </Typography>
                         <Typography className={classes.pos} color="textSecondary">
                           Quarter {besoinPublier.quarter}
@@ -191,7 +205,6 @@ export default function FullWidthTabs(props) {
                 moduleSelected = {props.moduleSelected}
                 getModules = {props.getModules}
                 getNbrPrevus = {props.getNbrPrevus}
-                getPriorite = {props.getPriorite}
                 getProjet = {props.getProjet}
                 addBesoin = {props.addBesoin}
                 addAction = {props.addAction}
@@ -221,7 +234,7 @@ export default function FullWidthTabs(props) {
         </TabPanel>
 
       </SwipeableViews>
-      <ComponentModalDetailsBesoin open={open} handleClose={handleClose} besoinPublier={besoinPublier}/>
+      <ComponentModalDetailsBesoin open={open} handleClose={handleClose} besoinPublier={besoinPublier} nbrPrevus={nbrPrevus}/>
     </div>
 
     
