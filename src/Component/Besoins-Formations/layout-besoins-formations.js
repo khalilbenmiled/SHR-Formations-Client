@@ -677,6 +677,15 @@ class Besoins extends Component{
         })
     }
 
+    filter(type,nomTheme,quarter,projet,tl,mg){
+        console.log(type)
+        console.log(nomTheme)
+        console.log(quarter)
+        console.log(projet)
+        console.log(tl)
+        console.log(mg)
+    }
+
     render(){
         return(
             <>
@@ -687,6 +696,7 @@ class Besoins extends Component{
                     <div className="col-lg-12 col-md-12"  >
                         <ComponentTabs 
                                themes={this.state.themes} 
+                               allThemes= {this.state.allThemes}
                                onChangeTheme={this.onChangeTheme.bind(this)}
                                actionSelected={this.actionSelected.bind(this)}
                                modules = {this.state.modules}
@@ -710,6 +720,7 @@ class Besoins extends Component{
                                annulerByManager = {this.annulerByManager.bind(this)}
                                listBesoinsPublier = {this.state.listBesoinsPublier}
                                openPublierBesoin = {this.openPublierBesoin.bind(this)}
+                               filter = {this.filter.bind(this)}
                             
                         />
                     </div>

@@ -230,7 +230,7 @@ export default function FullWidthTabs(props) {
         </TabPanel>
 
         <TabPanel value={value} index={2} dir={theme.direction}>
-          <ComponentFilterRapports />
+          <ComponentFilterRapports themes={props.allThemes} projets={props.projets} filter={props.filter}/>
         </TabPanel>
 
       </SwipeableViews>
