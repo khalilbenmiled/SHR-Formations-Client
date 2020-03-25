@@ -45,6 +45,7 @@ class Besoins extends Component{
             alertBesoinPublier : false,
             besoinToPublier : "",
             snackBesoinPublier: false,
+            rapports : []
         }
     }
     componentDidMount(){
@@ -677,13 +678,171 @@ class Besoins extends Component{
         })
     }
 
-    filter(type,nomTheme,quarter,projet,tl,mg){
-        console.log(type)
-        console.log(nomTheme)
-        console.log(quarter)
-        console.log(projet)
-        console.log(tl)
-        console.log(mg)
+    filter(type,nomTheme,quarter,projet,tl,mg,bu){
+    if(JSON.parse(localStorage.user).role === "TEAMLEAD"){
+
+        
+        const obj = {
+            typeTheme : type,
+            nomTheme : nomTheme,
+            quarter : quarter,
+            idProjet : projet !== "" ? projet : 0,
+            validerTL : tl,
+            validerMG : mg,
+            idTL : JSON.parse(localStorage.user).id
+        }
+      
+        axios.post("http://localhost:8686/besoins/rapportsTL",
+        querystring.stringify(obj), {
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        }).then(res => {
+            var array = []
+            var actionArray = Object.keys(res.data.RapportsBesoinsTL)
+            actionArray.map((key,index) => {
+               
+                var quarterArray = Object.keys(res.data.RapportsBesoinsTL[key])
+                quarterArray.map((cle , i) => {
+                    let uniqueModules = []
+                    var nbPrevu = 0
+                    res.data.RapportsBesoinsTL[key][cle].map(besoin => {
+                        nbPrevu = nbPrevu + besoin.nbrPrevu
+                        besoin.theme.listModules.map(module => {
+                                uniqueModules.push(module)
+                                return null
+                        })
+                        return null
+                    })
+                    let pp = uniqueModules.filter( (ele, ind) => ind === uniqueModules.findIndex( elem => elem.nom === ele.nom))
+
+                    var obj = {
+                        theme : key,
+                        quarter : cle,
+                        nbrPrevu : nbPrevu,
+                        besoins : res.data.RapportsBesoinsTL[key][cle],
+                        listModules : pp
+                    }
+                    array.push(obj)
+                    return null
+                })
+               return null
+            })
+                       
+            this.setState({
+                rapports : array
+            })
+         
+        })
+
+    }else if(JSON.parse(localStorage.user).role === "MANAGER"){
+
+        const obj = {
+            typeTheme : type,
+            nomTheme : nomTheme,
+            quarter : quarter,
+            idProjet : projet !== "" ? projet : 0,
+            validerMG : mg,
+            idManager : JSON.parse(localStorage.user).id
+        }
+      
+        axios.post("http://localhost:8686/besoins/rapportsMG",
+        querystring.stringify(obj), {
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        }).then(res => {
+            var array = []
+            var actionArray = Object.keys(res.data.RapportsBesoinsMG)
+            actionArray.map((key,index) => {
+               
+                var quarterArray = Object.keys(res.data.RapportsBesoinsMG[key])
+                quarterArray.map((cle , i) => {
+                    let uniqueModules = []
+                    var nbPrevu = 0
+                    res.data.RapportsBesoinsMG[key][cle].map(besoin => {
+                        nbPrevu = nbPrevu + besoin.nbrPrevu
+                        besoin.theme.listModules.map(module => {
+                                uniqueModules.push(module)
+                                return null
+                        })
+                        return null
+                    })
+                    let pp = uniqueModules.filter( (ele, ind) => ind === uniqueModules.findIndex( elem => elem.nom === ele.nom))
+
+                    var obj = {
+                        theme : key,
+                        quarter : cle,
+                        nbrPrevu : nbPrevu,
+                        besoins : res.data.RapportsBesoinsMG[key][cle],
+                        listModules : pp
+                    }
+                    array.push(obj)
+                    return null
+                })
+               return null
+            })
+                       
+            this.setState({
+                rapports : array
+            })
+         
+        })
+    }else {
+        const obj = {
+            typeTheme : type,
+            nomTheme : nomTheme,
+            quarter : quarter,
+            idProjet : projet !== "" ? projet : 0,
+            validerMG : mg,
+            validerTL : tl,
+            bu : bu
+        }
+      
+        axios.post("http://localhost:8686/besoins/rapports",
+        querystring.stringify(obj), {
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        }).then(res => {
+            var array = []
+            var actionArray = Object.keys(res.data.RapportsBesoins)
+            actionArray.map((key,index) => {
+               
+                var quarterArray = Object.keys(res.data.RapportsBesoins[key])
+                quarterArray.map((cle , i) => {
+                    let uniqueModules = []
+                    var nbPrevu = 0
+                    res.data.RapportsBesoins[key][cle].map(besoin => {
+                        nbPrevu = nbPrevu + besoin.nbrPrevu
+                        besoin.theme.listModules.map(module => {
+                                uniqueModules.push(module)
+                                return null
+                        })
+                        return null
+                    })
+                    let pp = uniqueModules.filter( (ele, ind) => ind === uniqueModules.findIndex( elem => elem.nom === ele.nom))
+
+                    var obj = {
+                        theme : key,
+                        quarter : cle,
+                        nbrPrevu : nbPrevu,
+                        besoins : res.data.RapportsBesoins[key][cle],
+                        listModules : pp
+                    }
+                    array.push(obj)
+                    return null
+                })
+               return null
+            })
+                       
+            this.setState({
+                rapports : array
+            })
+         
+        })
+    }
+        
     }
 
     render(){
@@ -721,6 +880,7 @@ class Besoins extends Component{
                                listBesoinsPublier = {this.state.listBesoinsPublier}
                                openPublierBesoin = {this.openPublierBesoin.bind(this)}
                                filter = {this.filter.bind(this)}
+                               rapports = {this.state.rapports}
                             
                         />
                     </div>

@@ -22,6 +22,7 @@ import querystring from 'querystring'
 import ComponentModalValidate from "./component-modal-validate"
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 
+
 const useStyles1 = makeStyles(theme => ({
   root: {
     flexShrink: 0,
@@ -177,7 +178,7 @@ export default function CustomPaginationActionsTable(props) {
 
   return (
     <>
-
+       
         <TableContainer className="tableContainerStyles" component={Paper} style={{marginTop : "30px" , width : "100%" }}>
         <Table size="small" className="tableTheme" aria-label="custom pagination table" >
             <TableHead  className="tableHead" style={{backgroundColor: "#B51B10"}}>
@@ -273,7 +274,7 @@ export default function CustomPaginationActionsTable(props) {
         </Table>
         
         </TableContainer>
-
+      
         <ComponentModalInfos open={open} handleClose={handleClose} besoinToModal={besoinToModal} modulesToModal={modulesToModal}/>
         <ComponentModalValidate open ={openValider} handleClose={handleClose} projets={props.projets} onChangeProjet={onChangeProjet} onChangeTrimestre={onChangeTrimestre} onValiderBesoin={onValiderBesoin}/>
     </>
