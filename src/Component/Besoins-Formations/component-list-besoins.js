@@ -183,12 +183,13 @@ export default function CustomPaginationActionsTable(props) {
         <Table size="small" className="tableTheme" aria-label="custom pagination table" >
             <TableHead  className="tableHead" style={{backgroundColor: "#B51B10"}}>
                 <TableRow>
+                    <TableCell hidden ={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} style={{fontSize : 16 , color : 'white'}}>BU</TableCell>
                     <TableCell style={{fontSize : 16 , color : 'white'}}>Action</TableCell>
                     <TableCell style={{fontSize : 16 , color : 'white'}}>Type</TableCell>
                     <TableCell style={{fontSize : 16 , color : 'white' }}>Trimestre</TableCell>
                     
                     <TableCell style={{fontSize : 16 , color : 'white' }}>Team Leader</TableCell>
-                    {JSON.parse(localStorage.user).role === "TEAMLEAD" || JSON.parse(localStorage.user).role === "MANAGER" ? 
+                    {JSON.parse(localStorage.user).role !== "COLLABORATEUR"  ? 
                       <TableCell colSpan= {4} style={{fontSize : 16 , color : 'white' }}>Manager</TableCell>
                       :
                       <TableCell colSpan={4}></TableCell>
@@ -202,6 +203,7 @@ export default function CustomPaginationActionsTable(props) {
             ).map((row , index) => (
               
                 <TableRow key={index}  style={{backgroundColor: row.idUser === JSON.parse(localStorage.user).id && JSON.parse(localStorage.user).role === "TEAMLEAD" ? "rgba(42,255,42,0.3)" : ""}}>  
+                    <TableCell hidden = {JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false}>{row.bu}</TableCell>
                     <TableCell >{row.theme.nom}</TableCell>
                     <TableCell > {row.theme.type}</TableCell>
                     <TableCell >{row.quarter === 1 ? "1ere trimestre" : row.quarter === 2 ? "2eme trimestre" : row.quarter === 3 ? "3eme trimestre" : row.quarter === 4 ? "4eme trimestre" : ""}</TableCell>
@@ -211,7 +213,7 @@ export default function CustomPaginationActionsTable(props) {
                       <TableCell >{row.validerTL ? "Valider" : "En attente"}</TableCell>
                     }
                     
-                    { (JSON.parse(localStorage.user).role === "TEAMLEAD" || JSON.parse(localStorage.user).role === "MANAGER" ) ?
+                    { JSON.parse(localStorage.user).role !== "COLLABORATEUR"   ?
                       <TableCell >{row.validerMG ? "Valider" : "En attente"}</TableCell>
                       :
                       <TableCell> </TableCell>
@@ -240,7 +242,9 @@ export default function CustomPaginationActionsTable(props) {
                       :
                       <TableCell > </TableCell>
                     }
-                    <TableCell ><DeleteForeverIcon onClick={props.openAlertRemoveBesoin.bind(this,row)} className={classess.iconRemove}/></TableCell>
+                    <TableCell hidden={JSON.parse(localStorage.user).role === "SERVICEFORMATIONS"} >
+                      <DeleteForeverIcon onClick={props.openAlertRemoveBesoin.bind(this,row)} className={classess.iconRemove}/>
+                    </TableCell>
                     
                
                 </TableRow>

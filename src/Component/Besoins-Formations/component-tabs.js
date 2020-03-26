@@ -96,7 +96,7 @@ const useStyles = makeStyles(theme => ({
 export default function FullWidthTabs(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(JSON.parse(localStorage.user).role === "SERVICEFORMATIONS" ? 1 : 0);
   const [open, setOpen] = React.useState(false);
   const [besoinPublier, setBesoinPublier] = React.useState(false);
   const [nbrPrevus, setNbrPrevus] = React.useState();
@@ -142,7 +142,7 @@ export default function FullWidthTabs(props) {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab hidden={JSON.parse(localStorage.user).role === "SERVICEFORMATIONS" || JSON.parse(localStorage.user).role === "MANAGER" ? true : false} style={{outline : "none"}} label={JSON.parse(localStorage.user).role ==="MANAGER"  ? "Publier les besoins" : "Saisis des besoins" } icon = {JSON.parse(localStorage.user).role === "MANAGER" ? <PublishIcon /> : <CreateIcon />}/>
+          <Tab hidden={JSON.parse(localStorage.user).role === "SERVICEFORMATIONS"  ? true : false} style={{outline : "none"}} label={JSON.parse(localStorage.user).role ==="MANAGER"  ? "Publier les besoins" : "Saisis des besoins" } icon = {JSON.parse(localStorage.user).role === "MANAGER" ? <PublishIcon /> : <CreateIcon />}/>
           <Tab style={{outline : "none"}}  label="Consulter les besoins"  icon = {<ListAltIcon />} />
           <Tab hidden = {JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false}style={{outline : "none"}}label="Rapports" icon = {<DescriptionIcon />} />
         </Tabs>

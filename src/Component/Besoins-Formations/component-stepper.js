@@ -210,7 +210,9 @@ export default function VerticalLinearStepper(props) {
           </Step>
 
           <Step key="3">
-            <StepLabel StepIconProps={{ classes:{ root: classes.icon, active: classes.activeIcon, completed: classes.completedIcon } }}>Informations</StepLabel>
+            <StepLabel StepIconProps={{ classes:{ root: classes.icon, active: classes.activeIcon, completed: classes.completedIcon } }}>
+              {JSON.parse(localStorage.user).role === "COLLABORATEUR" ? "Valider" : "Informations"}
+            </StepLabel>
             <StepContent>
 
             <div hidden = {JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false} style={{width : 420 }} className="input-group mb-3">

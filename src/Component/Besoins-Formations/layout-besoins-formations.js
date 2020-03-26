@@ -116,7 +116,7 @@ class Besoins extends Component{
                 }
             })
 
-        }else {
+        }else if( JSON.parse(localStorage.user).role === "MANAGER") {
             axios.post("http://localhost:8686/besoins/byMG" , querystring.stringify(user) , {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -127,6 +127,12 @@ class Besoins extends Component{
                         listBesoins : res.data.BesoinsMG
                     })
                 }
+            })
+        }else {
+            axios.get("http://localhost:8686/besoins").then(res => {
+                this.setState({
+                    listBesoins : res.data.Besoins
+                })
             })
         }
      
@@ -616,56 +622,25 @@ class Besoins extends Component{
             "Content-Type": "application/x-www-form-urlencoded"
         }
         }).then(res => {
-            res.data.BesoinPublier.listBesoins.map(b => {
-                const obj = {
-                    id : b.id
-                }
-                axios.post("http://localhost:8686/besoins/remove",
-                querystring.stringify(obj), {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                }
-                }).then(res => {
-                    if(res.data.Success){
-                        const listBesoins = this.state.listBesoins
-                        const index = listBesoins.findIndex(besoin => besoin.id === b.id)
-                        listBesoins.splice(index , 1)
-                        this.setState({
-                            listBesoins : listBesoins
-                        })
-                    } 
-                })
-                return null
-            })
+
             const listBesoinsPublier = this.state.listBesoinsPublier
             const index = listBesoinsPublier.findIndex(besoin => besoin.id === res.data.BesoinPublier.id)
             listBesoinsPublier.splice(index , 1 )
             this.setState({
                 listBesoinsPublier : listBesoinsPublier
             })
-        })
-        // this.state.besoinPublier.listBesoins.map(besoinP =>{
+            res.data.BesoinPublier.listBesoins.map(b=>{
 
-        //     const obj = {
-        //         id : besoinP.id
-        //     }
-        //     axios.post("http://localhost:8686/besoins/remove",
-        //     querystring.stringify(obj), {
-        //     headers: {
-        //         "Content-Type": "application/x-www-form-urlencoded"
-        //     }
-        //     }).then(res => {
-        //         if(res.data.Success){
-        //             const listBesoins = this.state.listBesoins
-        //             const index = listBesoins.findIndex(besoin => besoin.id === besoinP.id)
-        //             listBesoins.splice(index , 1)
-        //             this.setState({
-        //                 listBesoins : listBesoins
-        //             })
-        //         } 
-        //     })
-        //     return null
-        // })
+                const listBesoins = this.state.listBesoins
+                const index = listBesoins.findIndex(besoin => besoin.id === b.id)
+                listBesoins.splice(index , 1)
+                this.setState({
+                    listBesoins : listBesoins
+                })
+                return null
+            })
+        })
+        
         this.setState({
             alertBesoinPublier : false,
             snackBesoinPublier : true
@@ -678,7 +653,7 @@ class Besoins extends Component{
         })
     }
 
-    filter(type,nomTheme,quarter,projet,tl,mg,bu){
+    filter(type,nomTheme,quarter,projet,tl,mg,bu,publier){
     if(JSON.parse(localStorage.user).role === "TEAMLEAD"){
 
         
@@ -689,7 +664,8 @@ class Besoins extends Component{
             idProjet : projet !== "" ? projet : 0,
             validerTL : tl,
             validerMG : mg,
-            idTL : JSON.parse(localStorage.user).id
+            idTL : JSON.parse(localStorage.user).id,
+            publier : publier
         }
       
         axios.post("http://localhost:8686/besoins/rapportsTL",
@@ -743,7 +719,8 @@ class Besoins extends Component{
             quarter : quarter,
             idProjet : projet !== "" ? projet : 0,
             validerMG : mg,
-            idManager : JSON.parse(localStorage.user).id
+            idManager : JSON.parse(localStorage.user).id,
+            publier : publier
         }
       
         axios.post("http://localhost:8686/besoins/rapportsMG",
@@ -796,7 +773,8 @@ class Besoins extends Component{
             idProjet : projet !== "" ? projet : 0,
             validerMG : mg,
             validerTL : tl,
-            bu : bu
+            bu : bu,
+            publier : publier
         }
       
         axios.post("http://localhost:8686/besoins/rapports",

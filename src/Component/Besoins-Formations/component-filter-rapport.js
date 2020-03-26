@@ -186,6 +186,7 @@ export default function CustomizedExpansionPanels(props) {
   });
   const [expanded, setExpanded] = React.useState('panel1');
   const [themeNoms, setThemeNoms] = React.useState(props.themes);
+  const [pubSelect, setPubSelect] = React.useState("false");
   const [typeSelected, setTypeSelected] = React.useState("");
   const [themeSelected, setThemeSelected] = React.useState("");
   const [quarterSelected, setQuarterSelected] = React.useState(0);
@@ -221,6 +222,18 @@ export default function CustomizedExpansionPanels(props) {
     {title : "RD"}
   ]
 
+  const publierSelect = [
+    {title : "OUI"},
+    {title : "NON"}
+  ]
+
+  const onPublierSelect = (e,values) => {
+    if (values != null){
+      setPubSelect(values.title === "OUI" ? "true" : "false")
+    }else {
+      setPubSelect("false")
+    }
+  }
   const onTypeSelect = (e,values) => {
     if(values != null){
       setTypeSelected(values.title)
@@ -289,7 +302,7 @@ export default function CustomizedExpansionPanels(props) {
   }
 
   const filter = () => {
-    props.filter(typeSelected,themeSelected,quarterSelected,projetSelected,TlSelected,MgSelected,BUSelected)
+    props.filter(typeSelected,themeSelected,quarterSelected,projetSelected,TlSelected,MgSelected,BUSelected,pubSelect)
 
   }
  
@@ -304,6 +317,20 @@ export default function CustomizedExpansionPanels(props) {
                 <Typography style={{color : "#B51B10" , fontWeight : "600" , fontSize:"18px"}}>Filter</Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails style={{display : "flex" , flexDirection : "column" ,border : "1px solid #F5F5F5" , borderBottom : "3px solid #F8B231"}}>
+                <div hidden={JSON.parse(localStorage.user).role !== "MANAGER" && JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} className ="row" style={{ marginBottom : "20px"}}>
+                    <div className="col-lg-4 col-md-4"></div>
+                    <div className="col-lg-4 col-md-4">
+                        <Autocomplete
+                          onChange = {onPublierSelect}
+                          disableCloseOnSelect = {false}
+                          size ="small"
+                          options = {publierSelect}
+                          getOptionLabel={option => option.title}
+                          style={{ width: 220 }}
+                          renderInput={params => <TextField {...params} label="Publier ?" variant="outlined" />}
+                        />
+                    </div>
+                </div>
                 <div className ="row" style={{ marginBottom : "20px"}}>
                     <div className="col-lg-4 col-md-4">
                         <Autocomplete
