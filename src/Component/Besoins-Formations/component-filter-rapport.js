@@ -362,7 +362,7 @@ export default function CustomizedExpansionPanels(props) {
                           options = {quarter}
                           getOptionLabel={option => option.title}
                           style={{ width: 220 }}
-                          renderInput={params => <TextField {...params} label="Quarter" variant="outlined" />}
+                          renderInput={params => <TextField {...params} label="Trimester" variant="outlined" />}
                         />
                     </div>
                 </div>

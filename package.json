@@ -18,6 +18,7 @@
     "hooks": "^0.3.2",
     "mdbreact": "^4.25.2",
     "moment": "^2.24.0",
+    "moment-with-locales-es6": "^1.0.1",
     "primeicons": "^2.0.0",
     "primereact": "^4.0.0",
     "query-string": "^6.11.0",

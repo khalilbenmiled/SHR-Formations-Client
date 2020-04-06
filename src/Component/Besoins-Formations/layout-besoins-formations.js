@@ -70,9 +70,11 @@ class Besoins extends Component{
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
             }).then(res => {
-                this.setState({
-                    projets : res.data.Projets
-                })
+                if(res.data.Projets){
+                    this.setState({
+                        projets : res.data.Projets
+                    })
+                }
             })
         }else {
             axios.get("http://localhost:8686/projets").then(res => {
@@ -258,6 +260,7 @@ class Besoins extends Component{
                 validerTL : false,
                 validerMG : false ,
                 theme : {
+                    id : this.state.themeSelected.id,
                     nom : this.state.themeSelected.nom,
                     type : this.state.themeSelected.type,
                     listModules : this.state.listModulesSelected
@@ -273,6 +276,7 @@ class Besoins extends Component{
                 quarter : this.state.quarter,
                 nbrPrevu : this.state.nbrPrevusSelected,
                 theme : {
+                    id : this.state.themeSelected.id,
                     nom : this.state.themeSelected.nom,
                     type : this.state.themeSelected.type,
                     listModules : this.state.listModulesSelected
@@ -550,6 +554,7 @@ class Besoins extends Component{
     }
 
     validerByManager(besoin) {
+
         const obj = {
             idBesoin : besoin.id
         }

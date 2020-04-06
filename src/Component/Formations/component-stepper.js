@@ -17,7 +17,10 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import EventIcon from '@material-ui/icons/Event';
-import Moment from "moment"
+import Moment from 'moment';
+import 'moment/locale/fr' 
+import ComponentListFormateurs from "./component-list-formateurs"
+import ComponentListCabinets from "./component-list-cabinets"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -74,28 +77,41 @@ function getSteps() {
 }
 
 export default function HorizontalLabelPositionBelowStepper(props) {
-
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const [activeContent, setActiveContent] = React.useState(0);
-  const top100Films = []
+
+  
+  const formateurCabinet = [
+      {title : "Formateur"},
+      {title : "Cabinet"}
+  ]
 
   const steps = getSteps();
 
   const [selectedDateDebut, setSelectedDateDebut] = React.useState(new Date());
   const [selectedDateFin, setSelectedDateFin] = React.useState(new Date());
+  const [formateur, setFormateur] = React.useState(true);
+  const [cabinet, setCabinet] = React.useState(true);
+  const [buttonStep1, setButtonStep1] = React.useState(0);
 
   const handleDateDebutChange = (date) => {
-    Moment.locale('fr');
-      console.log(Moment(date).format("l"))
+    
+    Moment.locale("fr");
     setSelectedDateDebut(date);
+    props.dateDebutSelected(Moment(date).format("L"))
   };
 
   const handleDateFinChange = (date) => {
+    Moment.locale("fr");
     setSelectedDateFin(date);
+    props.dateFinSelected(Moment(date).format("L"))
   };
 
   const handleNext = () => {
+    if(activeStep === 1) {
+      props.ajouterSessionFormation()
+    }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setActiveContent((prevActiveStep) => prevActiveStep + 1)
   };
@@ -110,8 +126,40 @@ export default function HorizontalLabelPositionBelowStepper(props) {
     setActiveContent(0)
   };
 
+ 
   function disableWeekends(date) {
     return date.getDay() === 0
+  }
+
+  const onSelectFormateurCabinet = (e,values) => {
+      console.log(values)
+    if(values !== null){
+        if(values.title ==="Formateur" ){
+            setFormateur(false)
+            setCabinet(true)
+        }else if (values.title === "Cabinet") {
+            setFormateur(true)
+            setCabinet(false)
+        }else {
+            setFormateur(true)
+            setCabinet(true)
+        }
+    }else {
+        setFormateur(true)
+        setCabinet(true)
+    }
+  }
+
+  const nbrCheck = (nb) => {
+    setButtonStep1(nb)
+  }
+
+  const sessionSelected = (e,value) => {
+    props.sessionSelected(value)
+  }
+
+  const onChangeDuree = (e) => {
+    props.onChangeDuree(e.target.value)
   }
 
   return (
@@ -126,7 +174,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
       </Stepper>
       <div hidden = {activeContent === 0 ? false : true} className="row">
           <div className="col-lg-12 col-md-12">
-              <ComponentBesoins listBesoins = {props.listBesoins} />
+              <ComponentBesoins besoinUnselected={props.besoinUnselected} nbrCheck = {nbrCheck} besoinSelected = {props.besoinSelected} listBesoins = {props.listBesoins} />
           </div>
       </div>
 
@@ -137,15 +185,11 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                         <div className="col-lg-5 col-md-5 offset-lg-1 offset-md-1">
                             <div style={{width : 420 }} className="input-group mb-3">
                                 <div style = {{height : 40 }} className="input-group-prepend" >
-                                    <label   style={{width : 120}} className="input-group-text" >Quarter</label>
+                                    <label   style={{width : 120}} className="input-group-text" >Trimester</label>
                                 </div>
-                                <Autocomplete
-                                    size="small"
-                                    options={top100Films}
-                                    getOptionLabel={option => option.title}
-                                    style={{ width: 200 , backgroundColor : "white"}}
-                                    renderInput={params => <TextField {...params} label="Quarter" variant="outlined" />}
-                                />
+                                <div className="input-group-prepend">
+                                    <label style={{fontSize : "14px" , minWidth : 200 , backgroundColor : "white"}}  className="input-group-text" >{props.quarterSelected} Trimestre</label>
+                                </div> 
                             </div>
                         </div>
                         <div className="col-lg-5 col-md-5">
@@ -155,12 +199,13 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                                 </div>
                                 <Autocomplete
                                     size="small"
-                                    options={top100Films}
-                                    getOptionLabel={option => option.title}
+                                    options={props.sessions}
+                                    onChange={sessionSelected}
+                                    getOptionLabel={option => option.nom}
                                     style={{ width: 200 , backgroundColor : "white" }}
                                     renderInput={params => <TextField {...params} label="Session" variant="outlined" />}
                                 />
-                                <ComponentModalSession />
+                                <ComponentModalSession ajouterSession = {props.ajouterSession} />
                             </div>
                         </div>
                     </div>
@@ -233,7 +278,9 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                                 <div style = {{height : 40 }} className="input-group-prepend" >
                                     <label   style={{width : 120 }} className="input-group-text" >Participants</label>
                                 </div>
-                                <TextField type ="number" style={{width : 200 , backgroundColor : "white"}} size="small"  label="Nombres participants" variant="outlined" />                               
+                                <div className="input-group-prepend">
+                                    <label style={{fontSize : "14px" , minWidth : 200 , backgroundColor : "white"}}  className="input-group-text" >{props.nbrParticipants}</label>
+                                </div>
                             </div>
                             
                         </div>
@@ -243,7 +290,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                                 <div style = {{height : 40 }} className="input-group-prepend" >
                                     <label   style={{width : 120 }} className="input-group-text" >Durée</label>
                                 </div>
-                                <TextField type ="number" style={{width : 200 , backgroundColor : "white"}} size="small"  label="Durée" variant="outlined" />                               
+                                <TextField type ="number" style={{width : 200 , backgroundColor : "white"}} size="small"  label="Durée" variant="outlined" onChange={onChangeDuree} />                               
                             </div>
                             
                         </div>
@@ -257,7 +304,29 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 
       <div hidden = {activeContent === 2 ? false : true} className="row">
           <div className="col-lg-12 col-md-12">
-              text 3
+            <div className={classes.rootSession}>
+                <div className="row" style={{paddingTop : "20px" }}>
+                    <div className="col-lg-4 col-md-4 offset-lg-4 offset-md-4">
+                    <Autocomplete
+                        size="small"
+                        onChange={onSelectFormateurCabinet}
+                        options={formateurCabinet}
+                        getOptionLabel={(option) => option.title}
+                        style={{ width: 300 , backgroundColor : "white" }}
+                        renderInput={(params) => <TextField {...params} label="Formateur / Cabinet" variant="outlined" />}
+                    />
+                    </div>
+                </div>
+
+                <div className="row" style={{paddingTop : "20px" }}>
+                    <div hidden = {formateur ? true : false} className="col-lg-12 col-md-12">
+                        <ComponentListFormateurs  />      
+                    </div>
+                    <div hidden = {cabinet ? true : false} className="col-lg-12 col-md-12">
+                        <ComponentListCabinets  />      
+                    </div>
+                </div>  
+            </div>
           </div>
       </div>
 
@@ -278,7 +347,10 @@ export default function HorizontalLabelPositionBelowStepper(props) {
               >
                 Back
               </Button>
-              <Button variant="contained" color="primary" onClick={handleNext} className={classes.button} > 
+              <Button 
+                disabled={activeStep===0 && buttonStep1 === 0 ? true : false}
+                variant="contained" color="primary" onClick={handleNext} className={classes.button} 
+              > 
                 {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
               </Button>
             </div>

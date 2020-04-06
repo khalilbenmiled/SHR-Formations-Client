@@ -34,15 +34,18 @@ export default function ActionsInExpansionPanelSummary(props) {
   const besoins = props.listBesoins
   const [expanded, setExpanded] = React.useState();
   const [disableBesoin, setDisableBesoin] = React.useState(0);
+  const [nbcheck, setnbrCheck] = React.useState(0);
    
-    
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
 
-  const besoinDisabled = id => {
+  const besoinDisabled = (id,i) => {
     setDisableBesoin(id)
+    setnbrCheck(nbcheck+i)
+    props.nbrCheck(nbcheck+i)
   }
+
 
 
   
@@ -51,7 +54,8 @@ export default function ActionsInExpansionPanelSummary(props) {
 
     {besoins.map( (besoin,index) => {
         return (
-            <ExpansionPanel disabled={disableBesoin !== 0 && disableBesoin !== besoin.id ? true : false} key={index} square expanded={expanded === index} onChange={handleChange(index)} className={classes.expansionPanel} size="small">
+          <div key={index}>
+            <ExpansionPanel disabled={ disableBesoin !== besoin.id && nbcheck !== 0 ? true : false} key={index} square expanded={expanded === index} onChange={handleChange(index)} className={classes.expansionPanel} size="small">
             <ExpansionPanelSummary
               className={classes.expansionPanelSummary}
               expandIcon={<ExpandMoreIcon />}
@@ -60,13 +64,14 @@ export default function ActionsInExpansionPanelSummary(props) {
               id="additional-actions1-header"
             >
               <Typography>
-                    {besoin.theme + " - Quarter " + besoin.quarter}
+                    {besoin.theme + " - Trimester " + besoin.quarter}
               </Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-                <ComponentListBesoins besoins={besoin.listBesoins} besoinDisabled={besoinDisabled} id={besoin.id}/>
+                <ComponentListBesoins besoinUnselected={props.besoinUnselected} besoinSelected={props.besoinSelected} besoins={besoin.listBesoins} besoinDisabled={besoinDisabled} id={besoin.id} />
             </ExpansionPanelDetails>
           </ExpansionPanel>
+          </div>
         )
     })}
 

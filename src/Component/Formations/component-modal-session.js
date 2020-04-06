@@ -61,6 +61,8 @@ const useStyles = makeStyles(theme => ({
 export default function TransitionsModal(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const [nom, setNom] = React.useState();
+  const [description, setDescription] = React.useState();
 
 
   const handleOpen = () => {
@@ -70,6 +72,19 @@ export default function TransitionsModal(props) {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const onChangeNom = (e) => {
+    setNom(e.target.value)
+  }
+
+  const onChangeDescription = (e) => {
+    setDescription(e.target.value)
+  }
+
+  const ajouterSession = () => {
+    props.ajouterSession(nom,description)
+    setOpen(false);
+  }
 
   return (
     <div>
@@ -101,19 +116,19 @@ export default function TransitionsModal(props) {
                                     <div className="input-group-prepend">
                                         <label style={{width : 173}}  className="input-group-text" >Nom </label>
                                     </div>
-                                    <TextField style={{width : 280 }} size="small" id="outlined-basic" label="Nom" variant="outlined" />                               
+                                    <TextField style={{width : 280 }} size="small" id="outlined-basic" label="Nom" variant="outlined" onChange={onChangeNom} />                               
                                 </div>
 
                                 <div className="input-group mb-3 ">
                                     <div className="input-group-prepend">
                                         <label style={{width : 173}}  className="input-group-text" >Description </label>
                                     </div>
-                                    <TextField multiline rows="4" style={{width : 280 }} size="small" id="outlined-basic" label="Description" variant="outlined" />                               
+                                    <TextField multiline rows="4" style={{width : 280 }} size="small" id="outlined-basic" label="Description" variant="outlined" onChange={onChangeDescription}/>                               
                                 </div>
 
                                 <div style={{marginLeft: 282,display : "flex" , flexDirection : "row" , justifyContent : "space-between" , width : 170}}>
                                   <Button  size="small" variant="contained" className = {classes.buttonAnnuler} onClick={handleClose}> Annuler</Button>
-                                  <Button  size="small" variant="contained" className = {classes.buttonConfirmer} > Ajouter</Button>
+                                  <Button  size="small" variant="contained" className = {classes.buttonConfirmer} onClick={ajouterSession}> Ajouter</Button>
                                 </div>
                             </div>
                         </div>

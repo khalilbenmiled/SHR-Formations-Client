@@ -13,12 +13,8 @@ import IconButton from '@material-ui/core/IconButton';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import { TableHead } from '@material-ui/core';
-import PersonIcon from '@material-ui/icons/Person';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import axios from "axios"
-import querystring from 'querystring'
-import ComponentModalInfosUser from "./component-modal-userInfos"
-import ComponentModalInfosUser2 from "./component-modal-userInfos2"
+
+
 const useStyles1 = makeStyles(theme => ({
   root: {
     flexShrink: 0,
@@ -99,17 +95,12 @@ TablePaginationActions.propTypes = {
 
 
 export default function CustomPaginationActionsTable(props) {
-  const rows = props.besoins
-  const id = props.id
-  const classes = useStyles1();
+  const rows = []
+//   const classes = useStyles1();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(4);
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-  const [open, setOpen] = React.useState(false);
-  const [infos, setInfos] = React.useState("");
-  const [modalToOpen, setModalToOpen] = React.useState(0);
 
-  
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -118,55 +109,6 @@ export default function CustomPaginationActionsTable(props) {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
-  const besoinChecked = (e) => {
-      
-      if(e.target.checked){    
-          props.besoinDisabled(id,1) 
-          props.besoinSelected(JSON.parse(e.target.value))
-      }else {
-          props.besoinDisabled(id,-1)
-          props.besoinUnselected(JSON.parse(e.target.value))
-      }
-  }
-
-  
-  const handleClose = () => {
-    setOpen(false)
-  }
-
-  const openUser = (besoin) => {
-
-    const user = {
-      id : besoin.idUser
-    }
-    axios.post("http://localhost:8686/besoinsPublier/userInfos",
-    querystring.stringify(user), {
-    headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-    }
-    }).then(res => {
-        if (!res.data.Error){
-          if(res.data.Collaborateur === null){
-            const obj = {
-              teamlead: res.data.TeamLead,
-              manager : res.data.Manager
-            }
-            setInfos(obj)
-            setModalToOpen(1)
-          }else {
-            const obj = {
-              collaborateur : res.data.Collaborateur,
-              teamlead: res.data.TeamLead,
-              manager : res.data.Manager
-            }
-            setInfos(obj)
-            setModalToOpen(2)
-          }
-        }
-    })
-    setOpen(true)
-  }
 
   
   
@@ -179,10 +121,10 @@ export default function CustomPaginationActionsTable(props) {
         <Table size="small" className="tableTheme" aria-label="custom pagination table" >
             <TableHead  className="tableHead" style={{backgroundColor: "#B51B10"}}>
                 <TableRow>
-                    <TableCell style={{fontSize : 16 , color : 'white'}}>BU</TableCell>
-                    <TableCell style={{fontSize : 16 , color : 'white'}}>Modules</TableCell>
-                    <TableCell style={{fontSize : 16 , color : 'white'}}>Type</TableCell>
-                    <TableCell style={{fontSize : 16 , color : 'white' }}>Trimestre</TableCell>
+                    <TableCell style={{fontSize : 16 , color : 'white'}}>Nom</TableCell>
+                    <TableCell style={{fontSize : 16 , color : 'white'}}>Email</TableCell>
+                    <TableCell style={{fontSize : 16 , color : 'white'}}>Adresse</TableCell>
+                    <TableCell style={{fontSize : 16 , color : 'white' }}>Telephone</TableCell>
                     <TableCell colSpan={3} style={{fontSize : 16 , color : 'white' }}></TableCell>
                 </TableRow>
             </TableHead>
@@ -191,31 +133,8 @@ export default function CustomPaginationActionsTable(props) {
                 ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 : rows
             ).map((row , index) => (
-                
-                <TableRow key={index}>
-                    <TableCell>{row.bu}</TableCell>
-                    <TableCell>
-                        {row.theme.listModules.map( (module,index) => (
-                            <li key={index}> {module.nom} : {module.description} <br/></li>                    
-                        ))}
-                    </TableCell>
-                    <TableCell>
-                        {row.theme.type}
-                    </TableCell>
-                    <TableCell>
-                        {row.quarter}
-                    </TableCell>
-                    <TableCell>
-                        <PersonIcon className={classes.user} onClick={openUser.bind(this,row)}/>
-                    </TableCell>
-                    <TableCell>
-                        <DeleteForeverIcon className={classes.iconRemove}/>
-                    </TableCell>
-                    <TableCell>
-                        <input value={JSON.stringify(row)} onChange={besoinChecked} className={classes.checkBox} type="checkBox" name="actionRadio" />                  
-                    </TableCell>
-                </TableRow>
-            
+                <>
+                </>
             ))}
 
             {emptyRows > 0 && (
@@ -245,16 +164,7 @@ export default function CustomPaginationActionsTable(props) {
         </Table>
         
         </TableContainer>
-        {modalToOpen === 1 ? 
-        <ComponentModalInfosUser open={open} handleClose={handleClose} infos={infos} />
-        : modalToOpen === 2 ?
-        <ComponentModalInfosUser2 open={open} handleClose={handleClose} infos={infos} />
-        :
-        ""
-        }
-        
-        
-
+      
     </>
   
   );

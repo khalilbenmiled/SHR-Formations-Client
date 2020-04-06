@@ -76,6 +76,18 @@ export default function ScrollableTabsButtonAuto(props) {
       <TabPanel value={value} index={0}>
         <ComponentStepper 
             listBesoins = {props.listBesoins}
+            besoinSelected = {props.besoinSelected}
+            quarterSelected = {props.quarterSelected}
+            listBesoinsSelected = {props.listBesoinsSelected}
+            nbrParticipants = {props.nbrParticipants}
+            besoinUnselected =  {props.besoinUnselected}
+            dateDebutSelected = {props.dateDebutSelected}
+            dateFinSelected = {props.dateFinSelected}
+            ajouterSession = {props.ajouterSession}
+            sessions = {props.sessions}
+            sessionSelected = {props.sessionSelected}
+            onChangeDuree = {props.onChangeDuree}
+            ajouterSessionFormation = {props.ajouterSessionFormation}
         />
       </TabPanel>
       <TabPanel value={value} index={1}>
