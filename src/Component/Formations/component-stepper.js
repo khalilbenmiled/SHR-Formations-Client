@@ -99,18 +99,19 @@ export default function HorizontalLabelPositionBelowStepper(props) {
     
     Moment.locale("fr");
     setSelectedDateDebut(date);
-    props.dateDebutSelected(Moment(date).format("L"))
+    props.dateDebutSelected(Moment(date).format("DD/MM/YYYY HH:mm"))
   };
 
   const handleDateFinChange = (date) => {
     Moment.locale("fr");
     setSelectedDateFin(date);
-    props.dateFinSelected(Moment(date).format("L"))
+    props.dateFinSelected(Moment(date).format("DD/MM/YYYY HH:mm"))
   };
 
   const handleNext = () => {
-    if(activeStep === 1) {
+    if(activeStep === 2) {
       props.ajouterSessionFormation()
+      window.location.reload(true)
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setActiveContent((prevActiveStep) => prevActiveStep + 1)
@@ -120,12 +121,6 @@ export default function HorizontalLabelPositionBelowStepper(props) {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
     setActiveContent((prevActiveStep) => prevActiveStep - 1)
   };
-
-  const handleReset = () => {
-    setActiveStep(0);
-    setActiveContent(0)
-  };
-
  
   function disableWeekends(date) {
     return date.getDay() === 0
@@ -335,7 +330,6 @@ export default function HorizontalLabelPositionBelowStepper(props) {
         {activeStep === steps.length ? (
           <div>
             <Typography className={classes.instructions}>All steps completed</Typography>
-            <Button onClick={handleReset}>Reset</Button>
           </div>
         ) : (
           <div style={{marginTop : "30px"}}>

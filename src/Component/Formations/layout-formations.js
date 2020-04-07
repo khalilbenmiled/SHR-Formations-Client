@@ -3,6 +3,9 @@ import ComponentTabs from "./component-tabs"
 import LayoutNavbar from "../NavBar/layoutNavbar"
 import axios from "axios"
 import querystring from 'querystring'
+import { Snackbar } from "@material-ui/core"
+import Alert from "@material-ui/lab/Alert"
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 class LayoutFormations extends Component {
 
@@ -16,7 +19,9 @@ class LayoutFormations extends Component {
             sessions : [],
             sessionSelected : "",
             dateDebutSelected : "" ,
-            dateFinSelected : ""
+            dateFinSelected : "",
+            reset : false,
+            alertFormation : false
         }
     }
     
@@ -124,6 +129,19 @@ class LayoutFormations extends Component {
         var typeTheme = this.state.listBesoinsSelected[0].theme.type
         this.state.listBesoinsSelected.map(besoin => {
             tabs.push(besoin.theme.listModules)
+                const input = {
+                    id : besoin.id
+                }
+                axios.post("http://localhost:8686/besoins/setPlanifier",
+                querystring.stringify(input), {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+                }).then(res => {
+                   if(res.data.Besoin){
+
+                   }
+                })
             return null
         })
         var listModules = tabs.filter( (ele, ind) => ind === tabs.findIndex( elem => elem.nom === ele.nom))
@@ -145,21 +163,29 @@ class LayoutFormations extends Component {
             "Content-Type": "application/x-www-form-urlencoded"
         }
         }).then(res => {
+            if(res.data.Formation){
+
+                const list = {
+                    modules : listModules,
+                    idFormation : res.data.Formation.id
+                }
+                axios.post("http://localhost:8585/formations/addMTF", list).then(res => {
+                    
+                })
+            }
             
         })
 
-        const list = {
-            modules : listModules
-        }
-        axios.post("http://localhost:8585/formations/test", list).then(res => {
-            
+        this.setState({
+            alertFormation : true
         })
-    
-        
-       
     }
 
-
+    closeAlertFormation(){
+        this.setState({
+            alertFormation : false
+        })
+    }
     render(){
         return (
             <>
@@ -185,6 +211,11 @@ class LayoutFormations extends Component {
                         </div>    
                     </div>
                 </div>
+                <Snackbar open={this.state.alertFormation} autoHideDuration={5000} onClose={this.closeAlertFormation.bind(this)}>
+                    <Alert  onClose={this.closeAlertFormation.bind(this)} icon = {<CheckCircleIcon style={{color : "white" }}/>} style={{backgroundColor : "#4CAF50" , color : "white" , width : 400 , fontSize : 16}}>
+                            Formation enregistrer avec succès
+                    </Alert>
+                </Snackbar>
             </>
         )
     }
