@@ -18,9 +18,9 @@ const useStyles = makeStyles(theme => ({
     },
     borderRadius : "20px",
     width : 600,
-    height : '40vh',
+    height : '35vh',
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
+
   },
   titre : {
       color : "#3D707E"
@@ -106,15 +106,20 @@ export default function TransitionsModal(props) {
           <div className="col-lg-12 col-md-12 " >
                         <div className="row ">
                             <div className="col-lg-12 col-md-12">
-                                <h4 className="titreAction">Ajouter un projet</h4>
+                              <div className="row modalHeader" style={{marginBottom : "50px"}}>
+                                <div className="col-lg-12 col-md-12">
+                                  <h4 className="titreInfos">Ajouter un projet</h4>
+                                </div>
+                              </div>
+                                
                               
-                                <div className="input-group mb-3 ">
+                                <div className="input-group mb-3 " style={{marginLeft : "40px"}}>
                                     <div className="input-group-prepend">
                                         <label style={{width : 173}}  className="input-group-text" >Nom </label>
                                     </div>
                                     <TextField style={{width : 280 }} size="small" id="outlined-basic" label="Nom" variant="outlined" onChange={projetNom}/>                               
                                 </div>
-                                <div style={{marginLeft: 282,display : "flex" , flexDirection : "row" , justifyContent : "space-between" , width : 170}}>
+                                <div style={{marginLeft: 322,display : "flex" , flexDirection : "row" , justifyContent : "space-between" , width : 170}}>
                                   <Button  size="small" variant="contained" className = {classes.buttonAnnuler} onClick={handleClose}> Annuler</Button>
                                   <Button  disabled={nom === "" ? true : false} size="small" variant="contained" className = {classes.buttonConfirmer} onClick={handleSubmit}> Ajouter</Button>
                                 </div>

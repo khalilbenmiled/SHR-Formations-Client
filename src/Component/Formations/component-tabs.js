@@ -9,6 +9,11 @@ import Box from '@material-ui/core/Box';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import EventNoteIcon from '@material-ui/icons/EventNote';
 import ComponentStepper from "./component-stepper"
+import ComponentCalendrier from "./component-calendrier"
+import axios from "axios"
+import Moment from 'moment';
+import 'moment/locale/fr'
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -50,6 +55,29 @@ const useStyles = makeStyles((theme) => ({
 export default function ScrollableTabsButtonAuto(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
+  const [events, setEvents] = React.useState();
+  const tabs = []
+  axios.get("http://localhost:8585/formations").then(res => {
+      if(res.data.Formations){
+        res.data.Formations.map(formation => {
+          var dateDebut = new Date(formation.dateDebut)
+          var dateFin = new Date(formation.dateFin)
+          Moment.locale("fr");
+          var new_date = Moment(dateFin , "YYYY-MM-DD").add(1,"days")
+              tabs.push({
+                  id : formation.id,
+                  title : formation.theme.nom,
+                  start : Moment(dateDebut).format("YYYY-MM-DD").toString(),
+                  end : Moment(new_date).format("YYYY-MM-DD").toString(),
+                  backgroundColor : formation.theme.type === "SOFTSKILLS" ? "#ED7E0A" : formation.theme.type === "TECHNIQUE" ? "#B51B10" : "#027796",
+                  textColor : "white"
+              })
+              return null
+            
+        })
+        setEvents(tabs)
+    }
+  })
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -91,7 +119,7 @@ export default function ScrollableTabsButtonAuto(props) {
         />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Item Two
+        <ComponentCalendrier events={events} />
       </TabPanel>
       <TabPanel value={value} index={2}>
         Item Three

@@ -211,6 +211,8 @@ export default function FullWidthTabs(props) {
                 addModule = {props.addModule}
                 addProjet = {props.addProjet}
                 onChangeTrimeter = {props.onChangeTrimeter}
+                mesCollaborateurs = {props.mesCollaborateurs}
+                getCollaborateurs = {props.getCollaborateurs}
             
               />
           }

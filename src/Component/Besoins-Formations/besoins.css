@@ -31,10 +31,18 @@
     box-shadow: 0px 0px 5px;
     width: 95%;
 }
-.titreAction{
-    margin-top: 3%;
+.titreInfos{
+    margin-top: 2%;
     margin-bottom: 10%;
-    color: #3D707E;
+    color: #fff;
+}
+
+.modalHeader {
+    background-color: #3D707E;
+    height: 60px;
+    margin-bottom: 80px;
+    border-top-right-radius: 15px;
+    border-top-left-radius: 15px;
 }
 .annulerBtn:focus{
     outline : none

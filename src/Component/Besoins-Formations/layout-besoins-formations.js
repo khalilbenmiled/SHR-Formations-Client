@@ -45,7 +45,9 @@ class Besoins extends Component{
             alertBesoinPublier : false,
             besoinToPublier : "",
             snackBesoinPublier: false,
-            rapports : []
+            rapports : [],
+            mesCollaborateurs : [],
+            mesCollaborateursSelected : []
         }
     }
     componentDidMount(){
@@ -150,6 +152,21 @@ class Besoins extends Component{
         }
 
 
+        if(JSON.parse(localStorage.user).role === "TEAMLEAD"){
+            const input = {
+                id : JSON.parse(localStorage.user).id
+            }
+            axios.post("http://localhost:8383/collaborateurs/ByTL" , querystring.stringify(input) , {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
+                this.setState({
+                    mesCollaborateurs : res.data.Users
+                })
+            })
+        }
+
     }
  
 
@@ -232,6 +249,18 @@ class Besoins extends Component{
         
     }
 
+    getCollaborateurs(e,values) {
+        
+        const tabs = []
+        values.map( val => {
+            tabs.push(val.User.Informations.id)
+            return null
+        })
+        this.setState({
+            mesCollaborateursSelected : tabs
+        })
+    }
+
 
     onChangeTrimeter(e){
         this.setState({
@@ -274,13 +303,14 @@ class Besoins extends Component{
                 validerMG : false,
                 dateDebut : this.state.dateDebutSelected,
                 quarter : this.state.quarter,
-                nbrPrevu : this.state.nbrPrevusSelected,
+                nbrPrevu : this.state.mesCollaborateursSelected.length,
                 theme : {
                     id : this.state.themeSelected.id,
                     nom : this.state.themeSelected.nom,
                     type : this.state.themeSelected.type,
                     listModules : this.state.listModulesSelected
                 },
+                listParticipants : this.state.mesCollaborateursSelected,
                 projet : {
                     id : this.state.projetSelected.id,
                     nom : this.state.projetSelected.nom,
@@ -864,6 +894,8 @@ class Besoins extends Component{
                                openPublierBesoin = {this.openPublierBesoin.bind(this)}
                                filter = {this.filter.bind(this)}
                                rapports = {this.state.rapports}
+                               mesCollaborateurs = {this.state.mesCollaborateurs}
+                               getCollaborateurs = {this.getCollaborateurs.bind(this)}
                             
                         />
                     </div>

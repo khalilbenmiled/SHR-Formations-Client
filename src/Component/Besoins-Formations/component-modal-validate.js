@@ -20,7 +20,6 @@ const useStyles = makeStyles(theme => ({
     width : 600,
     height : '40vh',
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
   },
   titre : {
       color : "#3D707E"
@@ -86,7 +85,11 @@ export default function TransitionsModal(props) {
           <div className="col-lg-12 col-md-12 " >
                         <div className="row ">
                             <div className="col-lg-12 col-md-12">
-                                <h4 className="titreAction">Valider besoin</h4>
+                              <div className="row modalHeader" style={{marginBottom : "50px"}}>
+                                  <div className="col-lg-12 col-md-12">
+                                    <h4 className="titreInfos">Valider besoin</h4>
+                                  </div>
+                                </div>
 
                                 <div className="input-group mb-3 ">
                                     <div className="input-group-prepend">
@@ -114,7 +117,7 @@ export default function TransitionsModal(props) {
                                             <option value="4">Trimestre 4</option>
                                         </select>
                                 </div>
-                                <div style={{marginLeft: 336,display : "flex" , flexDirection : "row" , justifyContent : "space-between" , width : 170}}>
+                                <div style={{marginLeft: 396,display : "flex" , flexDirection : "row" , justifyContent : "space-between" , width : 170}}>
                                   <Button  size="small" variant="contained" className = {classes.buttonAnnuler} onClick={handleClose}> Annuler</Button>
                                   <Button disabled={projet === "" || trimstre === "" || projet === "0" || trimstre === "NONE" ? true : false} size="small" variant="contained" className = {classes.buttonConfirmer} onClick={props.onValiderBesoin}> Valider</Button>
                                 </div>

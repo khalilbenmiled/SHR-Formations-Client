@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     width : 800,
     height : '90vh',
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
+
   },
   titre : {
       color : "#3D707E"
@@ -52,7 +52,12 @@ export default function TransitionsModal(props) {
           <div className={classes.paper}>
                        
             <div className="col-lg-12 col-md-12 " >
-            <h4 className="titreAction">Détails besoins</h4>
+            
+                        <div className="row modalHeader">
+                            <div className="col-lg-12 col-md-12">
+                                <h4 className="titreInfos">Détails besoins</h4>
+                            </div>
+                        </div>
                         <div className="row" style={{marginTop : "-50px"}}>
                             <div className="col-lg-6 col-md-6">
                                 

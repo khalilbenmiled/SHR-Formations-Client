@@ -1,0 +1,100 @@
+
+.demo-app {
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    font-size: 14px;
+    margin-top: 20px;
+    border : 10px solid #E9EBEC;
+    padding: 20px 0px;
+  }
+  
+  .demo-app-top {
+    margin: 0 0 3em;
+  }
+  
+  .demo-app-calendar {
+    margin: 0 auto;
+    max-width: 900px;
+  }
+
+.fc-button-primary:not(:disabled):active, .fc-button-primary:not(:disabled).fc-button-active  {
+    background-color: #B51B10;
+    color : "white";
+
+}
+.fc-button-primary:not(:disabled).fc-button-active:hover {
+    background-color:  #3D707E;
+}
+
+.fc-button-primary:disabled:hover{
+ background-color: none;
+}
+.fc-button-group > button{
+    margin: 0 2px;
+}
+.fc-ltr .fc-h-event.fc-not-end, .fc-rtl .fc-h-event.fc-not-start  {
+    outline:  none;
+    border : none;
+}
+.fc-ltr .fc-h-event.fc-not-start, .fc-rtl .fc-h-event.fc-not-end  {
+    outline:  none;
+    border : none;
+}
+a:not([href]):not([tabindex]), a:not([href]):not([tabindex]):focus, a:not([href]):not([tabindex]):hover {
+    outline: none;
+    border : none
+}
+
+.fc-day-grid-event .fc-content{
+    height: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: center;
+    padding-top: 5px;
+    outline: none;
+}
+
+.fc-button-primary{
+    background-color: #B51B10;
+    color : "white";
+    outline: none;
+    border: none;
+}
+.fc-toolbar h2 {
+    color : #B51B10;
+}
+
+.fc th {
+    color : #3D707E;
+    font-weight: 800;
+}
+
+.fc-button:hover {
+    background-color: #3D707E;
+}
+
+.buttonAjourdhui{
+    background-color: #E67A0A ;
+    color : #ffffff;
+    float: right;
+}
+
+.buttonAjourdhui:hover{
+    background-color: #E67A0A ;
+    color : #ffffff
+}
+.buttonAjourdhui:focus {
+    outline: none;
+}
+
+.headerModal {
+    background-color: #3D707E;
+    height: 60px;
+    margin-bottom: 30px;
+    border-top-right-radius: 15px;
+    border-top-left-radius: 15px;
+}
+.titreAction{
+    margin-top: 2%;
+    margin-bottom: 10%;
+    color: #fff;
+}

@@ -101,9 +101,9 @@ export default function VerticalLinearStepper(props) {
             </StepLabel>
             <StepContent>
                 <div>
-                    <div style={{width : 700}} className="input-group mb-3">
-                        <div className="input-group-prepend">
-                            <label className="input-group-text" >Action de formation</label>
+                    <div style={{width : 700 }} className="input-group mb-3">
+                        <div className="input-group-prepend" >
+                            <label className="input-group-text"  >Action de formation</label>
                         </div>
                         <select className="custom-select" id="inputGroupSelect01" onChange={props.onChangeTheme}>
                             <option  defaultValue value="TOUS">Tous</option>
@@ -232,7 +232,38 @@ export default function VerticalLinearStepper(props) {
                         <div style = {{height : 40 }} className="input-group-prepend" >
                             <label   style={{width : 150}} className="input-group-text" >Nombre Prévus</label>
                         </div>
-                        <TextField defaultValue="0" type ="number" style={{width : 270}} size="small" id="outlined-basic" label="Nombre prévus" variant="outlined" onChange={props.getNbrPrevus} />                               
+                        {/* <TextField defaultValue="0" type ="number" style={{width : 270}} size="small" id="outlined-basic" label="Nombre prévus" variant="outlined" onChange={props.getNbrPrevus} />                                */}
+                        <Autocomplete
+            
+                          size="small"
+                          multiple
+                          id="checkboxes-tags-demo"
+                          options={props.mesCollaborateurs}
+                          onChange={props.getCollaborateurs}
+                          disableCloseOnSelect
+                          getOptionLabel={option => option.User.Informations.nom}
+                          renderOption={(option, { selected }) => (
+                              <React.Fragment >
+                              <Checkbox
+                                  size = "small"
+                                  icon={icon}
+                                  checkedIcon={checkedIcon}
+                                  style={{ marginRight: 8  }}
+                                  checked={selected}
+                                
+                                
+                              />
+                              {option.User.Informations.nom} - {option.User.Informations.prenom}
+                              </React.Fragment>
+                          )}
+                          style={{ width: 270 }}
+                          
+                          renderInput={params => (
+                          <TextField {...params} variant="outlined" label="Collaborateur" placeholder="Collaborateur" />
+                          )}
+                        
+                        
+                        />
               </div>
                            
               <div hidden = {JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false} style={{width : 420}} className="input-group mb-3">

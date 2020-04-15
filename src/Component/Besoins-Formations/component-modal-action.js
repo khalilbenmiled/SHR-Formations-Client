@@ -21,7 +21,6 @@ const useStyles = makeStyles(theme => ({
     width : 600,
     height : '45vh',
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
   },
   titre : {
       color : "#3D707E"
@@ -107,33 +106,50 @@ export default function TransitionsModal(props) {
           <div className={classes.paper}>
                        
             <div className="col-lg-12 col-md-12 " >
-                        <div className="row ">
-                            <div className="col-lg-12 col-md-12">
-                                <h4 className="titreAction">Ajouter une action de formation</h4>
-                                <div className="input-group mb-3 ">
-                                    <div className="input-group-prepend">
-                                        <label className="input-group-text" >Action de formation</label>
+                 
+                                <div className="row modalHeader" style={{marginBottom : "50px"}}>
+                                  <div className="col-lg-12 col-md-12">
+                                    <h4 className="titreInfos">Ajouter une action de formation</h4>
+                                  </div>
+                                </div>
+                                
+
+                                <div className="row">
+                                  <div className="col-lg-12 col-md-12">
+                                    <div className="input-group mb-3 ">
+                                      <div className="input-group-prepend">
+                                          <label className="input-group-text" >Action de formation</label>
+                                      </div>
+                                      <select className="custom-select" id="inputGroupSelect01" onChange={actionType}>
+                                          <option defaultValue value="NONE">Choisir...</option>
+                                          <option value="TECHNIQUE">TECHNIQUE</option>
+                                          <option value="SOFTWARE">SOFTWARE</option>
+                                          <option value="SOFTSKILLS">SOFTSKILLS</option>
+                                      </select>
+                                    
                                     </div>
-                                    <select className="custom-select" id="inputGroupSelect01" onChange={actionType}>
-                                        <option defaultValue value="NONE">Choisir...</option>
-                                        <option value="TECHNIQUE">TECHNIQUE</option>
-                                        <option value="SOFTWARE">SOFTWARE</option>
-                                        <option value="SOFTSKILLS">SOFTSKILLS</option>
-                                    </select>
-                                  
+                                  </div>
                                 </div>
 
-                                <div className="input-group mb-3 ">
-                                    <div className="input-group-prepend">
-                                        <label style={{width : 173}}  className="input-group-text" >Nom du formation</label>
+                                <div className="row">
+                                  <div className="col-lg-12 col-md-12">
+                                    <div className="input-group mb-3 ">
+                                      <div className="input-group-prepend">
+                                          <label style={{width : 173}}  className="input-group-text" >Nom du formation</label>
+                                      </div>
+                                      <TextField  style={{width : 396 }}  size="small" id="outlined-basic" label="Nom" variant="outlined" onChange={actionName}/>                               
                                     </div>
-                                    <TextField  style={{width : 330 }}  size="small" id="outlined-basic" label="Nom" variant="outlined" onChange={actionName}/>                               
+                                  </div>
                                 </div>
-                                <Button style={{marginLeft : 330 , marginTop : 10 , marginBottom : 10}} size="small" variant="contained" className = {classes.buttonAnnuler} onClick={handleClose}> Annuler</Button>
-                                <Button disabled={nom === "" || type === "" || type === "NONE" ? true : false} style={{float : "right" , marginTop : 10 , marginBottom : 10}} size="small" variant="contained" className = {classes.buttonConfirmer} onClick={handleSubmit}> Ajouter</Button>
+
+                                <div className="row" style={{marginTop : "25px" , float : "right"}}>
+                                
+                                    <Button style={{ marginRight : "5px"}} size="small" variant="contained" className = {classes.buttonAnnuler} onClick={handleClose}> Annuler</Button>
+                                    <Button style= {{marginRight : "20px"}} disabled={nom === "" || type === "" || type === "NONE" ? true : false}  size="small" variant="contained" className = {classes.buttonConfirmer} onClick={handleSubmit}> Ajouter</Button>
+
+                                </div>                             
                             </div>
-                        </div>
-                    </div>
+               
 
           </div>
         </Fade>

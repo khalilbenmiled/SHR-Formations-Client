@@ -33,15 +33,6 @@ class LayoutFormations extends Component {
                     })
                 }
         })
-
-        axios.get("http://localhost:8585/sessions").then(res => {
-        
-            if(res.data.Sessions){
-                this.setState({
-                    sessions : res.data.Sessions
-                })
-            }
-        })
     }
 
 
@@ -65,6 +56,15 @@ class LayoutFormations extends Component {
                 nbrParticipants : nb
             })
             return null
+        })
+
+        axios.get("http://localhost:8585/sessions/byQuarter").then(res => {
+        
+            if(res.data.Sessions){
+                this.setState({
+                    sessions : res.data.Sessions
+                })
+            }
         })
     }
 
@@ -155,7 +155,8 @@ class LayoutFormations extends Component {
             dateFin : this.state.dateFinSelected.toString(),
             maxParticipants : this.state.nbrParticipants,
             duree : this.state.duree,
-            idSession : idSession
+            idSession : idSession,
+            quarter : this.state.quarterSelected
         }
         axios.post("http://localhost:8585/formations/",
         querystring.stringify(obj), {
