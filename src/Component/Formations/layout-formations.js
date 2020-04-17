@@ -58,14 +58,23 @@ class LayoutFormations extends Component {
             return null
         })
 
-        axios.get("http://localhost:8585/sessions/byQuarter").then(res => {
-        
-            if(res.data.Sessions){
-                this.setState({
-                    sessions : res.data.Sessions
-                })
-            }
+        const obj = {
+            quarter : besoin.quarter
+        }
+        axios.post("http://localhost:8585/sessions/byQuarter",
+        querystring.stringify(obj), {
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        }).then(res => {
+    
+           if(res.data.Sessions){
+            this.setState({
+                sessions : res.data.Sessions
+            })
+           }
         })
+    
     }
 
     besoinUnselected(besoin) {

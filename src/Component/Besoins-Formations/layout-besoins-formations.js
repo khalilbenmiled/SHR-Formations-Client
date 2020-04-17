@@ -288,6 +288,7 @@ class Besoins extends Component{
                 idUser : JSON.parse(localStorage.user).id,
                 validerTL : false,
                 validerMG : false ,
+                listParticipants : null,
                 theme : {
                     id : this.state.themeSelected.id,
                     nom : this.state.themeSelected.nom,

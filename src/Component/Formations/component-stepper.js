@@ -89,14 +89,15 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 
   const steps = getSteps();
 
-  const [selectedDateDebut, setSelectedDateDebut] = React.useState(new Date());
-  const [selectedDateFin, setSelectedDateFin] = React.useState(new Date());
+  const [selectedDateDebut, setSelectedDateDebut] = React.useState(null);
+  const [selectedDateFin, setSelectedDateFin] = React.useState(null);
   const [formateur, setFormateur] = React.useState(true);
   const [cabinet, setCabinet] = React.useState(true);
   const [buttonStep1, setButtonStep1] = React.useState(0);
+  const [sessionS, setSessionS] = React.useState("");
+  const [dureeS, setDureeS] = React.useState("");
 
   const handleDateDebutChange = (date) => {
-    
     Moment.locale("fr");
     setSelectedDateDebut(date);
     props.dateDebutSelected(Moment(date).format("DD/MM/YYYY HH:mm"))
@@ -109,6 +110,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
   };
 
   const handleNext = () => {
+
     if(activeStep === 2) {
       props.ajouterSessionFormation()
       window.location.reload(true)
@@ -150,11 +152,20 @@ export default function HorizontalLabelPositionBelowStepper(props) {
   }
 
   const sessionSelected = (e,value) => {
+    setSessionS(value)
     props.sessionSelected(value)
   }
 
   const onChangeDuree = (e) => {
+    setDureeS(e.target.value)
     props.onChangeDuree(e.target.value)
+  }
+
+  function verifierSaisie  ()  {
+    if(sessionS === "" || sessionS === null || selectedDateDebut === null || selectedDateFin === null ||dureeS === ""){
+      return 1
+    }
+    return 0
   }
 
   return (
@@ -225,6 +236,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                                                 style={{width : 200 , backgroundColor : "white"}}
                                                 label="Date debut"
                                                 value={selectedDateDebut}
+                                             
                                                 onChange={handleDateDebutChange}
                                                 KeyboardButtonProps={{
                                                     'aria-label': 'change date',
@@ -339,13 +351,17 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                 onClick={handleBack}
                 className={classes.buttonBack}
               >
-                Back
+                Retour
               </Button>
               <Button 
-                disabled={activeStep===0 && buttonStep1 === 0 ? true : false}
+                disabled=
+                        {
+                          (activeStep===0 && buttonStep1 === 0 ? true : false )||
+                          (activeStep===1 && verifierSaisie() === 1 ? true : false)
+                        }
                 variant="contained" color="primary" onClick={handleNext} className={classes.button} 
               > 
-                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                {activeStep === steps.length - 1 ? 'Terminer' : 'Suivant'}
               </Button>
             </div>
           </div>

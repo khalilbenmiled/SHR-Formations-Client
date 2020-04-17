@@ -36,6 +36,11 @@
     margin-bottom: 10%;
     color: #fff;
 }
+.titreInfos2{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: #3D707E;
+}
 
 .modalHeader {
     background-color: #3D707E;
@@ -43,6 +48,13 @@
     margin-bottom: 80px;
     border-top-right-radius: 15px;
     border-top-left-radius: 15px;
+}
+.modalFooter {
+    height: 30px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    padding-top: 5px;
+    color: #fff;
 }
 .annulerBtn:focus{
     outline : none
@@ -54,3 +66,4 @@
     color : #027796;
     background-color: #D2D2D2 ;
 }
+

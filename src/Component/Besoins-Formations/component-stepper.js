@@ -71,6 +71,9 @@ export default function VerticalLinearStepper(props) {
   const [activeStep, setActiveStep] = React.useState(0);
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
+  const [trimestre, setTrimestre] = React.useState("");
+  const [collaborateurs, setCollaborateurs] = React.useState("");
+  const [projet, setProjet] = React.useState("");
 
   const submitBesoins = () => {
     setActiveStep(prevActiveStep => prevActiveStep + 1);
@@ -88,6 +91,31 @@ export default function VerticalLinearStepper(props) {
   const handleReset = () => {
     setActiveStep(0);
   };
+
+  const onChangeTrimeter = (e) => {
+    setTrimestre(e.target.value)
+    props.onChangeTrimeter(e)
+  }
+
+  const getCollaborateurs = (e,values) => {
+    setCollaborateurs(values)
+    props.getCollaborateurs(e,values)
+  }
+
+  const getProjet = (e) => {
+    setProjet(e.target.value)
+    props.getProjet(e)
+  }
+
+  const disableButton = () => {
+    if(JSON.parse(localStorage.user).role === "TEAMLEAD"){
+      if(trimestre === "" || collaborateurs === "" || collaborateurs.length === 0 || projet === ""){
+        return 1 
+      }else {
+        return 0
+      }
+    }
+  }
 
 
   return (
@@ -129,7 +157,7 @@ export default function VerticalLinearStepper(props) {
                         onClick={handleBack}
                         className={classes.buttonBack}
                     >
-                        Back
+                        Retour
                     </Button>
                     <Button
                         size = "small"
@@ -139,7 +167,7 @@ export default function VerticalLinearStepper(props) {
                         className={classes.button}
                         disabled = {!props.radioSelected}
                     >
-                        {activeStep === 3 - 1 ? 'Finish' : 'Next'}
+                        {activeStep === 3 - 1 ? 'Finish' : 'Suivant'}
                     </Button>
                     </div>
                 </div>
@@ -192,7 +220,7 @@ export default function VerticalLinearStepper(props) {
                     onClick={handleBack}
                     className={classes.buttonBack}
                   >
-                    Back
+                    Retour
                   </Button>
                   <Button
                     size = "small"
@@ -202,7 +230,7 @@ export default function VerticalLinearStepper(props) {
                     className={classes.button}
                     disabled = {!props.moduleSelected}
                   >
-                    {activeStep === 3 - 1 ? 'Finish' : 'Next'}
+                    {activeStep === 3 - 1 ? 'Finish' : 'Suivant'}
                   </Button>
                 </div>
               </div>
@@ -219,7 +247,7 @@ export default function VerticalLinearStepper(props) {
                         <div style = {{height : 40 }} className="input-group-prepend" >
                             <label   style={{width : 150}} className="input-group-text" >Trimestre</label>
                         </div>
-                        <select className="custom-select" id="inputGroupSelect01" onChange={props.onChangeTrimeter}>
+                        <select className="custom-select" id="inputGroupSelect01" onChange={onChangeTrimeter}>
                             <option style={{outline : "none"}} defaultValue value="NONE">Choisir...</option>
                             <option value="1">Trimestre 1</option>
                             <option value="2">Trimestre 2</option>
@@ -230,16 +258,15 @@ export default function VerticalLinearStepper(props) {
 
               <div hidden = {JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false} style={{width : 420 }} className="input-group mb-3">
                         <div style = {{height : 40 }} className="input-group-prepend" >
-                            <label   style={{width : 150}} className="input-group-text" >Nombre Prévus</label>
+                            <label   style={{width : 150}} className="input-group-text" >Collaborateurs</label>
                         </div>
-                        {/* <TextField defaultValue="0" type ="number" style={{width : 270}} size="small" id="outlined-basic" label="Nombre prévus" variant="outlined" onChange={props.getNbrPrevus} />                                */}
                         <Autocomplete
             
                           size="small"
                           multiple
                           id="checkboxes-tags-demo"
                           options={props.mesCollaborateurs}
-                          onChange={props.getCollaborateurs}
+                          onChange={getCollaborateurs}
                           disableCloseOnSelect
                           getOptionLabel={option => option.User.Informations.nom}
                           renderOption={(option, { selected }) => (
@@ -270,7 +297,7 @@ export default function VerticalLinearStepper(props) {
                         <div className="input-group-prepend">
                             <label style={{width : 150}} className="input-group-text" >Projet</label>
                         </div>
-                        <select className="custom-select" id="inputGroupSelect01" onChange={props.getProjet}>
+                        <select className="custom-select" id="inputGroupSelect01" onChange={getProjet}>
                             <option defaultValue value="-1">Choisir...</option>
                         
                             {props.projets.map(projet => {
@@ -289,10 +316,10 @@ export default function VerticalLinearStepper(props) {
                     onClick={handleBack}
                     className={classes.buttonBack}
                   >
-                    Back
+                    Retour
                   </Button>
                   <Button
-                  
+                    disabled = {disableButton() === 1 ?true : false}
                     size = "small"
                     variant="contained"
                     color="primary"

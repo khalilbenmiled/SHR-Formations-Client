@@ -125,7 +125,10 @@ export default function CustomPaginationActionsTable(props) {
           nom : res.data.User.nom,
           prenom : res.data.User.prenom,
           email : res.data.User.email,
-          projet : besoin.projet === null ? "" : besoin.projet.nom
+          role : res.data.User.role,
+          projet : besoin.projet === null ? "" : besoin.projet.nom,
+          validerTL : besoin.validerTL,
+          validerMG : besoin.validerMG
         }
         setbesoinToModal(obj)
       

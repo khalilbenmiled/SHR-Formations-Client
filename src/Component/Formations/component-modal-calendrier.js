@@ -3,13 +3,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
-import { Button } from '@material-ui/core';
 import Moment from 'moment';
 import 'moment/locale/fr'
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import axios from "axios"
 import querystring from 'querystring'
 import ComponentListParticipants from "./component-list-participants"
+import CancelIcon from '@material-ui/icons/Cancel';
+
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -68,6 +69,13 @@ const useStyles = makeStyles(theme => ({
     cursor : "pointer",
     marginLeft : "45px"
   },
+  cancelcon : {
+    width : "30px",
+    height : "30px",
+    color : "#fff",
+    cursor : "pointer",
+    marginTop : "13px"
+}
 }));
 
 export default function TransitionsModal(props) {
@@ -112,7 +120,7 @@ export default function TransitionsModal(props) {
         aria-describedby="transition-modal-description"
         className={classes.modal}
         open={props.open}
-        onClose={props.handleClose}
+        onClose={handleClose}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
@@ -126,8 +134,11 @@ export default function TransitionsModal(props) {
           <div className="col-lg-12 col-md-12 " >
                      
                                 <div className="row headerModal">
-                                    <div className="col-lg-12 col-md-12">
+                                    <div className="col-lg-11 col-md-11">
                                         <h4 className="titreAction">Formation {props.formation.theme.nom} </h4>
+                                    </div>
+                                    <div className="col-lg-1 col-md-1" align="center">
+                                        <CancelIcon onClick={handleClose} className={classes.cancelcon}/>
                                     </div>
                                 </div>
 
@@ -194,11 +205,6 @@ export default function TransitionsModal(props) {
                                 </div>
                                 <div hidden = {openListParticipants ? false : true}>
                                   <ComponentListParticipants listParticipants={listParticipants}/>
-                                </div>
-                                
-
-                                <div style={{marginLeft: 330,display : "flex" , flexDirection : "row" , justifyContent : "space-between" , width : 170}}>
-                                  <Button  size="small" variant="contained" className = {classes.buttonAnnuler} onClick={handleClose}> Fermer</Button>
                                 </div>
                             </div>
                         </div>

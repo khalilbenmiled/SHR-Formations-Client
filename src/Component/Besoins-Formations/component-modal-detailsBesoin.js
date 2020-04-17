@@ -26,7 +26,6 @@ const useStyles = makeStyles(theme => ({
     minHeight : '50vh',
     maxHeight : "96vh",
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
   },
   titre : {
       color : "#3D707E",
@@ -83,9 +82,15 @@ export default function TransitionsModal(props) {
           <div className={classes.paper}>
                        
             <div className="col-lg-12 col-md-12 " >
-            <h4 className={classes.titre}>Détails besoins</h4>
+            
                    
-                        <div className="row">
+                        <div className="row modalHeader" style={{marginBottom : "50px"}}>
+                            <div className="col-lg-12 col-md-12">
+                                <h4 className="titreInfos">Détails besoins</h4>
+                            </div>
+                        </div>
+
+                        <div className="row" style={{marginBottom : "5px"}}>
                             <div className="col-lg-6 col-md-6">
                                 <ComponentListBesoinsPublier listBesoins = {props.besoinPublier.listBesoins} infosBesoinPublier={infosBesoinPublier}/>
                             </div>
@@ -116,8 +121,12 @@ export default function TransitionsModal(props) {
                                 </div>
                             </div>
                         </div>
-                        <h4  hidden = {modulesHidden} style={{color : "#3D707E" , marginTop :"15px" }}>Listes Modules</h4>
-                        <div hidden = {modulesHidden} className="row" style={{marginTop : "15px"}}>
+                        <div className="row ">
+                            <div className="col-lg-12 col-md-12">
+                                <h4  hidden = {modulesHidden} className="titreInfos2">Listes Modules</h4>
+                            </div>
+                        </div>
+                        <div hidden = {modulesHidden} className="row" >
                             <div className="col-lg-6 col-md-6">
                                 <ComponentListModules modules={modules} />
                             </div>
@@ -160,7 +169,7 @@ export default function TransitionsModal(props) {
          
                         <div className="row">
                             <div className="col-lg-12 col-md-12">
-                                <Button style={{marginLeft : 460 , marginTop : 20 , marginBottom : 10 , backgroundColor : "#B51B10" , color : "white" , "&:focus" : {outline : "none"}}} size="small" variant="contained"  onClick={handleClose}> Fermer</Button>
+                                <Button style={{marginLeft : 460 , marginTop : 10 , marginBottom : 10 , backgroundColor : "#B51B10" , color : "white" , "&:focus" : {outline : "none"}}} size="small" variant="contained"  onClick={handleClose}> Fermer</Button>
                             </div>
                             
                         </div>

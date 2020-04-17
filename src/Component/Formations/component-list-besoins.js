@@ -17,8 +17,8 @@ import PersonIcon from '@material-ui/icons/Person';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import axios from "axios"
 import querystring from 'querystring'
-import ComponentModalInfosUser from "./component-modal-userInfos"
-import ComponentModalInfosUser2 from "./component-modal-userInfos2"
+import ComponentModalUserProcess from "./component-modal-user-process"
+import ComponentModalUserProcess2 from "./component-modal-user-process2"
 const useStyles1 = makeStyles(theme => ({
   root: {
     flexShrink: 0,
@@ -246,9 +246,9 @@ export default function CustomPaginationActionsTable(props) {
         
         </TableContainer>
         {modalToOpen === 1 ? 
-        <ComponentModalInfosUser open={open} handleClose={handleClose} infos={infos} />
+        <ComponentModalUserProcess2 open={open} handleClose={handleClose} infos={infos} />
         : modalToOpen === 2 ?
-        <ComponentModalInfosUser2 open={open} handleClose={handleClose} infos={infos} />
+        <ComponentModalUserProcess open={open} handleClose={handleClose} infos={infos} />
         :
         ""
         }

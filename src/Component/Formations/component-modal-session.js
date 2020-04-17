@@ -20,7 +20,6 @@ const useStyles = makeStyles(theme => ({
     width : 600,
     height : '50vh',
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
   },
   titre : {
       color : "#3D707E"
@@ -61,8 +60,8 @@ const useStyles = makeStyles(theme => ({
 export default function TransitionsModal(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-  const [nom, setNom] = React.useState();
-  const [description, setDescription] = React.useState();
+  const [nom, setNom] = React.useState("");
+  const [description, setDescription] = React.useState("");
 
 
   const handleOpen = () => {
@@ -108,31 +107,34 @@ export default function TransitionsModal(props) {
                        
      
           <div className="col-lg-12 col-md-12 " >
-                        <div className="row ">
-                            <div className="col-lg-12 col-md-12">
-                                <h4 className="titreAction">Ajouter une nouvelle session</h4>
+                        
+                                <div className="row headerModal">
+                                  <div className="col-lg-12 col-md-12">
+                                    <h4 className="titreAction">Ajouter une nouvelle session</h4>
+                                  </div>
+                                </div>
+                                
                               
-                                <div className="input-group mb-3 ">
+                                <div className="input-group mb-3 " style={{marginLeft : 50}}>
                                     <div className="input-group-prepend">
                                         <label style={{width : 173}}  className="input-group-text" >Nom </label>
                                     </div>
                                     <TextField style={{width : 280 }} size="small" id="outlined-basic" label="Nom" variant="outlined" onChange={onChangeNom} />                               
                                 </div>
 
-                                <div className="input-group mb-3 ">
+                                <div className="input-group mb-3 "style={{marginLeft : 50}} >
                                     <div className="input-group-prepend">
                                         <label style={{width : 173}}  className="input-group-text" >Description </label>
                                     </div>
                                     <TextField multiline rows="4" style={{width : 280 }} size="small" id="outlined-basic" label="Description" variant="outlined" onChange={onChangeDescription}/>                               
                                 </div>
 
-                                <div style={{marginLeft: 282,display : "flex" , flexDirection : "row" , justifyContent : "space-between" , width : 170}}>
+                                <div style={{marginLeft: 332,display : "flex" , flexDirection : "row" , justifyContent : "space-between" , width : 170}}>
                                   <Button  size="small" variant="contained" className = {classes.buttonAnnuler} onClick={handleClose}> Annuler</Button>
-                                  <Button  size="small" variant="contained" className = {classes.buttonConfirmer} onClick={ajouterSession}> Ajouter</Button>
+                                  <Button disabled={nom === "" || description === "" ? true : false} size="small" variant="contained" className = {classes.buttonConfirmer} onClick={ajouterSession}> Ajouter</Button>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                
 
           </div>
         </Fade>

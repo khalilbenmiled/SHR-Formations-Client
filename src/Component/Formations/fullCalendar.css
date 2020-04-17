@@ -94,7 +94,6 @@ a:not([href]):not([tabindex]), a:not([href]):not([tabindex]):focus, a:not([href]
     border-top-left-radius: 15px;
 }
 .titreAction{
-    margin-top: 2%;
-    margin-bottom: 10%;
+    margin-top: 15px;
     color: #fff;
 }
