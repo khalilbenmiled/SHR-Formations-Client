@@ -6,7 +6,6 @@ import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import ComponentThemes from "./component-themes"
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
@@ -136,7 +135,7 @@ export default function VerticalLinearStepper(props) {
                         <select className="custom-select" id="inputGroupSelect01" onChange={props.onChangeTheme}>
                             <option  defaultValue value="TOUS">Tous</option>
                             <option value="TECHNIQUE">TECHNIQUE</option>
-                            <option value="SOFTWARE">SOFTWARE</option>
+                            <option value="SOFTWARE">PRODUITS</option>
                             <option value="SOFTSKILLS">SOFTSKILLS</option>
                         </select>
                     </div>
@@ -336,7 +335,7 @@ export default function VerticalLinearStepper(props) {
 
       {activeStep === 3 && (
         <Paper square elevation={0} className={classes.resetContainer}>
-          <Typography>Votre besoin a été saisie avec succès</Typography>
+          
           <Button size = "small" onClick={handleReset} className={classes.button}>
             Reset
           </Button>

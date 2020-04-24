@@ -7,11 +7,11 @@ import querystring from 'querystring'
 import { Snackbar, Dialog, Button } from "@material-ui/core"
 import Alert from "@material-ui/lab/Alert"
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import WarningIcon from '@material-ui/icons/Warning';
 
 class Besoins extends Component{
 
@@ -22,6 +22,7 @@ class Besoins extends Component{
             allThemes: [],
             modules : [],
             projets : [],
+            projetsByMG : [],
             radioSelected : false,
             moduleSelected : false,
             quarter : "",
@@ -31,6 +32,7 @@ class Besoins extends Component{
             themeSelected : {},
             listBesoins : [],
             alertBesoin : false,
+            alertBesoinError : false,
             alertAction : false,
             alertModule : false,
             alertProjet : false,
@@ -79,7 +81,11 @@ class Besoins extends Component{
                 }
             })
         }else {
-            axios.get("http://localhost:8686/projets").then(res => {
+            axios.post("http://localhost:8686/projets/byMG" , querystring.stringify(user) , {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
                 if(res.data.Projets){
                     this.setState({
                         projets : res.data.Projets
@@ -253,7 +259,11 @@ class Besoins extends Component{
         
         const tabs = []
         values.map( val => {
-            tabs.push(val.User.Informations.id)
+            const obj = {
+                idParticipant : val.User.Informations.id,
+                participe : false
+            }
+            tabs.push(obj)
             return null
         })
         this.setState({
@@ -288,7 +298,10 @@ class Besoins extends Component{
                 idUser : JSON.parse(localStorage.user).id,
                 validerTL : false,
                 validerMG : false ,
-                listParticipants : null,
+                listParticipants : [{
+                    idParticipant : JSON.parse(localStorage.user).id,
+                    participe : false
+                }],
                 theme : {
                     id : this.state.themeSelected.id,
                     nom : this.state.themeSelected.nom,
@@ -324,25 +337,30 @@ class Besoins extends Component{
       
         axios.post("http://localhost:8686/besoins",besoin).then(res => {
            
-
-            const listBesoins = this.state.listBesoins
-            const index = listBesoins.findIndex(besoin => besoin.id === res.data.Besoin.id)
-            if(index === -1){
-                const listBesoins = this.state.listBesoins
-                listBesoins.push(res.data.Besoin)
+            if(res.data.Error){
                 this.setState({
-                    listBesoins : listBesoins,
-                    alertBesoin : true
+                    alertBesoinError : true
                 })
             }else {
-                listBesoins.splice(index , 1 , res.data.Besoin)
-                this.setState({
-                    listBesoins : listBesoins,
-                    alertBesoin : true
-                })
+                const listBesoins = this.state.listBesoins
+                const index = listBesoins.findIndex(besoin => besoin.id === res.data.Besoin.id)
+                if(index === -1){
+                    const listBesoins = this.state.listBesoins
+                    listBesoins.push(res.data.Besoin)
+                    this.setState({
+                        listBesoins : listBesoins,
+                        alertBesoin : true
+                    })
+                }else {
+                    listBesoins.splice(index , 1 , res.data.Besoin)
+                    this.setState({
+                        listBesoins : listBesoins,
+                        alertBesoin : true
+                    })
+                }
+    
             }
-        
-            
+
         })
 
     }
@@ -413,7 +431,40 @@ class Besoins extends Component{
                 listBesoins : listBesoins,
                 alertValiderBesoin : true
             })
+
+
+            if(JSON.parse(localStorage.user).role === "MANAGER"){
+                const obj = {
+                  idBesoin : res.data.Besoin.id
+                }
+              axios.post("http://localhost:8686/besoinsPublier/publier",
+              querystring.stringify(obj), {
+              headers: {
+                  "Content-Type": "application/x-www-form-urlencoded"
+              }
+              }).then(res => {
+      
+                  if(res.data.BesoinPublier.listBesoins.length === 1){
+                      const listBesoinsPublier = this.state.listBesoinsPublier
+                      listBesoinsPublier.push(res.data.BesoinPublier)
+                      this.setState({
+                          listBesoinsPublier : listBesoinsPublier
+                      })
+                  }else{
+                      const listBesoinsPublier = this.state.listBesoinsPublier
+                      const index = listBesoinsPublier.findIndex(besoin => besoin.id === res.data.BesoinPublier.id)
+                      listBesoinsPublier.splice(index , 1 , res.data.BesoinPublier)
+                      this.setState({
+                          listBesoinsPublier : listBesoinsPublier
+                      })
+                  }
+               
+              })
+            }
+
       })
+
+
     }
 
     closeAlertBesoin() {
@@ -859,6 +910,19 @@ class Besoins extends Component{
         
     }
 
+    closeAlertBesoinError() {
+        this.setState({
+            alertBesoinError : false
+        })
+    }
+
+    // test () {
+    //     var ee = new EventEmitter()
+    //     ee.on('message', function (text) {
+    //       console.log(text)
+    //     })
+    //     ee.emit('message', 'hello world')
+    // }
     render(){
         return(
             <>
@@ -942,6 +1006,11 @@ class Besoins extends Component{
                             Besoin publier
                     </Alert>
             </Snackbar>
+            <Snackbar open={this.state.alertBesoinError} autoHideDuration={2200} onClose={this.closeAlertBesoinError.bind(this)}>
+                    <Alert onClose={this.closeAlertBesoinError.bind(this)} icon = {<WarningIcon style={{color : "white" }}/>} style={{backgroundColor : "#FF9800" , color : "white"}}>
+                        Vous avez déja demandé ce besoin de formation ! 
+                    </Alert>
+                </Snackbar>
             <Dialog
                 open={this.state.alertRemove}
                 onClose={this.closeAlertRemoveBesoin.bind(this)}

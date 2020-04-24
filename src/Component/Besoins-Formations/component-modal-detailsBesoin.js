@@ -3,12 +3,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
-import { Button } from '@material-ui/core';
 import "./besoins.css"
 import ComponentListBesoinsPublier from "./component-listBesoins-publier"
 import ComponentListModules from "./component-list-modules"
 import axios from "axios"
 import querystring from 'querystring'
+import ComponentListParticipants from "./component-list-participants"
+import CancelIcon from '@material-ui/icons/Cancel';
+
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -22,7 +24,7 @@ const useStyles = makeStyles(theme => ({
         outline : "none"
       },
     borderRadius : "20px",
-    width : "80%",
+    width : "90%",
     minHeight : '50vh',
     maxHeight : "96vh",
     boxShadow: theme.shadows[5],
@@ -30,7 +32,15 @@ const useStyles = makeStyles(theme => ({
   titre : {
       color : "#3D707E",
       marginBottom : "30px"
-  }
+  },
+  cancelcon : {
+    width : "30px",
+    height : "30px",
+    color : "#fff",
+    cursor : "pointer",
+    marginTop : "15px",
+    marginLeft : "16px"
+}
 }));
 
 export default function TransitionsModal(props) {
@@ -38,7 +48,8 @@ export default function TransitionsModal(props) {
   const classes = useStyles();
   const [modules, setModules] = React.useState([]);
   const [modulesHidden, setModulesHidden] = React.useState(true);
-  const [user, setUser] = React.useState({});
+  const [users, setUsers] = React.useState([]);
+  const [besoinSelected, setBesoinSelected ] = React.useState(0);
 
   const handleClose = () => {
     props.handleClose();
@@ -46,20 +57,23 @@ export default function TransitionsModal(props) {
   };
 
   const infosBesoinPublier = (row) => {
-    console.log(row)
+    setBesoinSelected(row.id)
     setModules(row.theme.listModules)
     setModulesHidden(false)
 
-    const user = {
-        id : row.idUser
+    const besoin = {
+        id : row.id
     }
-    axios.post("http://localhost:8181/users/byId",
-    querystring.stringify(user), {
+
+    axios.post("http://localhost:8686/besoins/listParticipantsBesoins",
+    querystring.stringify(besoin), {
     headers: {
         "Content-Type": "application/x-www-form-urlencoded"
     }
     }).then(res => {
-        setUser(res.data.User)
+        if(res.data.Participants){
+            setUsers(res.data.Participants)
+        }
     })
 
   }
@@ -84,94 +98,43 @@ export default function TransitionsModal(props) {
             <div className="col-lg-12 col-md-12 " >
             
                    
-                        <div className="row modalHeader" style={{marginBottom : "50px"}}>
-                            <div className="col-lg-12 col-md-12">
-                                <h4 className="titreInfos">Détails besoins</h4>
+                        <div className="row modalHeader" style={{marginBottom : "40px"}}>
+                            <div className="col-lg-11 col-md-11">
+                                <h4 className="titreInfos"> {props.besoinPublier.theme} - Trimestre {props.besoinPublier.quarter}</h4>
                             </div>
+                            <div className="col-lg-1 col-md-1" align="center">
+                            <CancelIcon onClick={handleClose} className={classes.cancelcon}/>
+                        </div>
                         </div>
 
                         <div className="row" style={{marginBottom : "5px"}}>
-                            <div className="col-lg-6 col-md-6">
-                                <ComponentListBesoinsPublier listBesoins = {props.besoinPublier.listBesoins} infosBesoinPublier={infosBesoinPublier}/>
-                            </div>
-                            <div className="col-lg-6 col-md-6" >
-                                <div  className="input-group mb-3 ">
-                                    <div className="input-group-prepend">
-                                        <label style={{width : 100}}  className="input-group-text" >Action</label>
-                                    </div>
-                                    <div className="input-group-prepend">
-                                        <label style={{fontSize : "14px" , width : 220 , backgroundColor : "transparent"}}  className="input-group-text" > {props.besoinPublier.theme}</label>
-                                    </div>                              
-                                </div>
-                                <div  className="input-group mb-3 ">
-                                    <div className="input-group-prepend">
-                                        <label style={{width : 100}}  className="input-group-text" >Quarter</label>
-                                    </div>
-                                    <div className="input-group-prepend">
-                                        <label style={{fontSize : "14px" , width : 220 , backgroundColor : "transparent"}}  className="input-group-text" >Trimestre {props.besoinPublier.quarter}</label>
-                                    </div>                              
-                                </div>
-                                <div  className="input-group mb-3 ">
-                                    <div className="input-group-prepend">
-                                        <label style={{width : 130}}  className="input-group-text" >Nombre Prévus</label>
-                                    </div>
-                                    <div className="input-group-prepend">
-                                        <label style={{fontSize : "14px" , width : 191 , backgroundColor : "transparent"}}  className="input-group-text" > {props.nbrPrevus} Besoins</label>
-                                    </div>                              
-                                </div>
+                            <div className="col-lg-6 col-md-6 offset-lg-3 offset-md-3 ">
+                                <ComponentListBesoinsPublier besoinSelected={besoinSelected} listBesoins = {props.besoinPublier.listBesoins} infosBesoinPublier={infosBesoinPublier}/>
                             </div>
                         </div>
-                        <div className="row ">
-                            <div className="col-lg-12 col-md-12">
-                                <h4  hidden = {modulesHidden} className="titreInfos2">Listes Modules</h4>
-                            </div>
-                        </div>
+                     
                         <div hidden = {modulesHidden} className="row" >
-                            <div className="col-lg-6 col-md-6">
-                                <ComponentListModules modules={modules} />
-                            </div>
-                            <div className="col-lg-6 col-md-6">
-                                <div  className="input-group mb-3 ">
-                                    <div className="input-group-prepend">
-                                        <label style={{width : 80}}  className="input-group-text" >Nom</label>
-                                    </div>
-                                    <div className="input-group-prepend">
-                                        <label style={{fontSize : "14px" , width : 220 , backgroundColor : "transparent"}}  className="input-group-text" > {user.nom}</label>
-                                    </div>                              
-                                </div>
-                                <div  className="input-group mb-3 ">
-                                    <div className="input-group-prepend">
-                                        <label style={{width : 80}}  className="input-group-text" >Prenom</label>
-                                    </div>
-                                    <div className="input-group-prepend">
-                                        <label style={{fontSize : "14px" , width : 220 , backgroundColor : "transparent"}}  className="input-group-text" > {user.prenom}</label>
-                                    </div>                              
-                                </div>
-                                <div  className="input-group mb-3 ">
-                                    <div className="input-group-prepend">
-                                        <label style={{width : 80}}  className="input-group-text" >BU</label>
-                                    </div>
-                                    <div className="input-group-prepend">
-                                        <label style={{fontSize : "14px" , width : 220 , backgroundColor : "transparent"}}  className="input-group-text" > {user.bu}</label>
-                                    </div>                              
-                                </div>
-                                <div  className="input-group mb-3 ">
-                                    <div className="input-group-prepend">
-                                        <label style={{width : 80}}  className="input-group-text" >Email</label>
-                                    </div>
-                                    <div className="input-group-prepend">
-                                        <label style={{fontSize : "14px" , width : 220 , backgroundColor : "transparent"}}  className="input-group-text" > {user.email}</label>
-                                    </div>                              
-                                </div>
-                            </div>
-                        </div>
-                    
-         
-                        <div className="row">
-                            <div className="col-lg-12 col-md-12">
-                                <Button style={{marginLeft : 460 , marginTop : 10 , marginBottom : 10 , backgroundColor : "#B51B10" , color : "white" , "&:focus" : {outline : "none"}}} size="small" variant="contained"  onClick={handleClose}> Fermer</Button>
-                            </div>
                             
+                            <div className="col-lg-12 col-md-12">
+                                
+                                <div className="row">
+                                    <div className="col-lg-6 col-md-6">
+                                        <h4  className="titreInfos2">Listes Modules</h4>
+                                    </div>
+                                    <div className="col-lg-6 col-md-6">
+                                        <h4  className="titreInfos2">Participants</h4>
+                                    </div>
+                                </div>
+
+                                <div className="row">
+                                    <div className="col-lg-6 col-md-6">
+                                        <ComponentListModules modules={modules} />
+                                    </div>
+                                    <div className="col-lg-6 col-md-6">
+                                        <ComponentListParticipants listParticipants={users}/>
+                                    </div>
+                                </div>
+                            </div> 
                         </div>
                     </div>
 

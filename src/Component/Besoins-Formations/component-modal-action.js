@@ -123,7 +123,7 @@ export default function TransitionsModal(props) {
                                       <select className="custom-select" id="inputGroupSelect01" onChange={actionType}>
                                           <option defaultValue value="NONE">Choisir...</option>
                                           <option value="TECHNIQUE">TECHNIQUE</option>
-                                          <option value="SOFTWARE">SOFTWARE</option>
+                                          <option value="SOFTWARE">PRODUIT</option>
                                           <option value="SOFTSKILLS">SOFTSKILLS</option>
                                       </select>
                                     

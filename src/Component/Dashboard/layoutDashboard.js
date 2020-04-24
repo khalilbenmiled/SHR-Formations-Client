@@ -14,7 +14,7 @@ class LayoutDashboard extends Component{
     render(){
         return(
             <>
-                <LayoutNavbar disconnect={this.disconnect.bind(this)}/>
+                <LayoutNavbar EventEmitter = {null} disconnect={this.disconnect.bind(this)}/>
                 <div className="content">
                     <Dashboard />
                 </div>    

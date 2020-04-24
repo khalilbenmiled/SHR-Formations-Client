@@ -6,8 +6,6 @@ import Fade from '@material-ui/core/Fade';
 import Moment from 'moment';
 import 'moment/locale/fr'
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import axios from "axios"
-import querystring from 'querystring'
 import ComponentListParticipants from "./component-list-participants"
 import CancelIcon from '@material-ui/icons/Cancel';
 
@@ -81,7 +79,7 @@ const useStyles = makeStyles(theme => ({
 export default function TransitionsModal(props) {
   const classes = useStyles();
   const [openListParticipants, setOpenListParticipants] = React.useState(false);
-  const [listParticipants, setListParticipants] = React.useState([]);
+
 
   const getDate = (date) => {
     const myDate = new Date(date)
@@ -92,20 +90,7 @@ export default function TransitionsModal(props) {
 
   const userInfos = () => {
     setOpenListParticipants(true)
-    const input = {
-      theme : props.formation.theme.nom,
-      quarter : props.session.trimestre
-    }
- 
-    axios.post("http://localhost:8686/besoins/listParticipants",
-    querystring.stringify(input), {
-    headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-    }
-    }).then(res => {
-  
-        setListParticipants(res.data.UsersInfos)
-    })
+    props.fetchParticipants()
   }
 
   const handleClose = () => {
@@ -135,7 +120,7 @@ export default function TransitionsModal(props) {
                      
                                 <div className="row headerModal">
                                     <div className="col-lg-11 col-md-11">
-                                        <h4 className="titreAction">Formation {props.formation.theme.nom} </h4>
+                                        <h4 className="titreAction">Formation {props.formation.nomTheme} </h4>
                                     </div>
                                     <div className="col-lg-1 col-md-1" align="center">
                                         <CancelIcon onClick={handleClose} className={classes.cancelcon}/>
@@ -204,7 +189,7 @@ export default function TransitionsModal(props) {
                                     </div>
                                 </div>
                                 <div hidden = {openListParticipants ? false : true}>
-                                  <ComponentListParticipants listParticipants={listParticipants}/>
+                                  <ComponentListParticipants listParticipants={props.listParticipants}/>
                                 </div>
                             </div>
                         </div>

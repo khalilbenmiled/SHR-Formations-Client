@@ -21,7 +21,7 @@ import axios from "axios"
 import querystring from 'querystring'
 import ComponentModalValidate from "./component-modal-validate"
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
-
+import ComponentModalValidateByMG from "./component-modal-validateByManager"
 
 const useStyles1 = makeStyles(theme => ({
   root: {
@@ -96,6 +96,7 @@ export default function CustomPaginationActionsTable(props) {
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
   const [open, setOpen] = React.useState(false);
   const [openValider, setOpenValider] = React.useState(false);
+  const [openValiderMG, setOpenValiderMG] = React.useState(false);
   const [besoinToModal, setbesoinToModal] = React.useState("");
   const [modulesToModal, setModulesToModal] = React.useState("");
   const [projet, setProjet] = React.useState("");
@@ -172,10 +173,35 @@ export default function CustomPaginationActionsTable(props) {
       idBesoin : idBesoin,
       trimestre : trimestre,
       idProjet : projet,
-      idTL : JSON.parse(localStorage.user).id
+      validerMG : false
       }
     props.onValiderBesoin(obj)
     setOpenValider(false)
+  }
+
+  const onValiderBesoinByManager = () => {
+    const obj = {
+      idBesoin : idBesoin,
+      trimestre : trimestre,
+      idProjet : projet,
+      validerMG : true
+      }
+      console.log(obj)
+    props.onValiderBesoin(obj)
+    setOpenValiderMG(false)
+  }
+
+  const validerByManager = (besoin) => {
+    if(besoin.validerTL === true){
+      props.validerByManager(besoin)
+    }else {
+      setIdBesoin(besoin.id)
+      setOpenValiderMG(true)
+    }
+  }
+
+  const closeValiderMG = () => {
+    setOpenValiderMG(false)
   }
 
 
@@ -236,7 +262,7 @@ export default function CustomPaginationActionsTable(props) {
                       : JSON.parse(localStorage.user).role === "MANAGER" ?
                       <TableCell hidden = {JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false}>
                           {row.validerMG === false ? 
-                              <CheckCircleIcon className={classess.iconCheck} onClick={props.validerByManager.bind(this,row)}/> 
+                              <CheckCircleIcon className={classess.iconCheck} onClick={validerByManager.bind(this,row)}/> 
                             :
                               <RemoveCircleIcon onClick={props.annulerByManager.bind(this,row)} className={classess.iconAnnuler} />
                           }
@@ -283,7 +309,8 @@ export default function CustomPaginationActionsTable(props) {
         </TableContainer>
       
         <ComponentModalInfos open={open} handleClose={handleClose} besoinToModal={besoinToModal} modulesToModal={modulesToModal}/>
-        <ComponentModalValidate open ={openValider} handleClose={handleClose} projets={props.projets} onChangeProjet={onChangeProjet} onChangeTrimestre={onChangeTrimestre} onValiderBesoin={onValiderBesoin}/>
+        <ComponentModalValidate addProjet={props.addProjet} open ={openValider} handleClose={handleClose} projets={props.projets} onChangeProjet={onChangeProjet} onChangeTrimestre={onChangeTrimestre} onValiderBesoin={onValiderBesoin}/>
+        <ComponentModalValidateByMG addProjet={props.addProjet} open={openValiderMG} handleClose = {closeValiderMG} projets={props.projets} onChangeProjet={onChangeProjet} onChangeTrimestre={onChangeTrimestre} onValiderBesoinByManager={onValiderBesoinByManager}/>
     </>
   
   );

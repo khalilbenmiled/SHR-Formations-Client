@@ -26,6 +26,10 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { Link } from "react-router-dom";
 import './navbar.css'
 import wallpaper from "../../images/wallpaper.jpg"
+import { IconButton, Menu, MenuItem } from '@material-ui/core';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import Badge from '@material-ui/core/Badge';
+import { withStyles } from '@material-ui/core/styles';
 
 const drawerWidth = 240;
 
@@ -71,17 +75,42 @@ const useStyles = makeStyles(theme => ({
     "&:focus" : {
       outline : "none"
     }
+  },
+  menu : {
+    marginTop : "30px"
   }
 }));
+
+const StyledBadge = withStyles((theme) => ({
+  badge: {
+    right: -3,
+    top: 0,
+    border: `2px solid #FED217`,
+    padding: '0 4px',
+    color : "#B51B10",
+    backgroundColor : "#FED217"
+  },
+}))(Badge);
 
 export default function NavBar(props) {
 
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-
+ 
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const handleClick = () => {
     setOpen(!open);
   };
+
+  const openNotification = (event) => {
+    setAnchorEl(event.currentTarget);
+  }
+  const closeNotification = () => {
+    setAnchorEl(null);
+  }
+
+  const openNotif = Boolean(anchorEl);
+  const id = openNotif ? 'simple-popover' : undefined;
 
   return (
     <div className={classes.root}>
@@ -91,6 +120,30 @@ export default function NavBar(props) {
           <Typography variant="h6" noWrap className={classes.Typography}>
             SHR-Formations
           </Typography>
+
+          <IconButton hidden aria-describedby={id} onClick={openNotification} aria-label="cart">
+            <StyledBadge badgeContent={4}  >
+              <NotificationsIcon style={{color : "#FED217" , width : 25 , height : 25}}/>
+            </StyledBadge>
+          </IconButton>
+
+        
+          
+            <Menu
+              id={id}
+              anchorEl={anchorEl}
+              keepMounted
+              open={openNotif}
+              onClose={closeNotification}
+              className={classes.menu}
+            >
+              <MenuItem onClick={closeNotification}>Profile</MenuItem>
+              <MenuItem onClick={closeNotification}>My account</MenuItem>
+              <MenuItem onClick={closeNotification}>Logout</MenuItem>
+            </Menu>
+         
+          
+
           <Typography variant="h6" noWrap className={classes.userInfos}>
             {props.user.email}
           </Typography>

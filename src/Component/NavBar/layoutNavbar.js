@@ -2,20 +2,23 @@ import React , { Component } from "react"
 import NavBar from "./navBar"
 import axios from "axios"
 import querystring from "query-string"
+
+
 class LayoutNavbar extends Component{
+
 
     constructor(props){
         super(props)
         this.state = {
-            user : ""
-        }
+            user : "",
+        }        
+
     }
 
     componentDidMount(){
         this.setState({
             user : JSON.parse(localStorage.user)
-        })
-    
+        })         
     }
    
     onLogOut(){
@@ -37,7 +40,7 @@ class LayoutNavbar extends Component{
 
     render(){
         return(
-            <NavBar user= {this.state.user} onLogOut={this.onLogOut.bind(this)}/>
+            <NavBar  user= {this.state.user} onLogOut={this.onLogOut.bind(this)}/>
         )
     }
 }

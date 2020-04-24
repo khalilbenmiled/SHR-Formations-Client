@@ -69,6 +69,8 @@ export default function TransitionsModal(props) {
         description : description
       }
       props.addModule(module)
+      setNom("")
+      setDescription("")
     
   }
   const moduleNom = (e) => {
@@ -86,6 +88,14 @@ export default function TransitionsModal(props) {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const verifierSaisie = () => {
+    if(nom === "" || description === ""){
+      return 0
+    }else {
+      return 1
+    }
+  }
 
   return (
     <div>
@@ -142,7 +152,7 @@ export default function TransitionsModal(props) {
                                 </div>
                                 <div style={{marginLeft: 322,display : "flex" , flexDirection : "row" , justifyContent : "space-between" , width : 170}}>
                                     <Button  size="small" variant="contained" className = {classes.buttonAnnuler}  onClick={handleClose}> Annuler</Button>
-                                    <Button disabled={nom === "" || description === "" ? true : false} size="small" variant="contained" className = {classes.buttonConfirmer} onClick={handleSubmit}> Ajouter</Button>
+                                    <Button disabled={verifierSaisie() === 0 ? true : false } size="small" variant="contained" className = {classes.buttonConfirmer} onClick={handleSubmit}> Ajouter</Button>
                                 </div>
                             </div>
                         </div>

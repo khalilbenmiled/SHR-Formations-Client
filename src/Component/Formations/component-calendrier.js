@@ -24,6 +24,7 @@ export default class DemoApp extends React.Component {
     super(props)
     
     this.state = {
+      listParticipants: [],
       date : "",
       calendarWeekends: true,
       calendarEvents: props.events,
@@ -135,6 +136,26 @@ export default class DemoApp extends React.Component {
 
   }
 
+  fetchParticipants () {
+    const input = {
+      id : this.state.formation.id
+    }
+ 
+    axios.post("http://localhost:8585/formations/participants",
+    querystring.stringify(input), {
+    headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+    }).then(res => {
+        if(res.data.Participants){
+          this.setState({
+            listParticipants : res.data.Participants
+          })
+        }
+        
+    })
+  }
+
   render() {
     return (
       <>
@@ -174,6 +195,8 @@ export default class DemoApp extends React.Component {
               handleClose = {this.handleClose.bind(this)} 
               formation = {this.state.formation}
               session = {this.state.session}
+              fetchParticipants = {this.fetchParticipants.bind(this)}
+              listParticipants = {this.state.listParticipants}
             />
       </>
     )

@@ -13,8 +13,6 @@ import IconButton from '@material-ui/core/IconButton';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import { TableHead } from '@material-ui/core';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-
 const useStyles1 = makeStyles(theme => ({
   root: {
     flexShrink: 0,
@@ -26,7 +24,8 @@ const useStyles1 = makeStyles(theme => ({
   },
   iconRemove : {
     color : "#D70220",
-    cursor : "pointer"
+    cursor : "pointer",
+    marginBottom : "7px",
   },
   iconInfo : {
     color : "#ED7E0A",
@@ -34,7 +33,20 @@ const useStyles1 = makeStyles(theme => ({
   },
   iconAnnuler : {
     cursor : "pointer",
-    color : "#B51B10"
+    color : "#B51B10",
+  },
+  checkBox : {
+    cursor : "pointer",
+    width : "17px",
+    height : "17px",
+    
+  },
+  user : {
+      marginBottom : "7px",
+      width : "30px",
+      height :"30px",
+      cursor : "pointer",
+      color : "#ED7E0A"
   }
 }));
 
@@ -81,14 +93,13 @@ TablePaginationActions.propTypes = {
 
 
 export default function CustomPaginationActionsTable(props) {
-  const rows = props.listBesoins.sort((a,b) => (a.id < b.id ) ?1 : -1)
-  console.log(props.besoinSelected)
+  const rows = props.listParticipants
 
   const [page, setPage] = React.useState(0);
- 
-  const classess = useStyles1();
-  const [rowsPerPage, setRowsPerPage] = React.useState(3);
+  const [rowsPerPage, setRowsPerPage] = React.useState(4);
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+
+
   
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -99,23 +110,19 @@ export default function CustomPaginationActionsTable(props) {
     setPage(0);
   };
 
-  const infosBesoinPublier = row => {
-    props.infosBesoinPublier(row)
-  }
-
-
 
   return (
     <>
-
-        <TableContainer component={Paper} style={{ width : "100%" }}>
+       
+        <TableContainer className="tableContainerStyles" component={Paper}>
         <Table size="small" className="tableTheme" aria-label="custom pagination table" >
             <TableHead  className="tableHead" style={{backgroundColor: "#B51B10"}}>
                 <TableRow>
-                    <TableCell style={{fontSize : 16 , color : 'white'}}>Identifiant besoin</TableCell>
-                    <TableCell style={{fontSize : 16 , color : 'white'}}>Action</TableCell>
-                    <TableCell colSpan = {3} style={{fontSize : 16 , color : 'white'}}>Type</TableCell>
-                   
+                    <TableCell style={{fontSize : 16 , color : 'white'}}>BU</TableCell>
+                    <TableCell style={{fontSize : 16 , color : 'white'}}>Nom</TableCell>
+                    <TableCell style={{fontSize : 16 , color : 'white'}}>Prenom</TableCell>
+                    <TableCell style={{fontSize : 16 , color : 'white' }}>Email</TableCell>
+                    <TableCell colSpan={3} style={{fontSize : 16 , color : 'white' }}></TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
@@ -123,14 +130,14 @@ export default function CustomPaginationActionsTable(props) {
                 ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 : rows
             ).map((row , index) => (
-            
-                <TableRow style={{backgroundColor : props.besoinSelected === row.id ? "rgba(42,255,42,0.3)" : ""}} key={index}>
-                    <TableCell>{row.id}</TableCell>
-                    <TableCell>{row.theme.nom}</TableCell>
-                    <TableCell>{row.theme.type}</TableCell>
-                    <TableCell > <VisibilityIcon className={classess.iconInfo} onClick = {infosBesoinPublier.bind(this,row)} /> </TableCell>
+                
+                <TableRow key={index}>
+                    <TableCell> {row.bu} </TableCell>
+                    <TableCell> {row.nom} </TableCell>
+                    <TableCell> {row.prenom} </TableCell>
+                    <TableCell> {row.email} </TableCell>
                 </TableRow>
-              
+            
             ))}
 
             {emptyRows > 0 && (
@@ -159,7 +166,9 @@ export default function CustomPaginationActionsTable(props) {
             </TableFooter>
         </Table>
         
-        </TableContainer>
+        </TableContainer>  
+        
+
     </>
   
   );

@@ -6,6 +6,7 @@ import PrivateRoute from "./privateRoutes"
 import IsConnect from "./isConnected"
 import LayoutBesoinsFormations from "./Besoins-Formations/layout-besoins-formations";
 import LayoutFormations from "./Formations/layout-formations"
+
 class Index extends Component{
 
     render(){
@@ -14,7 +15,7 @@ class Index extends Component{
             <Switch>  
                 <IsConnect path="/" component={LayoutLogIn} exact />  
                 <PrivateRoute  path="/dashboard" component={LayoutDashboard} exact  /> 
-                <PrivateRoute  path="/besoins" component={LayoutBesoinsFormations} /> 
+                <PrivateRoute  path="/besoins" component={LayoutBesoinsFormations}  /> 
                 <PrivateRoute  path="/formations" component={LayoutFormations} />               
             </Switch>
           </BrowserRouter>

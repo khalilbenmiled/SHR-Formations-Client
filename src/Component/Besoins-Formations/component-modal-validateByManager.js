@@ -83,12 +83,14 @@ export default function TransitionsModal(props) {
  }
 
  const submitFormProjet = () => {
-  setOpen(false)
+  
   const projet = {
-    idTeamLead : JSON.parse(localStorage.user).id,
+    idManager : JSON.parse(localStorage.user).id , // id manager
     nom : projetNom
   }
-  props.addProjet(projet)
+props.addProjet(projet)
+
+  setOpen(false)
  }
 
  const onChangeProjetNom = (e) => {
@@ -174,7 +176,7 @@ export default function TransitionsModal(props) {
                                 </div>
                                 <div style={{marginBottom : "20px",marginLeft: 396,display : "flex" , flexDirection : "row" , justifyContent : "space-between" , width : 170}}>
                                   <Button  size="small" variant="contained" className = {classes.buttonAnnuler} onClick={handleClose}> Annuler</Button>
-                                  <Button disabled={projet === "" || trimstre === "" || projet === "0" || trimstre === "NONE" ? true : false} size="small" variant="contained" className = {classes.buttonConfirmer} onClick={props.onValiderBesoin}> Valider</Button>
+                                  <Button disabled={projet === "" || trimstre === "" || projet === "0" || trimstre === "NONE" ? true : false} size="small" variant="contained" className = {classes.buttonConfirmer} onClick={props.onValiderBesoinByManager}> Valider</Button>
                                 </div>
                               
                             </div>

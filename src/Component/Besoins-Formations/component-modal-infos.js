@@ -96,10 +96,10 @@ export default function TransitionsModal(props) {
                                                 <label style={{fontWeight : "bold"}}>Email : </label> <label>{props.besoinToModal.email}</label>  
                                             </div>
                                             <div className="col-lg-5 col-md-5">
-                                                <label style={{fontWeight : "bold"}}>Trimestre : </label> <label>{props.besoinToModal.trimestre}</label> <br/>
                                                 <label style={{fontWeight : "bold"}}>Action : </label> <label>{props.besoinToModal.action}</label> <br/>
                                                 <label style={{fontWeight : "bold"}}>Type : </label> <label>{props.besoinToModal.type}</label> <br/>
-                                                <label style={{fontWeight : "bold"}}>Projet : </label> <label>{props.besoinToModal.projet}</label>  
+                                                <label style={{fontWeight : "bold"}}>Trimestre : </label> <label>{props.besoinToModal.validerTL ? props.besoinToModal.trimestre : "En attente"}</label> <br/>
+                                                <label style={{fontWeight : "bold"}}>Projet : </label> <label>{props.besoinToModal.validerTL ? props.besoinToModal.projet : "En attente"}</label>  
                                             </div>
 
                                         </div>
@@ -117,8 +117,8 @@ export default function TransitionsModal(props) {
                         <div className="row modalFooter" style={{backgroundColor : showMessage() === 1 || showMessage() === 11 ? "#52A32D" : showMessage() === 0 || showMessage() === -1 ? "#E67A0A" : ""}}>
                             <div className="col-lg-12 col-md-12" align="center">
                                 {
-                                    showMessage() === 1 ? "Besoin valider par votre teamlead" :
-                                    showMessage() === 0 ? "Besoin doit etre valider par votre teamlead":
+                                    showMessage() === 1 ? "Besoin valider par votre supérieur" :
+                                    showMessage() === 0 ? "Besoin doit etre valider par votre supérieur":
                                     showMessage() === 11 ? "Besoin valider par votre manager" :
                                     showMessage() === -1 ? "Besoin doit etre valider par votre manager" :
                                     ""

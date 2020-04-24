@@ -228,6 +228,7 @@ export default function FullWidthTabs(props) {
                 openAlertAnnulerBesoin = {props.openAlertAnnulerBesoin}
                 validerByManager = {props.validerByManager}
                 annulerByManager = {props.annulerByManager}
+                addProjet = {props.addProjet}
             />
         </TabPanel>
 

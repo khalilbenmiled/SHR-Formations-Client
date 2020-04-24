@@ -69,7 +69,16 @@ button: {
     boxShadow: "0px 0px 1.5px",
     backgroundColor : "#FAFAFA",
     padding : "10px"
-  }
+  },
+  buttonStyles :{
+    border : "1px solid #B51B10",
+    marginLeft :"780px",
+    marginTop : "5px",
+    color : "#B51B10",
+    "&:focus" : {
+        outline : "none"
+    }
+  },
 }));
 
 function getSteps() {
@@ -77,6 +86,7 @@ function getSteps() {
 }
 
 export default function HorizontalLabelPositionBelowStepper(props) {
+  
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const [activeContent, setActiveContent] = React.useState(0);
@@ -94,9 +104,25 @@ export default function HorizontalLabelPositionBelowStepper(props) {
   const [formateur, setFormateur] = React.useState(true);
   const [cabinet, setCabinet] = React.useState(true);
   const [buttonStep1, setButtonStep1] = React.useState(0);
+  const [buttonStep11, setButtonStep11] = React.useState(0);
+  
   const [sessionS, setSessionS] = React.useState("");
+  const [quarterS, setQuarterS] = React.useState("");
   const [dureeS, setDureeS] = React.useState("");
 
+  const [besoinS, setBesoinSelected] = React.useState({
+    nom : "",
+    quarter : ""
+  });
+  
+
+
+  const quarter = [
+    {title : "Trimestre 1"} , 
+    {title : "Trimestre 2"},
+    {title : "Trimestre 3"},
+    {title : "Trimestre 4"}
+  ]
   const handleDateDebutChange = (date) => {
     Moment.locale("fr");
     setSelectedDateDebut(date);
@@ -110,7 +136,6 @@ export default function HorizontalLabelPositionBelowStepper(props) {
   };
 
   const handleNext = () => {
-
     if(activeStep === 2) {
       props.ajouterSessionFormation()
       window.location.reload(true)
@@ -161,8 +186,34 @@ export default function HorizontalLabelPositionBelowStepper(props) {
     props.onChangeDuree(e.target.value)
   }
 
+  const besoinSelected = (besoin) => {
+    const obj = {
+      nom : besoin.theme.nom,
+      quarter : besoin.quarter
+    }
+    setBesoinSelected(obj)
+    props.besoinSelected(besoin)
+  }
+
+  const quarterSelected = (e,value) => {
+    if(value != null) {
+      setQuarterS(value.title) 
+      props.quarterSelected(value.title === "Trimestre 1" ? "1" : value.title === "Trimestre 2" ? "2" : value.title === "Trimestre 3" ? "3" : value.title === "Trimestre 4" ? "4" : 0)
+    }else {
+      setQuarterS("")
+    }
+  }
+
+  const nbrcheckParticipants = (i) => {
+      if(i === 0 ){
+        setButtonStep11(0)
+      }else {
+        setButtonStep11(1)
+      }
+  }
+
   function verifierSaisie  ()  {
-    if(sessionS === "" || sessionS === null || selectedDateDebut === null || selectedDateFin === null ||dureeS === ""){
+    if(sessionS === "" || sessionS === null || selectedDateDebut === null || selectedDateFin === null ||dureeS === "" || quarterS === "" || quarterS === null){
       return 1
     }
     return 0
@@ -180,22 +231,32 @@ export default function HorizontalLabelPositionBelowStepper(props) {
       </Stepper>
       <div hidden = {activeContent === 0 ? false : true} className="row">
           <div className="col-lg-12 col-md-12">
-              <ComponentBesoins besoinUnselected={props.besoinUnselected} nbrCheck = {nbrCheck} besoinSelected = {props.besoinSelected} listBesoins = {props.listBesoins} />
+              <ComponentBesoins nbrcheckParticipants={nbrcheckParticipants} participantsSelected={props.participantsSelected} besoinUnselected={props.besoinUnselected} nbrCheck = {nbrCheck} besoinSelected = {besoinSelected} listBesoins = {props.listBesoins} />
           </div>
       </div>
 
       <div hidden = {activeContent === 1 ? false : true} className="row">
           <div className="col-lg-12 col-md-12">
                 <div className={classes.rootSession}>
+                    <div className="row">
+                      <div style={{color : "#3D707E" , fontSize :"20px" , fontWeight : "bold"}} className="col-lg-4 col-md-4 offset-lg-4 offset-md-4 ">
+                           {besoinS.nom} - Trimestre {besoinS.quarter} 
+                      </div>
+                    </div>
                     <div className="row" style={{paddingTop : "20px" }}>
                         <div className="col-lg-5 col-md-5 offset-lg-1 offset-md-1">
                             <div style={{width : 420 }} className="input-group mb-3">
                                 <div style = {{height : 40 }} className="input-group-prepend" >
                                     <label   style={{width : 120}} className="input-group-text" >Trimester</label>
                                 </div>
-                                <div className="input-group-prepend">
-                                    <label style={{fontSize : "14px" , minWidth : 200 , backgroundColor : "white"}}  className="input-group-text" >{props.quarterSelected} Trimestre</label>
-                                </div> 
+                                <Autocomplete
+                                    size="small"
+                                    options={quarter}
+                                    onChange={quarterSelected}
+                                    getOptionLabel={option => option.title}
+                                    style={{ width: 200 , backgroundColor : "white" }}
+                                    renderInput={params => <TextField {...params} label="Trimestre" variant="outlined" />}
+                                />
                             </div>
                         </div>
                         <div className="col-lg-5 col-md-5">
@@ -327,10 +388,16 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 
                 <div className="row" style={{paddingTop : "20px" }}>
                     <div hidden = {formateur ? true : false} className="col-lg-12 col-md-12">
-                        <ComponentListFormateurs  />      
+                        <ComponentListFormateurs  />
+                        <Button className={classes.buttonStyles} size="small" variant="outlined" >
+                          Ajouter un formateur
+                        </Button>      
                     </div>
                     <div hidden = {cabinet ? true : false} className="col-lg-12 col-md-12">
-                        <ComponentListCabinets  />      
+                        <ComponentListCabinets  />   
+                        <Button className={classes.buttonStyles} size="small" variant="outlined" >
+                          Ajouter une cabinet
+                        </Button>    
                     </div>
                 </div>  
             </div>
@@ -356,7 +423,8 @@ export default function HorizontalLabelPositionBelowStepper(props) {
               <Button 
                 disabled=
                         {
-                          (activeStep===0 && buttonStep1 === 0 ? true : false )||
+                         ( (activeStep===0 && buttonStep1 === 0 ? true : false ) &&
+                          (activeStep === 0 && buttonStep11 === 0 ? true : false) ) ||
                           (activeStep===1 && verifierSaisie() === 1 ? true : false)
                         }
                 variant="contained" color="primary" onClick={handleNext} className={classes.button} 

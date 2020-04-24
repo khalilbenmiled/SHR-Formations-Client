@@ -6,6 +6,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ComponentListBesoins from "./component-list-besoins"
+import ComponentListParticipantsToSelect from "./component-list-participantsToSelect"
 
 const useStyles = makeStyles({
   root: {
@@ -34,8 +35,11 @@ export default function ActionsInExpansionPanelSummary(props) {
   const besoins = props.listBesoins
   const [expanded, setExpanded] = React.useState();
   const [disableBesoin, setDisableBesoin] = React.useState(0);
+  const [disableParticipant, setDisableParticipant] = React.useState(0);
   const [nbcheck, setnbrCheck] = React.useState(0);
-   
+  const [listParticipants, setListParticipants] = React.useState([]);
+  
+  
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
@@ -46,16 +50,27 @@ export default function ActionsInExpansionPanelSummary(props) {
     props.nbrCheck(nbcheck+i)
   }
 
+  const disableParticipants = (id,i) => {
+    setDisableBesoin(id)
+    setDisableParticipant(i)
+    props.nbrcheckParticipants(i)
+  }
+
+  const afficherListParticipant = (participants) => {
+    setListParticipants(participants)
+  }
+ 
 
 
-  
+
+   
   return (
     <div className={classes.root}>
 
     {besoins.map( (besoin,index) => {
         return (
           <div key={index}>
-            <ExpansionPanel disabled={ disableBesoin !== besoin.id && nbcheck !== 0 ? true : false} key={index} square expanded={expanded === index} onChange={handleChange(index)} className={classes.expansionPanel} size="small">
+            <ExpansionPanel disabled={ (disableBesoin !== besoin.id && nbcheck !== 0 ) || (disableBesoin !== besoin.id && disableParticipant !== 0) ? true : false} key={index} square expanded={expanded === index} onChange={handleChange(index)} className={classes.expansionPanel} size="small">
             <ExpansionPanelSummary
               className={classes.expansionPanelSummary}
               expandIcon={<ExpandMoreIcon />}
@@ -67,8 +82,10 @@ export default function ActionsInExpansionPanelSummary(props) {
                     {besoin.theme + " - Trimester " + besoin.quarter}
               </Typography>
             </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-                <ComponentListBesoins besoinUnselected={props.besoinUnselected} besoinSelected={props.besoinSelected} besoins={besoin.listBesoins} besoinDisabled={besoinDisabled} id={besoin.id} />
+            <ExpansionPanelDetails style={{ width: "100%", display: " flex", flexDirection: "column" ,borderBottom : "10px solid #DCDCDC"}}>
+                <ComponentListBesoins afficherListParticipant={afficherListParticipant} disableParticipants={disableParticipants}  besoinUnselected={props.besoinUnselected} besoinSelected={props.besoinSelected} besoins={besoin.listBesoins} besoinDisabled={besoinDisabled} id={besoin.id} />
+                <h5 style={{marginTop : "10px" , marginLeft : "400px" , marginBottom : "-10px",color : "#3D707E"}}> Participants </h5>
+                <ComponentListParticipantsToSelect participantsSelected={props.participantsSelected} listParticipants={listParticipants} />
             </ExpansionPanelDetails>
           </ExpansionPanel>
           </div>
