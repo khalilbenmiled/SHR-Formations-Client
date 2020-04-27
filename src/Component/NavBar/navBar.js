@@ -208,7 +208,7 @@ export default function NavBar(props) {
                   <ListItemText primary="Formations" />
               </ListItem>
              </Link>
-             <Link to="/cabinets" className="navlink">
+             <Link to="/cabinetsFormateurs" className="navlink">
               <ListItem button>
                   <ListItemIcon>
                     < AccountBalanceIcon style={{color: "#B51B10"}} />

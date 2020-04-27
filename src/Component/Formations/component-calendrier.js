@@ -22,39 +22,39 @@ export default class DemoApp extends React.Component {
 
   constructor(props) {
     super(props)
-    
+
     this.state = {
       listParticipants: [],
-      date : "",
+      date: "",
       calendarWeekends: true,
       calendarEvents: props.events,
-      openModal : false,
-      session :"",
-      formation : {
-        dateDebut : "",
-        dateFin : "",
-        theme : {
-          nom : "",
-          type : "",
-          listModules : [{
-            nom : "",
-            description : ""
+      openModal: false,
+      session: "",
+      formation: {
+        dateDebut: "",
+        dateFin: "",
+        theme: {
+          nom: "",
+          type: "",
+          listModules: [{
+            nom: "",
+            description: ""
           }]
         },
-        duree : "",
-        maxParticipants : ""
+        duree: "",
+        maxParticipants: ""
       }
     }
   }
 
   calendarComponentRef = React.createRef()
- 
+
   componentDidMount() {
     Moment.locale("fr");
     const date = this.calendarComponentRef.current.getApi().getDate()
     const dateFormat = Moment(date).format("MMMM YYYY")
     this.setState({
-      date : dateFormat.toString()
+      date: dateFormat.toString()
     })
   }
 
@@ -64,7 +64,7 @@ export default class DemoApp extends React.Component {
     const date = this.calendarComponentRef.current.getApi().getDate()
     const dateFormat = Moment(date).format("MMMM YYYY")
     this.setState({
-      date : dateFormat.toString()
+      date: dateFormat.toString()
     })
   }
 
@@ -74,7 +74,7 @@ export default class DemoApp extends React.Component {
     const date = this.calendarComponentRef.current.getApi().getDate()
     const dateFormat = Moment(date).format("MMMM YYYY")
     this.setState({
-      date : dateFormat.toString()
+      date: dateFormat.toString()
     })
   }
 
@@ -84,125 +84,125 @@ export default class DemoApp extends React.Component {
     const date = this.calendarComponentRef.current.getApi().getDate()
     const dateFormat = Moment(date).format("MMMM YYYY")
     this.setState({
-      date : dateFormat.toString()
-    })
-  }
- 
- 
-  handleClose() {
-    this.setState({
-      openModal : false
+      date: dateFormat.toString()
     })
   }
 
-  handleEventClick = (event,el) => {
+
+  handleClose() {
+    this.setState({
+      openModal: false
+    })
+  }
+
+  handleEventClick = (event, el) => {
     const input = {
-      id : event.event.id
+      id: event.event.id
     }
     axios.post("http://localhost:8585/formations/byId",
-    querystring.stringify(input), {
-    headers: {
+      querystring.stringify(input), {
+      headers: {
         "Content-Type": "application/x-www-form-urlencoded"
-    }
+      }
     }).then(res => {
-        if(res.data.Formation){
-          this.setState({
-            openModal : true,
-            formation : res.data.Formation
-          })
-                  
-        }else {
-          this.setState({
-            openModal : false,
-          })
-        }
+      if (res.data.Formation) {
+        this.setState({
+          openModal: true,
+          formation: res.data.Formation
+        })
+
+      } else {
+        this.setState({
+          openModal: false,
+        })
+      }
     })
-    
+
     const obj = {
-      idFormation : event.event.id
+      idFormation: event.event.id
     }
     axios.post("http://localhost:8585/sessions/byFormation",
-    querystring.stringify(obj), {
-    headers: {
+      querystring.stringify(obj), {
+      headers: {
         "Content-Type": "application/x-www-form-urlencoded"
-    }
+      }
     }).then(res => {
-      if(res.data.Session){
+      if (res.data.Session) {
         this.setState({
-          session : res.data.Session
+          session: res.data.Session
         })
       }
     })
 
   }
 
-  fetchParticipants () {
+  fetchParticipants() {
     const input = {
-      id : this.state.formation.id
+      id: this.state.formation.id
     }
- 
+
     axios.post("http://localhost:8585/formations/participants",
-    querystring.stringify(input), {
-    headers: {
+      querystring.stringify(input), {
+      headers: {
         "Content-Type": "application/x-www-form-urlencoded"
-    }
+      }
     }).then(res => {
-        if(res.data.Participants){
-          this.setState({
-            listParticipants : res.data.Participants
-          })
-        }
-        
+      if (res.data.Participants) {
+        this.setState({
+          listParticipants: res.data.Participants
+        })
+      }
+
     })
   }
 
   render() {
     return (
       <>
-      <div className='demo-app'>
-        <div className='demo-app-calendar'>
-         <div className="row">
-           <div className="col-lg-4 col-md-4" style={{paddingTop : "10px"}}>
-              <ArrowBackIosIcon style={{color :"#B51B10" , cursor : "pointer"}} onClick={this.prevMonth.bind(this)} />
-              <ArrowForwardIosIcon style={{color :"#B51B10" , cursor : "pointer"}} onClick={this.nextMonth.bind(this)}/>
-           </div>
-           <div className="col-lg-4 col-md-4">
-              <h3 style={{textAlign : "center" , color : "#B51B10" }} >{this.state.date}</h3>
-           </div>
-           <div className="col-lg-4 col-md-4" >
-             <Button style = {{backgroundColor : "#E67A0A" , color : "#fff"}}className="buttonAjourdhui" variant="contained" size="small" onClick={this.today.bind(this)}>Aujourd'hui</Button>
-           </div>
-         </div>
-          <FullCalendar
-            locale = {frLocale}
-            defaultView="dayGridMonth"
-            header={{
-              left: '',
-              center: '',
-              right: ''
-            }}
-            plugins={[ dayGridPlugin, timeGridPlugin, interactionPlugin , bootstrap , listPlugin ]}
-            ref={ this.calendarComponentRef }
-            weekends={ this.state.calendarWeekends }
-            events={ this.state.calendarEvents }
-            
-            eventClick={this.handleEventClick}
+        <div className='demo-app'>
+          <div className='demo-app-calendar'>
+            <div className="row">
+              <div className="col-lg-4 col-md-4" style={{ paddingTop: "10px" }}>
+                <ArrowBackIosIcon style={{ color: "#B51B10", cursor: "pointer" }} onClick={this.prevMonth.bind(this)} />
+                <ArrowForwardIosIcon style={{ color: "#B51B10", cursor: "pointer" }} onClick={this.nextMonth.bind(this)} />
+              </div>
+              <div className="col-lg-4 col-md-4">
+                <h3 style={{ textAlign: "center", color: "#B51B10" }} >{this.state.date}</h3>
+              </div>
+              <div className="col-lg-4 col-md-4" >
+                <Button style={{ backgroundColor: "#E67A0A", color: "#fff" }} className="buttonAjourdhui" variant="contained" size="small" onClick={this.today.bind(this)}>Aujourd'hui</Button>
+              </div>
+            </div>
+            <FullCalendar
+              locale={frLocale}
+              defaultView="dayGridMonth"
+              header={{
+                left: '',
+                center: '',
+                right: ''
+              }}
+              plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, bootstrap, listPlugin]}
+              ref={this.calendarComponentRef}
+              weekends={this.state.calendarWeekends}
+              events={this.state.calendarEvents}
+
+              eventClick={this.handleEventClick}
             />
+          </div>
         </div>
-      </div>
-           <ComponentModalCalendrier
-              open={this.state.openModal} 
-              handleClose = {this.handleClose.bind(this)} 
-              formation = {this.state.formation}
-              session = {this.state.session}
-              fetchParticipants = {this.fetchParticipants.bind(this)}
-              listParticipants = {this.state.listParticipants}
-            />
+        <ComponentModalCalendrier
+          open={this.state.openModal}
+          handleClose={this.handleClose.bind(this)}
+          formation={this.state.formation}
+          session={this.state.session}
+          fetchParticipants={this.fetchParticipants.bind(this)}
+          listParticipants={this.state.listParticipants}
+        />
       </>
     )
   }
 
-  
+
 
 
 }

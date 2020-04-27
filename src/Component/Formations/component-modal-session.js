@@ -13,46 +13,46 @@ const useStyles = makeStyles(theme => ({
   },
   paper: {
     backgroundColor: theme.palette.background.paper,
-    "&:focus" : {
-      outline : "none"
+    "&:focus": {
+      outline: "none"
     },
-    borderRadius : "20px",
-    width : 600,
-    height : '50vh',
+    borderRadius: "20px",
+    width: 600,
+    height: '50vh',
     boxShadow: theme.shadows[5],
   },
-  titre : {
-      color : "#3D707E"
+  titre: {
+    color: "#3D707E"
   },
-  buttonStyles :{
-    border : "1px solid #B51B10",
-    marginLeft :"152px",
-    marginTop : "10px",
-    color : "#B51B10",
-    "&:focus" : {
-        outline : "none"
+  buttonStyles: {
+    border: "1px solid #B51B10",
+    marginLeft: "152px",
+    marginTop: "10px",
+    color: "#B51B10",
+    "&:focus": {
+      outline: "none"
     }
   },
-  buttonAnnuler : {
-    backgroundColor : "#E67A0A",
-    color : "white",
-    "&:focus" : {
-      outline : "none"
+  buttonAnnuler: {
+    backgroundColor: "#E67A0A",
+    color: "white",
+    "&:focus": {
+      outline: "none"
     },
-    "&:hover" : {
-      backgroundColor : "#E67A0A",
-      color : "white"
+    "&:hover": {
+      backgroundColor: "#E67A0A",
+      color: "white"
     }
   },
-  buttonConfirmer : {
-    backgroundColor : "#B51B10",
-    color : "white",
-    "&:focus" : {
-      outline : "none"
+  buttonConfirmer: {
+    backgroundColor: "#B51B10",
+    color: "white",
+    "&:focus": {
+      outline: "none"
     },
-    "&:hover" : {
-      backgroundColor : "#B51B10",
-      color : "white"
+    "&:hover": {
+      backgroundColor: "#B51B10",
+      color: "white"
     }
   }
 }));
@@ -81,13 +81,13 @@ export default function TransitionsModal(props) {
   }
 
   const ajouterSession = () => {
-    props.ajouterSession(nom,description)
+    props.ajouterSession(nom, description)
     setOpen(false);
   }
 
   return (
     <div>
-      <Button className={classes.buttonStyles} size="small" variant="outlined"  onClick={handleOpen}>
+      <Button className={classes.buttonStyles} size="small" variant="outlined" onClick={handleOpen}>
         Ajouter une session
       </Button>
       <Modal
@@ -104,37 +104,37 @@ export default function TransitionsModal(props) {
       >
         <Fade in={open}>
           <div className={classes.paper}>
-                       
-     
-          <div className="col-lg-12 col-md-12 " >
-                        
-                                <div className="row headerModal">
-                                  <div className="col-lg-12 col-md-12">
-                                    <h4 className="titreAction">Ajouter une nouvelle session</h4>
-                                  </div>
-                                </div>
-                                
-                              
-                                <div className="input-group mb-3 " style={{marginLeft : 50}}>
-                                    <div className="input-group-prepend">
-                                        <label style={{width : 173}}  className="input-group-text" >Nom </label>
-                                    </div>
-                                    <TextField style={{width : 280 }} size="small" id="outlined-basic" label="Nom" variant="outlined" onChange={onChangeNom} />                               
-                                </div>
 
-                                <div className="input-group mb-3 "style={{marginLeft : 50}} >
-                                    <div className="input-group-prepend">
-                                        <label style={{width : 173}}  className="input-group-text" >Description </label>
-                                    </div>
-                                    <TextField multiline rows="4" style={{width : 280 }} size="small" id="outlined-basic" label="Description" variant="outlined" onChange={onChangeDescription}/>                               
-                                </div>
 
-                                <div style={{marginLeft: 332,display : "flex" , flexDirection : "row" , justifyContent : "space-between" , width : 170}}>
-                                  <Button  size="small" variant="contained" className = {classes.buttonAnnuler} onClick={handleClose}> Annuler</Button>
-                                  <Button disabled={nom === "" || description === "" ? true : false} size="small" variant="contained" className = {classes.buttonConfirmer} onClick={ajouterSession}> Ajouter</Button>
-                                </div>
-                            </div>
-                
+            <div className="col-lg-12 col-md-12 " >
+
+              <div className="row headerModal">
+                <div className="col-lg-12 col-md-12">
+                  <h4 className="titreAction">Ajouter une nouvelle session</h4>
+                </div>
+              </div>
+
+
+              <div className="input-group mb-3 " style={{ marginLeft: 50 }}>
+                <div className="input-group-prepend">
+                  <label style={{ width: 173 }} className="input-group-text" >Nom </label>
+                </div>
+                <TextField style={{ width: 280 }} size="small" id="outlined-basic" label="Nom" variant="outlined" onChange={onChangeNom} />
+              </div>
+
+              <div className="input-group mb-3 " style={{ marginLeft: 50 }} >
+                <div className="input-group-prepend">
+                  <label style={{ width: 173 }} className="input-group-text" >Description </label>
+                </div>
+                <TextField multiline rows="4" style={{ width: 280 }} size="small" id="outlined-basic" label="Description" variant="outlined" onChange={onChangeDescription} />
+              </div>
+
+              <div style={{ marginLeft: 332, display: "flex", flexDirection: "row", justifyContent: "space-between", width: 170 }}>
+                <Button size="small" variant="contained" className={classes.buttonAnnuler} onClick={handleClose}> Annuler</Button>
+                <Button disabled={nom === "" || description === "" ? true : false} size="small" variant="contained" className={classes.buttonConfirmer} onClick={ajouterSession}> Ajouter</Button>
+              </div>
+            </div>
+
 
           </div>
         </Fade>

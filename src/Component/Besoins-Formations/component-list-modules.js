@@ -38,7 +38,7 @@ function TablePaginationActions(props) {
 
   return (
     <div className={classes.root}>
-    
+
       <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
         {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
       </IconButton>
@@ -49,7 +49,7 @@ function TablePaginationActions(props) {
       >
         {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
       </IconButton>
-  
+
     </div>
   );
 }
@@ -81,55 +81,55 @@ export default function CustomPaginationActionsTable(props) {
   return (
     <>
 
-        <TableContainer className="tableContainerStyles" component={Paper} >
+      <TableContainer className="tableContainerStyles" component={Paper} >
         <Table size="small" className="tableTheme" aria-label="custom pagination table" >
-            <TableHead  className="tableHead" style={{backgroundColor: "#B51B10"}}>
-                <TableRow>
-                    <TableCell style={{fontSize : 16 , color : 'white'}}>Nom</TableCell>
-                    <TableCell style={{fontSize : 16 , color : 'white'}}>Description</TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>
+          <TableHead className="tableHead" style={{ backgroundColor: "#B51B10" }}>
+            <TableRow>
+              <TableCell style={{ fontSize: 16, color: 'white' }}>Nom</TableCell>
+              <TableCell style={{ fontSize: 16, color: 'white' }}>Description</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {(rowsPerPage > 0
-                ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                : rows
-            ).map((row , index) => (
-              
-                <TableRow key={index} >
-                    <TableCell>{row.nom}</TableCell>  
-                    <TableCell>{row.description}</TableCell>         
-                </TableRow>
-        
-                ))}
+              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : rows
+            ).map((row, index) => (
+
+              <TableRow key={index} >
+                <TableCell>{row.nom}</TableCell>
+                <TableCell>{row.description}</TableCell>
+              </TableRow>
+
+            ))}
 
             {emptyRows > 0 && (
-                <TableRow style={{ height: 30 * emptyRows }}>
+              <TableRow style={{ height: 30 * emptyRows }}>
                 <TableCell colSpan={2} ></TableCell>
-                </TableRow>
+              </TableRow>
             )}
-            </TableBody>
-            <TableFooter>
+          </TableBody>
+          <TableFooter>
             <TableRow>
-                    <TablePagination 
-                    rowsPerPageOptions={[]} 
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    SelectProps={{
-                        inputProps: { 'aria-label': 'rows per page' },
-                        native: true,
-                    }}
-                    onChangePage={handleChangePage}
-                    onChangeRowsPerPage={handleChangeRowsPerPage}
-                    ActionsComponent={TablePaginationActions}
-                    />
-                    
+              <TablePagination
+                rowsPerPageOptions={[]}
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                SelectProps={{
+                  inputProps: { 'aria-label': 'rows per page' },
+                  native: true,
+                }}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+              />
+
             </TableRow>
-            </TableFooter>
+          </TableFooter>
         </Table>
-        
-        </TableContainer>
+
+      </TableContainer>
     </>
-  
+
   );
 }

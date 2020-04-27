@@ -20,21 +20,21 @@ const useStyles1 = makeStyles(theme => ({
     flexShrink: 0,
     marginLeft: theme.spacing(2.5),
   },
-  iconCheck : {
-    color : "#027796",
-    cursor : "pointer"
+  iconCheck: {
+    color: "#027796",
+    cursor: "pointer"
   },
-  iconRemove : {
-    color : "#D70220",
-    cursor : "pointer"
+  iconRemove: {
+    color: "#D70220",
+    cursor: "pointer"
   },
-  iconInfo : {
-    color : "#ED7E0A",
-    cursor : "pointer"
+  iconInfo: {
+    color: "#ED7E0A",
+    cursor: "pointer"
   },
-  iconAnnuler : {
-    cursor : "pointer",
-    color : "#B51B10"
+  iconAnnuler: {
+    cursor: "pointer",
+    color: "#B51B10"
   }
 }));
 
@@ -56,7 +56,7 @@ function TablePaginationActions(props) {
 
   return (
     <div className={classes.root}>
-    
+
       <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
         {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
       </IconButton>
@@ -67,7 +67,7 @@ function TablePaginationActions(props) {
       >
         {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
       </IconButton>
-  
+
     </div>
   );
 }
@@ -81,15 +81,15 @@ TablePaginationActions.propTypes = {
 
 
 export default function CustomPaginationActionsTable(props) {
-  const rows = props.listBesoins.sort((a,b) => (a.id < b.id ) ?1 : -1)
+  const rows = props.listBesoins.sort((a, b) => (a.id < b.id) ? 1 : -1)
   console.log(props.besoinSelected)
 
   const [page, setPage] = React.useState(0);
- 
+
   const classess = useStyles1();
   const [rowsPerPage, setRowsPerPage] = React.useState(3);
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-  
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -108,59 +108,59 @@ export default function CustomPaginationActionsTable(props) {
   return (
     <>
 
-        <TableContainer component={Paper} style={{ width : "100%" }}>
+      <TableContainer component={Paper} style={{ width: "100%" }}>
         <Table size="small" className="tableTheme" aria-label="custom pagination table" >
-            <TableHead  className="tableHead" style={{backgroundColor: "#B51B10"}}>
-                <TableRow>
-                    <TableCell style={{fontSize : 16 , color : 'white'}}>Identifiant besoin</TableCell>
-                    <TableCell style={{fontSize : 16 , color : 'white'}}>Action</TableCell>
-                    <TableCell colSpan = {3} style={{fontSize : 16 , color : 'white'}}>Type</TableCell>
-                   
-                </TableRow>
-            </TableHead>
-            <TableBody>
+          <TableHead className="tableHead" style={{ backgroundColor: "#B51B10" }}>
+            <TableRow>
+              <TableCell style={{ fontSize: 16, color: 'white' }}>Identifiant besoin</TableCell>
+              <TableCell style={{ fontSize: 16, color: 'white' }}>Action</TableCell>
+              <TableCell colSpan={3} style={{ fontSize: 16, color: 'white' }}>Type</TableCell>
+
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {(rowsPerPage > 0
-                ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                : rows
-            ).map((row , index) => (
-            
-                <TableRow style={{backgroundColor : props.besoinSelected === row.id ? "rgba(42,255,42,0.3)" : ""}} key={index}>
-                    <TableCell>{row.id}</TableCell>
-                    <TableCell>{row.theme.nom}</TableCell>
-                    <TableCell>{row.theme.type}</TableCell>
-                    <TableCell > <VisibilityIcon className={classess.iconInfo} onClick = {infosBesoinPublier.bind(this,row)} /> </TableCell>
-                </TableRow>
-              
+              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : rows
+            ).map((row, index) => (
+
+              <TableRow style={{ backgroundColor: props.besoinSelected === row.id ? "rgba(42,255,42,0.3)" : "" }} key={index}>
+                <TableCell>{row.id}</TableCell>
+                <TableCell>{row.theme.nom}</TableCell>
+                <TableCell>{row.theme.type}</TableCell>
+                <TableCell > <VisibilityIcon className={classess.iconInfo} onClick={infosBesoinPublier.bind(this, row)} /> </TableCell>
+              </TableRow>
+
             ))}
 
             {emptyRows > 0 && (
-                <TableRow style={{ height: 30 * emptyRows }}>
+              <TableRow style={{ height: 30 * emptyRows }}>
                 <TableCell colSpan={2} ></TableCell>
-                </TableRow>
+              </TableRow>
             )}
-            </TableBody>
-            <TableFooter>
+          </TableBody>
+          <TableFooter>
             <TableRow>
-                    <TablePagination 
-                    rowsPerPageOptions={[]} 
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    SelectProps={{
-                        inputProps: { 'aria-label': 'rows per page' },
-                        native: true,
-                    }}
-                    onChangePage={handleChangePage}
-                    onChangeRowsPerPage={handleChangeRowsPerPage}
-                    ActionsComponent={TablePaginationActions}
-                    />
-                    
+              <TablePagination
+                rowsPerPageOptions={[]}
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                SelectProps={{
+                  inputProps: { 'aria-label': 'rows per page' },
+                  native: true,
+                }}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+              />
+
             </TableRow>
-            </TableFooter>
+          </TableFooter>
         </Table>
-        
-        </TableContainer>
+
+      </TableContainer>
     </>
-  
+
   );
 }

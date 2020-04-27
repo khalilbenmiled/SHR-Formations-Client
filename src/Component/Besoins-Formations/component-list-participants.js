@@ -18,35 +18,35 @@ const useStyles1 = makeStyles(theme => ({
     flexShrink: 0,
     marginLeft: theme.spacing(2.5),
   },
-  iconCheck : {
-    color : "#027796",
-    cursor : "pointer"
+  iconCheck: {
+    color: "#027796",
+    cursor: "pointer"
   },
-  iconRemove : {
-    color : "#D70220",
-    cursor : "pointer",
-    marginBottom : "7px",
+  iconRemove: {
+    color: "#D70220",
+    cursor: "pointer",
+    marginBottom: "7px",
   },
-  iconInfo : {
-    color : "#ED7E0A",
-    cursor : "pointer"
+  iconInfo: {
+    color: "#ED7E0A",
+    cursor: "pointer"
   },
-  iconAnnuler : {
-    cursor : "pointer",
-    color : "#B51B10",
+  iconAnnuler: {
+    cursor: "pointer",
+    color: "#B51B10",
   },
-  checkBox : {
-    cursor : "pointer",
-    width : "17px",
-    height : "17px",
-    
+  checkBox: {
+    cursor: "pointer",
+    width: "17px",
+    height: "17px",
+
   },
-  user : {
-      marginBottom : "7px",
-      width : "30px",
-      height :"30px",
-      cursor : "pointer",
-      color : "#ED7E0A"
+  user: {
+    marginBottom: "7px",
+    width: "30px",
+    height: "30px",
+    cursor: "pointer",
+    color: "#ED7E0A"
   }
 }));
 
@@ -68,7 +68,7 @@ function TablePaginationActions(props) {
 
   return (
     <div className={classes.root}>
-    
+
       <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
         {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
       </IconButton>
@@ -79,7 +79,7 @@ function TablePaginationActions(props) {
       >
         {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
       </IconButton>
-  
+
     </div>
   );
 }
@@ -100,7 +100,7 @@ export default function CustomPaginationActionsTable(props) {
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
 
-  
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -113,63 +113,63 @@ export default function CustomPaginationActionsTable(props) {
 
   return (
     <>
-       
-        <TableContainer className="tableContainerStyles" component={Paper}>
+
+      <TableContainer className="tableContainerStyles" component={Paper}>
         <Table size="small" className="tableTheme" aria-label="custom pagination table" >
-            <TableHead  className="tableHead" style={{backgroundColor: "#B51B10"}}>
-                <TableRow>
-                    <TableCell style={{fontSize : 16 , color : 'white'}}>BU</TableCell>
-                    <TableCell style={{fontSize : 16 , color : 'white'}}>Nom</TableCell>
-                    <TableCell style={{fontSize : 16 , color : 'white'}}>Prenom</TableCell>
-                    <TableCell style={{fontSize : 16 , color : 'white' }}>Email</TableCell>
-                    <TableCell colSpan={3} style={{fontSize : 16 , color : 'white' }}></TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>
+          <TableHead className="tableHead" style={{ backgroundColor: "#B51B10" }}>
+            <TableRow>
+              <TableCell style={{ fontSize: 16, color: 'white' }}>BU</TableCell>
+              <TableCell style={{ fontSize: 16, color: 'white' }}>Nom</TableCell>
+              <TableCell style={{ fontSize: 16, color: 'white' }}>Prenom</TableCell>
+              <TableCell style={{ fontSize: 16, color: 'white' }}>Email</TableCell>
+              <TableCell colSpan={3} style={{ fontSize: 16, color: 'white' }}></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {(rowsPerPage > 0
-                ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                : rows
-            ).map((row , index) => (
-                
-                <TableRow key={index}>
-                    <TableCell> {row.bu} </TableCell>
-                    <TableCell> {row.nom} </TableCell>
-                    <TableCell> {row.prenom} </TableCell>
-                    <TableCell> {row.email} </TableCell>
-                </TableRow>
-            
+              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : rows
+            ).map((row, index) => (
+
+              <TableRow key={index}>
+                <TableCell> {row.bu} </TableCell>
+                <TableCell> {row.nom} </TableCell>
+                <TableCell> {row.prenom} </TableCell>
+                <TableCell> {row.email} </TableCell>
+              </TableRow>
+
             ))}
 
             {emptyRows > 0 && (
-                <TableRow style={{ height: 30 * emptyRows }}>
+              <TableRow style={{ height: 30 * emptyRows }}>
                 <TableCell colSpan={2} ></TableCell>
-                </TableRow>
+              </TableRow>
             )}
-            </TableBody>
-            <TableFooter>
+          </TableBody>
+          <TableFooter>
             <TableRow>
-                    <TablePagination 
-                    rowsPerPageOptions={[]} 
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    SelectProps={{
-                        inputProps: { 'aria-label': 'rows per page' },
-                        native: true,
-                    }}
-                    onChangePage={handleChangePage}
-                    onChangeRowsPerPage={handleChangeRowsPerPage}
-                    ActionsComponent={TablePaginationActions}
-                    />
-                    
+              <TablePagination
+                rowsPerPageOptions={[]}
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                SelectProps={{
+                  inputProps: { 'aria-label': 'rows per page' },
+                  native: true,
+                }}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+              />
+
             </TableRow>
-            </TableFooter>
+          </TableFooter>
         </Table>
-        
-        </TableContainer>  
-        
+
+      </TableContainer>
+
 
     </>
-  
+
   );
 }

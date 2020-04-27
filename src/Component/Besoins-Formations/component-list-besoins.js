@@ -28,21 +28,21 @@ const useStyles1 = makeStyles(theme => ({
     flexShrink: 0,
     marginLeft: theme.spacing(2.5),
   },
-  iconCheck : {
-    color : "#027796",
-    cursor : "pointer"
+  iconCheck: {
+    color: "#027796",
+    cursor: "pointer"
   },
-  iconRemove : {
-    color : "#D70220",
-    cursor : "pointer"
+  iconRemove: {
+    color: "#D70220",
+    cursor: "pointer"
   },
-  iconInfo : {
-    color : "#ED7E0A",
-    cursor : "pointer"
+  iconInfo: {
+    color: "#ED7E0A",
+    cursor: "pointer"
   },
-  iconAnnuler : {
-    cursor : "pointer",
-    color : "#B51B10"
+  iconAnnuler: {
+    cursor: "pointer",
+    color: "#B51B10"
   }
 }));
 
@@ -64,7 +64,7 @@ function TablePaginationActions(props) {
 
   return (
     <div className={classes.root}>
-    
+
       <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
         {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
       </IconButton>
@@ -75,7 +75,7 @@ function TablePaginationActions(props) {
       >
         {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
       </IconButton>
-  
+
     </div>
   );
 }
@@ -89,7 +89,7 @@ TablePaginationActions.propTypes = {
 
 
 export default function CustomPaginationActionsTable(props) {
-  const rows = props.listBesoins.sort((a,b) => (a.id < b.id ) ?1 : -1)
+  const rows = props.listBesoins.sort((a, b) => (a.id < b.id) ? 1 : -1)
   const classess = useStyles1();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(8);
@@ -102,45 +102,45 @@ export default function CustomPaginationActionsTable(props) {
   const [projet, setProjet] = React.useState("");
   const [trimestre, setTrimestre] = React.useState("");
   const [idBesoin, setIdBesoin] = React.useState("");
- 
+
 
 
   const openInfos = (besoin) => {
     setModulesToModal(besoin.theme.listModules)
     const user = {
-      id : besoin.idUser
+      id: besoin.idUser
     }
     axios.post("http://localhost:8181/users/byId",
-    querystring.stringify(user), {
-    headers: {
+      querystring.stringify(user), {
+      headers: {
         "Content-Type": "application/x-www-form-urlencoded"
-    }
+      }
     }).then(res => {
 
-        const obj = {
-          id : besoin.id,
-          bu : besoin.bu,
-          trimestre : besoin.quarter,
-          action : besoin.theme.nom,
-          type : besoin.theme.type,
-          nom : res.data.User.nom,
-          prenom : res.data.User.prenom,
-          email : res.data.User.email,
-          role : res.data.User.role,
-          projet : besoin.projet === null ? "" : besoin.projet.nom,
-          validerTL : besoin.validerTL,
-          validerMG : besoin.validerMG
-        }
-        setbesoinToModal(obj)
-      
+      const obj = {
+        id: besoin.id,
+        bu: besoin.bu,
+        trimestre: besoin.quarter,
+        action: besoin.theme.nom,
+        type: besoin.theme.type,
+        nom: res.data.User.nom,
+        prenom: res.data.User.prenom,
+        email: res.data.User.email,
+        role: res.data.User.role,
+        projet: besoin.projet === null ? "" : besoin.projet.nom,
+        validerTL: besoin.validerTL,
+        validerMG: besoin.validerMG
+      }
+      setbesoinToModal(obj)
+
 
     })
-  
-    
+
+
     setOpen(true)
   }
 
-  const openModalValider = (besoin)=> {
+  const openModalValider = (besoin) => {
     setIdBesoin(besoin.id)
     setOpenValider(true)
   }
@@ -166,35 +166,35 @@ export default function CustomPaginationActionsTable(props) {
   const onChangeTrimestre = (trimestre) => {
     setTrimestre(trimestre)
   }
-  
+
   const onValiderBesoin = () => {
 
-     const obj = {
-      idBesoin : idBesoin,
-      trimestre : trimestre,
-      idProjet : projet,
-      validerMG : false
-      }
+    const obj = {
+      idBesoin: idBesoin,
+      trimestre: trimestre,
+      idProjet: projet,
+      validerMG: false
+    }
     props.onValiderBesoin(obj)
     setOpenValider(false)
   }
 
   const onValiderBesoinByManager = () => {
     const obj = {
-      idBesoin : idBesoin,
-      trimestre : trimestre,
-      idProjet : projet,
-      validerMG : true
-      }
-      console.log(obj)
+      idBesoin: idBesoin,
+      trimestre: trimestre,
+      idProjet: projet,
+      validerMG: true
+    }
+    console.log(obj)
     props.onValiderBesoin(obj)
     setOpenValiderMG(false)
   }
 
   const validerByManager = (besoin) => {
-    if(besoin.validerTL === true){
+    if (besoin.validerTL === true) {
       props.validerByManager(besoin)
-    }else {
+    } else {
       setIdBesoin(besoin.id)
       setOpenValiderMG(true)
     }
@@ -207,111 +207,111 @@ export default function CustomPaginationActionsTable(props) {
 
   return (
     <>
-       
-        <TableContainer className="tableContainerStyles" component={Paper} style={{marginTop : "30px" , width : "100%" }}>
+
+      <TableContainer className="tableContainerStyles" component={Paper} style={{ marginTop: "30px", width: "100%" }}>
         <Table size="small" className="tableTheme" aria-label="custom pagination table" >
-            <TableHead  className="tableHead" style={{backgroundColor: "#B51B10"}}>
-                <TableRow>
-                    <TableCell hidden ={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} style={{fontSize : 16 , color : 'white'}}>BU</TableCell>
-                    <TableCell style={{fontSize : 16 , color : 'white'}}>Action</TableCell>
-                    <TableCell style={{fontSize : 16 , color : 'white'}}>Type</TableCell>
-                    <TableCell style={{fontSize : 16 , color : 'white' }}>Trimestre</TableCell>
-                    
-                    <TableCell style={{fontSize : 16 , color : 'white' }}>Team Leader</TableCell>
-                    {JSON.parse(localStorage.user).role !== "COLLABORATEUR"  ? 
-                      <TableCell colSpan= {4} style={{fontSize : 16 , color : 'white' }}>Manager</TableCell>
-                      :
-                      <TableCell colSpan={4}></TableCell>
-                    } 
-                </TableRow>
-            </TableHead>
-            <TableBody>
+          <TableHead className="tableHead" style={{ backgroundColor: "#B51B10" }}>
+            <TableRow>
+              <TableCell hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} style={{ fontSize: 16, color: 'white' }}>BU</TableCell>
+              <TableCell style={{ fontSize: 16, color: 'white' }}>Action</TableCell>
+              <TableCell style={{ fontSize: 16, color: 'white' }}>Type</TableCell>
+              <TableCell style={{ fontSize: 16, color: 'white' }}>Trimestre</TableCell>
+
+              <TableCell style={{ fontSize: 16, color: 'white' }}>Team Leader</TableCell>
+              {JSON.parse(localStorage.user).role !== "COLLABORATEUR" ?
+                <TableCell colSpan={4} style={{ fontSize: 16, color: 'white' }}>Manager</TableCell>
+                :
+                <TableCell colSpan={4}></TableCell>
+              }
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {(rowsPerPage > 0
-                ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                : rows
-            ).map((row , index) => (
-              
-                <TableRow key={index}  style={{backgroundColor: row.idUser === JSON.parse(localStorage.user).id && JSON.parse(localStorage.user).role === "TEAMLEAD" ? "rgba(42,255,42,0.3)" : ""}}>  
-                    <TableCell hidden = {JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false}>{row.bu}</TableCell>
-                    <TableCell >{row.theme.nom}</TableCell>
-                    <TableCell > {row.theme.type}</TableCell>
-                    <TableCell >{row.quarter === 1 ? "1ere trimestre" : row.quarter === 2 ? "2eme trimestre" : row.quarter === 3 ? "3eme trimestre" : row.quarter === 4 ? "4eme trimestre" : ""}</TableCell>
-                    {JSON.parse(localStorage.user).id === row.idUser && JSON.parse(localStorage.user).role === "TEAMLEAD" ?
-                      <TableCell ></TableCell>
+              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : rows
+            ).map((row, index) => (
+
+              <TableRow key={index} style={{ backgroundColor: row.idUser === JSON.parse(localStorage.user).id && JSON.parse(localStorage.user).role === "TEAMLEAD" ? "rgba(42,255,42,0.3)" : "" }}>
+                <TableCell hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false}>{row.bu}</TableCell>
+                <TableCell >{row.theme.nom}</TableCell>
+                <TableCell > {row.theme.type}</TableCell>
+                <TableCell >{row.quarter === 1 ? "1ere trimestre" : row.quarter === 2 ? "2eme trimestre" : row.quarter === 3 ? "3eme trimestre" : row.quarter === 4 ? "4eme trimestre" : ""}</TableCell>
+                {JSON.parse(localStorage.user).id === row.idUser && JSON.parse(localStorage.user).role === "TEAMLEAD" ?
+                  <TableCell ></TableCell>
+                  :
+                  <TableCell >{row.validerTL ? "Valider" : "En attente"}</TableCell>
+                }
+
+                {JSON.parse(localStorage.user).role !== "COLLABORATEUR" ?
+                  <TableCell >{row.validerMG ? "Valider" : "En attente"}</TableCell>
+                  :
+                  <TableCell> </TableCell>
+                }
+
+                <TableCell > <VisibilityIcon className={classess.iconInfo} onClick={openInfos.bind(this, row)} /> </TableCell>
+
+                {JSON.parse(localStorage.user).role === "TEAMLEAD" && JSON.parse(localStorage.user).id !== row.idUser ?
+                  <TableCell hidden={JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false}>
+                    {row.validerTL === false ?
+                      <CheckCircleIcon className={classess.iconCheck} onClick={openModalValider.bind(this, row)} />
                       :
-                      <TableCell >{row.validerTL ? "Valider" : "En attente"}</TableCell>
-                    }
-                    
-                    { JSON.parse(localStorage.user).role !== "COLLABORATEUR"   ?
-                      <TableCell >{row.validerMG ? "Valider" : "En attente"}</TableCell>
-                      :
-                      <TableCell> </TableCell>
+                      <RemoveCircleIcon onClick={props.openAlertAnnulerBesoin.bind(this, row)} className={classess.iconAnnuler} />
                     }
 
-                    <TableCell > <VisibilityIcon className={classess.iconInfo} onClick={openInfos.bind(this,row)} /> </TableCell>
-                    
-                    {JSON.parse(localStorage.user).role === "TEAMLEAD" && JSON.parse(localStorage.user).id !== row.idUser ?
-                      <TableCell hidden = {JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false}>
-                          {row.validerTL === false ? 
-                              <CheckCircleIcon className={classess.iconCheck} onClick={openModalValider.bind(this,row)}/> 
-                            :
-                              <RemoveCircleIcon  onClick={props.openAlertAnnulerBesoin.bind(this,row)} className={classess.iconAnnuler} />
-                          }
-                              
-                      </TableCell>
-                      : JSON.parse(localStorage.user).role === "MANAGER" ?
-                      <TableCell hidden = {JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false}>
-                          {row.validerMG === false ? 
-                              <CheckCircleIcon className={classess.iconCheck} onClick={validerByManager.bind(this,row)}/> 
-                            :
-                              <RemoveCircleIcon onClick={props.annulerByManager.bind(this,row)} className={classess.iconAnnuler} />
-                          }
-                              
-                      </TableCell>
-                      :
-                      <TableCell > </TableCell>
-                    }
-                    <TableCell hidden={JSON.parse(localStorage.user).role === "SERVICEFORMATIONS"} >
-                      <DeleteForeverIcon onClick={props.openAlertRemoveBesoin.bind(this,row)} className={classess.iconRemove}/>
+                  </TableCell>
+                  : JSON.parse(localStorage.user).role === "MANAGER" ?
+                    <TableCell hidden={JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false}>
+                      {row.validerMG === false ?
+                        <CheckCircleIcon className={classess.iconCheck} onClick={validerByManager.bind(this, row)} />
+                        :
+                        <RemoveCircleIcon onClick={props.annulerByManager.bind(this, row)} className={classess.iconAnnuler} />
+                      }
+
                     </TableCell>
-                    
-               
-                </TableRow>
-        
-                ))}
+                    :
+                    <TableCell > </TableCell>
+                }
+                <TableCell hidden={JSON.parse(localStorage.user).role === "SERVICEFORMATIONS"} >
+                  <DeleteForeverIcon onClick={props.openAlertRemoveBesoin.bind(this, row)} className={classess.iconRemove} />
+                </TableCell>
+
+
+              </TableRow>
+
+            ))}
 
             {emptyRows > 0 && (
-                <TableRow style={{ height: 30 * emptyRows }}>
+              <TableRow style={{ height: 30 * emptyRows }}>
                 <TableCell colSpan={2} ></TableCell>
-                </TableRow>
+              </TableRow>
             )}
-            </TableBody>
-            <TableFooter>
+          </TableBody>
+          <TableFooter>
             <TableRow>
-                    <TablePagination 
-                    rowsPerPageOptions={[]} 
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    SelectProps={{
-                        inputProps: { 'aria-label': 'rows per page' },
-                        native: true,
-                    }}
-                    onChangePage={handleChangePage}
-                    onChangeRowsPerPage={handleChangeRowsPerPage}
-                    ActionsComponent={TablePaginationActions}
-                    />
-                    
+              <TablePagination
+                rowsPerPageOptions={[]}
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                SelectProps={{
+                  inputProps: { 'aria-label': 'rows per page' },
+                  native: true,
+                }}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+              />
+
             </TableRow>
-            </TableFooter>
+          </TableFooter>
         </Table>
-        
-        </TableContainer>
-      
-        <ComponentModalInfos open={open} handleClose={handleClose} besoinToModal={besoinToModal} modulesToModal={modulesToModal}/>
-        <ComponentModalValidate addProjet={props.addProjet} open ={openValider} handleClose={handleClose} projets={props.projets} onChangeProjet={onChangeProjet} onChangeTrimestre={onChangeTrimestre} onValiderBesoin={onValiderBesoin}/>
-        <ComponentModalValidateByMG addProjet={props.addProjet} open={openValiderMG} handleClose = {closeValiderMG} projets={props.projets} onChangeProjet={onChangeProjet} onChangeTrimestre={onChangeTrimestre} onValiderBesoinByManager={onValiderBesoinByManager}/>
+
+      </TableContainer>
+
+      <ComponentModalInfos open={open} handleClose={handleClose} besoinToModal={besoinToModal} modulesToModal={modulesToModal} />
+      <ComponentModalValidate addProjet={props.addProjet} open={openValider} handleClose={handleClose} projets={props.projets} onChangeProjet={onChangeProjet} onChangeTrimestre={onChangeTrimestre} onValiderBesoin={onValiderBesoin} />
+      <ComponentModalValidateByMG addProjet={props.addProjet} open={openValiderMG} handleClose={closeValiderMG} projets={props.projets} onChangeProjet={onChangeProjet} onChangeTrimestre={onChangeTrimestre} onValiderBesoinByManager={onValiderBesoinByManager} />
     </>
-  
+
   );
 }

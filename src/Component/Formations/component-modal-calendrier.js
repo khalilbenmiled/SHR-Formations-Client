@@ -17,63 +17,63 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
   },
   paper: {
-    backgroundColor : "white",
-    "&:focus" : {
-      outline : "none"
+    backgroundColor: "white",
+    "&:focus": {
+      outline: "none"
     },
-    borderRadius : "20px",
-    width : 850,
-    minHeight : "50vh",
-    maxHeight : '90vh',
+    borderRadius: "20px",
+    width: 850,
+    minHeight: "50vh",
+    maxHeight: '90vh',
     boxShadow: theme.shadows[5],
 
   },
-  titre : {
-      color : "#3D707E"
+  titre: {
+    color: "#3D707E"
   },
-  buttonStyles :{
-    border : "1px solid #B51B10",
-    marginLeft :"152px",
-    marginTop : "10px",
-    color : "#B51B10",
-    "&:focus" : {
-        outline : "none"
+  buttonStyles: {
+    border: "1px solid #B51B10",
+    marginLeft: "152px",
+    marginTop: "10px",
+    color: "#B51B10",
+    "&:focus": {
+      outline: "none"
     }
   },
-  buttonAnnuler : {
-    backgroundColor : "#E67A0A",
-    color : "white",
-    "&:focus" : {
-      outline : "none"
+  buttonAnnuler: {
+    backgroundColor: "#E67A0A",
+    color: "white",
+    "&:focus": {
+      outline: "none"
     },
-    "&:hover" : {
-      backgroundColor : "#E67A0A",
-      color : "white"
+    "&:hover": {
+      backgroundColor: "#E67A0A",
+      color: "white"
     }
   },
-  buttonConfirmer : {
-    backgroundColor : "#B51B10",
-    color : "white",
-    "&:focus" : {
-      outline : "none"
+  buttonConfirmer: {
+    backgroundColor: "#B51B10",
+    color: "white",
+    "&:focus": {
+      outline: "none"
     },
-    "&:hover" : {
-      backgroundColor : "#B51B10",
-      color : "white"
+    "&:hover": {
+      backgroundColor: "#B51B10",
+      color: "white"
     }
   },
-  iconInfo : {
-    color : "#ED7E0A",
-    cursor : "pointer",
-    marginLeft : "45px"
+  iconInfo: {
+    color: "#ED7E0A",
+    cursor: "pointer",
+    marginLeft: "45px"
   },
-  cancelcon : {
-    width : "30px",
-    height : "30px",
-    color : "#fff",
-    cursor : "pointer",
-    marginTop : "13px"
-}
+  cancelcon: {
+    width: "30px",
+    height: "30px",
+    color: "#fff",
+    cursor: "pointer",
+    marginTop: "13px"
+  }
 }));
 
 export default function TransitionsModal(props) {
@@ -114,86 +114,86 @@ export default function TransitionsModal(props) {
       >
         <Fade in={props.open}>
           <div className={classes.paper}>
-                       
-     
-          <div className="col-lg-12 col-md-12 " >
-                     
-                                <div className="row headerModal">
-                                    <div className="col-lg-11 col-md-11">
-                                        <h4 className="titreAction">Formation {props.formation.nomTheme} </h4>
-                                    </div>
-                                    <div className="col-lg-1 col-md-1" align="center">
-                                        <CancelIcon onClick={handleClose} className={classes.cancelcon}/>
-                                    </div>
-                                </div>
 
-                                <div className="row">
-                                    <div className="col-lg-6">
-                                        <div className="input-group mb-3 ">
-                                            <div className="input-group-prepend">
-                                                <label style={{width : 120}}  className="input-group-text" >Session </label>
-                                            </div>
-                                            <label style={{width : 200, backgroundColor : "white" }}  className="input-group-text"  > {props.session.nom}</label>                               
-                                        </div>
-                                    </div>
 
-                                    <div className="col-lg-6">
-                                        <div className="input-group mb-3 ">
-                                            <div className="input-group-prepend">
-                                                <label style={{width : 120}}  className="input-group-text" >Trimestre </label>
-                                            </div>
-                                            <label style={{width : 200, backgroundColor : "white" }}  className="input-group-text"  >{props.session.trimestre}</label>                               
-                                        </div>
-                                    </div>
-                                </div>
+            <div className="col-lg-12 col-md-12 " >
 
-                                <div className="row">
-                                    <div className="col-lg-6">
-                                        <div className="input-group mb-3 ">
-                                            <div className="input-group-prepend">
-                                                <label style={{width : 120}}  className="input-group-text" >Date Debut </label>
-                                            </div>
-                                            <label style={{width : 200, backgroundColor : "white" }}  className="input-group-text"  > {getDate(props.formation.dateDebut)}</label>                               
-                                        </div>
-                                    </div>
+              <div className="row headerModal">
+                <div className="col-lg-11 col-md-11">
+                  <h4 className="titreAction">Formation {props.formation.nomTheme} </h4>
+                </div>
+                <div className="col-lg-1 col-md-1" align="center">
+                  <CancelIcon onClick={handleClose} className={classes.cancelcon} />
+                </div>
+              </div>
 
-                                    <div className="col-lg-6">
-                                        <div className="input-group mb-3 ">
-                                            <div className="input-group-prepend">
-                                                <label style={{width : 120}}  className="input-group-text" >Date Fin </label>
-                                            </div>
-                                            <label style={{width : 200, backgroundColor : "white" }}  className="input-group-text"  > {getDate(props.formation.dateFin)}</label>                               
-                                        </div>
-                                    </div>
-                                </div>
+              <div className="row">
+                <div className="col-lg-6">
+                  <div className="input-group mb-3 ">
+                    <div className="input-group-prepend">
+                      <label style={{ width: 120 }} className="input-group-text" >Session </label>
+                    </div>
+                    <label style={{ width: 200, backgroundColor: "white" }} className="input-group-text"  > {props.session.nom}</label>
+                  </div>
+                </div>
 
-                                <div className="row">
-                                    <div className="col-lg-6">
-                                        <div className="input-group mb-3 ">
-                                            <div className="input-group-prepend">
-                                                <label style={{width : 120}}  className="input-group-text" >Durée </label>
-                                            </div>
-                                            <label style={{width : 200, backgroundColor : "white" }}  className="input-group-text"  >{props.formation.duree} H</label>                               
-                                        </div>
-                                    </div>
+                <div className="col-lg-6">
+                  <div className="input-group mb-3 ">
+                    <div className="input-group-prepend">
+                      <label style={{ width: 120 }} className="input-group-text" >Trimestre </label>
+                    </div>
+                    <label style={{ width: 200, backgroundColor: "white" }} className="input-group-text"  >{props.session.trimestre}</label>
+                  </div>
+                </div>
+              </div>
 
-                                    <div className="col-lg-6">
-                                        <div className="input-group mb-3 ">
-                                            <div className="input-group-prepend">
-                                                <label style={{width : 120}}  className="input-group-text" >Participants </label>
-                                            </div>
-                                            <label style={{width : 200, backgroundColor : "white" }}  className="input-group-text"  >
-                                              {props.formation.maxParticipants} participants <VisibilityIcon className={classes.iconInfo} onClick={userInfos} /> 
-                                            </label>                               
-                                        </div>
-                                    </div>
-                                </div>
-                                <div hidden = {openListParticipants ? false : true}>
-                                  <ComponentListParticipants listParticipants={props.listParticipants}/>
-                                </div>
-                            </div>
-                        </div>
-       
+              <div className="row">
+                <div className="col-lg-6">
+                  <div className="input-group mb-3 ">
+                    <div className="input-group-prepend">
+                      <label style={{ width: 120 }} className="input-group-text" >Date Debut </label>
+                    </div>
+                    <label style={{ width: 200, backgroundColor: "white" }} className="input-group-text"  > {getDate(props.formation.dateDebut)}</label>
+                  </div>
+                </div>
+
+                <div className="col-lg-6">
+                  <div className="input-group mb-3 ">
+                    <div className="input-group-prepend">
+                      <label style={{ width: 120 }} className="input-group-text" >Date Fin </label>
+                    </div>
+                    <label style={{ width: 200, backgroundColor: "white" }} className="input-group-text"  > {getDate(props.formation.dateFin)}</label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-lg-6">
+                  <div className="input-group mb-3 ">
+                    <div className="input-group-prepend">
+                      <label style={{ width: 120 }} className="input-group-text" >Durée </label>
+                    </div>
+                    <label style={{ width: 200, backgroundColor: "white" }} className="input-group-text"  >{props.formation.duree} H</label>
+                  </div>
+                </div>
+
+                <div className="col-lg-6">
+                  <div className="input-group mb-3 ">
+                    <div className="input-group-prepend">
+                      <label style={{ width: 120 }} className="input-group-text" >Participants </label>
+                    </div>
+                    <label style={{ width: 200, backgroundColor: "white" }} className="input-group-text"  >
+                      {props.formation.maxParticipants} participants <VisibilityIcon className={classes.iconInfo} onClick={userInfos} />
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div hidden={openListParticipants ? false : true}>
+                <ComponentListParticipants listParticipants={props.listParticipants} />
+              </div>
+            </div>
+          </div>
+
         </Fade>
       </Modal>
     </div>

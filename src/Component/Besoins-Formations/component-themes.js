@@ -37,7 +37,7 @@ function TablePaginationActions(props) {
 
   return (
     <div className={classes.root}>
-    
+
       <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
         {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
       </IconButton>
@@ -48,7 +48,7 @@ function TablePaginationActions(props) {
       >
         {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
       </IconButton>
-  
+
     </div>
   );
 }
@@ -62,7 +62,7 @@ TablePaginationActions.propTypes = {
 
 
 export default function CustomPaginationActionsTable(props) {
-  const rows =  props.themes.sort((a, b) => (a.nom < b.nom ? -1 : 1)) ;
+  const rows = props.themes.sort((a, b) => (a.nom < b.nom ? -1 : 1));
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -76,34 +76,34 @@ export default function CustomPaginationActionsTable(props) {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
- 
-  return (
-    <TableContainer className="tableContainerStyles" component={Paper} style={{width : 700 }}>
-      <Table size="small" className="tableTheme" aria-label="custom pagination table" >
-        <TableHead  style={{backgroundColor: "#3D707E"}}>
-            <TableRow>
-                <TableCell style={{fontSize : 18 , color : 'white'}}>Nom</TableCell>
-                <TableCell style={{fontSize : 18 , color : 'white' }}>Type</TableCell>
-                <TableCell align="left" style={{fontSize : 18 , color : 'white' }}>
 
-                </TableCell>
-            </TableRow>
+  return (
+    <TableContainer className="tableContainerStyles" component={Paper} style={{ width: 700 }}>
+      <Table size="small" className="tableTheme" aria-label="custom pagination table" >
+        <TableHead style={{ backgroundColor: "#3D707E" }}>
+          <TableRow>
+            <TableCell style={{ fontSize: 18, color: 'white' }}>Nom</TableCell>
+            <TableCell style={{ fontSize: 18, color: 'white' }}>Type</TableCell>
+            <TableCell align="left" style={{ fontSize: 18, color: 'white' }}>
+
+            </TableCell>
+          </TableRow>
         </TableHead>
         <TableBody>
           {(rowsPerPage > 0
             ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : rows
-          ).map((row , index) => (
+          ).map((row, index) => (
             <TableRow key={row.id}   >
-            
+
               <TableCell id={row.id} > {row.nom}</TableCell>
               <TableCell id={row.id} >{row.type}</TableCell>
               <TableCell id={row.id} >
-                  <input className="checkStyle" type="radio" name="actionRadio" onChange={props.actionSelected} value={JSON.stringify(row)}/>                  
-                </TableCell>
-              </TableRow>
-                  
-                ))}
+                <input className="checkStyle" type="radio" name="actionRadio" onChange={props.actionSelected} value={JSON.stringify(row)} />
+              </TableCell>
+            </TableRow>
+
+          ))}
 
           {emptyRows > 0 && (
             <TableRow style={{ height: 30 * emptyRows }}>
@@ -113,29 +113,29 @@ export default function CustomPaginationActionsTable(props) {
         </TableBody>
         <TableFooter>
           <TableRow>
-                <TableCell> 
-                    <ComponentModalAction addAction={props.addAction} />    </TableCell>
-                    <TablePagination 
-                      rowsPerPageOptions={[]} 
-                      count={rows.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      SelectProps={{
-                          inputProps: { 'aria-label': 'rows per page' },
-                          native: true,
-                      }}
-                      onChangePage={handleChangePage}
-                      onChangeRowsPerPage={handleChangeRowsPerPage}
-                      ActionsComponent={TablePaginationActions}
-                    />
-             
-             
-                
+            <TableCell>
+              <ComponentModalAction addAction={props.addAction} />    </TableCell>
+            <TablePagination
+              rowsPerPageOptions={[]}
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              SelectProps={{
+                inputProps: { 'aria-label': 'rows per page' },
+                native: true,
+              }}
+              onChangePage={handleChangePage}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
+              ActionsComponent={TablePaginationActions}
+            />
+
+
+
           </TableRow>
         </TableFooter>
       </Table>
-      
+
     </TableContainer>
-  
+
   );
 }

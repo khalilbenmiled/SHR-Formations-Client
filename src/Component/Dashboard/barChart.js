@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Bar} from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 
 const data = {
   labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
@@ -15,16 +15,16 @@ const data = {
     }
   ]
 };
- class BarChart extends Component{
+class BarChart extends Component {
 
-render(){
+  render() {
     return (
-        <Bar
-          data={data}
-          width={0}
-          height={250}
-          options={{ maintainAspectRatio: false }}  
-        />
+      <Bar
+        data={data}
+        width={0}
+        height={250}
+        options={{ maintainAspectRatio: false }}
+      />
     );
   }
 }

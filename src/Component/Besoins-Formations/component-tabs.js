@@ -49,12 +49,12 @@ const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     width: '100%',
-    
+
   },
-  rootCard : {
-    backgroundImage : `url(${besoinPublier})`,  
+  rootCard: {
+    backgroundImage: `url(${besoinPublier})`,
     boxShadow: "0px 0px 3px",
-    margin : "8px 0"
+    margin: "8px 0"
   },
   bullet: {
     display: 'inline-block',
@@ -67,27 +67,27 @@ const useStyles = makeStyles(theme => ({
   pos: {
     marginBottom: 12,
   },
-  buttonDetails : {
-    backgroundColor : "#E67A0A",
-    color : "white",
-    "&:focus" : {
-      outline : "none"
+  buttonDetails: {
+    backgroundColor: "#E67A0A",
+    color: "white",
+    "&:focus": {
+      outline: "none"
     },
-    "&:hover" : {
-      backgroundColor : "#E67A0A",
-      color : "white"
+    "&:hover": {
+      backgroundColor: "#E67A0A",
+      color: "white"
     }
   },
-  buttonPublier : {
-    cursor : "pointer",
-    backgroundColor : "#B51B10",
-    color : "white",
-    "&:focus" : {
-      outline : "none"
+  buttonPublier: {
+    cursor: "pointer",
+    backgroundColor: "#B51B10",
+    color: "white",
+    "&:focus": {
+      outline: "none"
     },
-    "&:hover" : {
-      backgroundColor : "#B51B10",
-      color : "white"
+    "&:hover": {
+      backgroundColor: "#B51B10",
+      color: "white"
     }
   },
 
@@ -112,14 +112,14 @@ export default function FullWidthTabs(props) {
   const openModalDetails = besoinPublier => {
     let inc = 0
     besoinPublier.listBesoins.map(b => {
-      if (b.nbrPrevu === 0){
-        inc ++
-      }else {
+      if (b.nbrPrevu === 0) {
+        inc++
+      } else {
         inc = inc + b.nbrPrevu
       }
       return null
     })
-    
+
     setBesoinPublier(besoinPublier)
     setNbrPrevus(inc)
     setOpen(true)
@@ -129,7 +129,7 @@ export default function FullWidthTabs(props) {
     setOpen(false)
   }
 
-  
+
 
   return (
     <div className={classes.root} >
@@ -137,14 +137,14 @@ export default function FullWidthTabs(props) {
         <Tabs
           value={value}
           onChange={handleChange}
-          inkbarstyle={{background: '#B51B10'}}
-          style = {{color : "#B51B10" }}
+          inkbarstyle={{ background: '#B51B10' }}
+          style={{ color: "#B51B10" }}
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab hidden={JSON.parse(localStorage.user).role === "SERVICEFORMATIONS"  ? true : false} style={{outline : "none"}} label={JSON.parse(localStorage.user).role ==="MANAGER"  ? "Publier les besoins" : "Saisis des besoins" } icon = {JSON.parse(localStorage.user).role === "MANAGER" ? <PublishIcon /> : <CreateIcon />}/>
-          <Tab style={{outline : "none"}}  label="Consulter les besoins"  icon = {<ListAltIcon />} />
-          <Tab hidden = {JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false}style={{outline : "none"}}label="Rapports" icon = {<DescriptionIcon />} />
+          <Tab hidden={JSON.parse(localStorage.user).role === "SERVICEFORMATIONS" ? true : false} style={{ outline: "none" }} label={JSON.parse(localStorage.user).role === "MANAGER" ? "Publier les besoins" : "Saisis des besoins"} icon={JSON.parse(localStorage.user).role === "MANAGER" ? <PublishIcon /> : <CreateIcon />} />
+          <Tab style={{ outline: "none" }} label="Consulter les besoins" icon={<ListAltIcon />} />
+          <Tab hidden={JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false} style={{ outline: "none" }} label="Rapports" icon={<DescriptionIcon />} />
         </Tabs>
       </AppBar>
       <SwipeableViews
@@ -154,92 +154,92 @@ export default function FullWidthTabs(props) {
       >
 
         <TabPanel value={value} index={0} dir={theme.direction} >
-            {JSON.parse(localStorage.user).role === "MANAGER" ?
-            
+          {JSON.parse(localStorage.user).role === "MANAGER" ?
+
             <div className="row">
-              {props.listBesoinsPublier.map((besoinPublier,index) => {
-                  return (
-                    <div key = {index} className="col-lg-3" >
-                      
-                    <Card  className={classes.rootCard} >
+              {props.listBesoinsPublier.map((besoinPublier, index) => {
+                return (
+                  <div key={index} className="col-lg-3" >
+
+                    <Card className={classes.rootCard} >
                       <CardContent>
-                        <div style={{display : "flex" , flexDirection : "row" , justifyContent : "space-between"}}>
-                        <Typography className={classes.title} color="textSecondary" gutterBottom>
-                          Action de formation
+                        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                          <Typography className={classes.title} color="textSecondary" gutterBottom>
+                            Action de formation
                         </Typography>
-                        <PublishIcon  onClick={props.openPublierBesoin.bind(this,besoinPublier)} className = {classes.buttonPublier} size="small"/>
+                          <PublishIcon onClick={props.openPublierBesoin.bind(this, besoinPublier)} className={classes.buttonPublier} size="small" />
                         </div>
-                        
-                        <Typography style = {{color : "#B51B10"}} variant="h5" component="h2">
-                          {besoinPublier.theme}  
+
+                        <Typography style={{ color: "#B51B10" }} variant="h5" component="h2">
+                          {besoinPublier.theme}
                         </Typography>
                         <Typography className={classes.pos} color="textSecondary">
                           Quarter {besoinPublier.quarter}
                         </Typography>
                         <Typography variant="body2" component="p">
-                         
-                       
+
+
                         </Typography>
                       </CardContent>
-                      <CardActions style = {{float : "right"}}>
-                        <Button  className = {classes.buttonDetails} onClick={openModalDetails.bind(this,besoinPublier)} size="small">Détails</Button>
+                      <CardActions style={{ float: "right" }}>
+                        <Button className={classes.buttonDetails} onClick={openModalDetails.bind(this, besoinPublier)} size="small">Détails</Button>
                       </CardActions>
                     </Card>
                   </div>
 
-                  )
+                )
               })}
-                   
-            </div>
-         
 
-          :
-                <ComponentStepper 
-                themes={props.themes} 
-                onChangeTheme={props.onChangeTheme}
-                actionSelected={props.actionSelected}
-                modules = {props.modules}
-                projets = {props.projets}
-                radioSelected = {props.radioSelected}
-                stepper = {props.stepper}
-                moduleSelected = {props.moduleSelected}
-                getModules = {props.getModules}
-                getNbrPrevus = {props.getNbrPrevus}
-                getProjet = {props.getProjet}
-                addBesoin = {props.addBesoin}
-                addAction = {props.addAction}
-                addModule = {props.addModule}
-                addProjet = {props.addProjet}
-                onChangeTrimeter = {props.onChangeTrimeter}
-                mesCollaborateurs = {props.mesCollaborateurs}
-                getCollaborateurs = {props.getCollaborateurs}
-            
-              />
+            </div>
+
+
+            :
+            <ComponentStepper
+              themes={props.themes}
+              onChangeTheme={props.onChangeTheme}
+              actionSelected={props.actionSelected}
+              modules={props.modules}
+              projets={props.projets}
+              radioSelected={props.radioSelected}
+              stepper={props.stepper}
+              moduleSelected={props.moduleSelected}
+              getModules={props.getModules}
+              getNbrPrevus={props.getNbrPrevus}
+              getProjet={props.getProjet}
+              addBesoin={props.addBesoin}
+              addAction={props.addAction}
+              addModule={props.addModule}
+              addProjet={props.addProjet}
+              onChangeTrimeter={props.onChangeTrimeter}
+              mesCollaborateurs={props.mesCollaborateurs}
+              getCollaborateurs={props.getCollaborateurs}
+
+            />
           }
-       
+
         </TabPanel>
 
         <TabPanel value={value} index={1} dir={theme.direction}>
-            <ComponentListBesoins 
-                listBesoins = {props.listBesoins}
-                projets = {props.projets}
-                onValiderBesoin = {props.onValiderBesoin}
-                openAlertRemoveBesoin = {props.openAlertRemoveBesoin}
-                openAlertAnnulerBesoin = {props.openAlertAnnulerBesoin}
-                validerByManager = {props.validerByManager}
-                annulerByManager = {props.annulerByManager}
-                addProjet = {props.addProjet}
-            />
+          <ComponentListBesoins
+            listBesoins={props.listBesoins}
+            projets={props.projets}
+            onValiderBesoin={props.onValiderBesoin}
+            openAlertRemoveBesoin={props.openAlertRemoveBesoin}
+            openAlertAnnulerBesoin={props.openAlertAnnulerBesoin}
+            validerByManager={props.validerByManager}
+            annulerByManager={props.annulerByManager}
+            addProjet={props.addProjet}
+          />
         </TabPanel>
 
         <TabPanel value={value} index={2} dir={theme.direction}>
-          <ComponentFilterRapports themes={props.allThemes} projets={props.projets} filter={props.filter} rapports = {props.rapports}/>
+          <ComponentFilterRapports themes={props.allThemes} projets={props.projets} filter={props.filter} rapports={props.rapports} />
         </TabPanel>
 
       </SwipeableViews>
-      <ComponentModalDetailsBesoin open={open} handleClose={handleClose} besoinPublier={besoinPublier} nbrPrevus={nbrPrevus}/>
+      <ComponentModalDetailsBesoin open={open} handleClose={handleClose} besoinPublier={besoinPublier} nbrPrevus={nbrPrevus} />
     </div>
 
-    
+
   );
 }

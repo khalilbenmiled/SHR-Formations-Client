@@ -25,7 +25,9 @@ class LayoutFormations extends Component {
             reset: false,
             alertFormation: false,
             participants: [],
-            formations : []
+            formations: [],
+            listFormations: [],
+            alertAjouterSession: false
         }
     }
 
@@ -39,6 +41,7 @@ class LayoutFormations extends Component {
         })
 
         const tabs = []
+        const tabs2 = []
         axios.get("http://localhost:8585/formations").then(res => {
             if (res.data.Formations) {
                 res.data.Formations.map(formation => {
@@ -52,13 +55,29 @@ class LayoutFormations extends Component {
                         start: Moment(dateDebut).format("YYYY-MM-DD").toString(),
                         end: Moment(new_date).format("YYYY-MM-DD").toString(),
                         backgroundColor: formation.typeTheme === "SOFTSKILLS" ? "#ED7E0A" : formation.typeTheme === "TECHNIQUE" ? "#B51B10" : "#027796",
-                        textColor: "white"
+                        textColor: "white",
+                    })
+
+                    tabs2.push({
+                        id: formation.id,
+                        nomTheme: formation.nomTheme,
+                        typeTheme: formation.typeTheme,
+                        dateDebut: Moment(dateDebut).format("DD-MM-YYYY").toString(),
+                        dateFin: Moment(new_date).format("DD-MM-YYYY").toString(),
+                        listModules: formation.listModules,
+                        listParticipants: formation.listParticipants,
+                        maxParticipants: formation.maxParticipants,
+                        duree: formation.duree,
+                        idCF: formation.idCF,
+                        etat: formation.etat
+
                     })
                     return null
 
                 })
                 this.setState({
-                    formations : tabs
+                    formations: tabs,
+                    listFormations: tabs2
                 })
             }
         })
@@ -136,7 +155,8 @@ class LayoutFormations extends Component {
             const sessions = this.state.sessions
             sessions.push(res.data.Session)
             this.setState({
-                sessions: sessions
+                sessions: sessions,
+                alertAjouterSession: true
             })
         })
     }
@@ -159,6 +179,7 @@ class LayoutFormations extends Component {
         const tabs = []
         var nomTheme = this.state.listBesoinsSelected[0].theme.nom
         var typeTheme = this.state.listBesoinsSelected[0].theme.type
+
         this.state.listBesoinsSelected.map(besoin => {
             tabs.push(besoin.theme.listModules)
             const input = {
@@ -187,6 +208,7 @@ class LayoutFormations extends Component {
             listModules: listModules,
             listParticipants: this.state.participants
         }
+
         axios.post("http://localhost:8585/formations/", obj).then(res => {
             console.log(res.data)
 
@@ -196,6 +218,7 @@ class LayoutFormations extends Component {
             alertFormation: true
         })
     }
+
 
     closeAlertFormation() {
         this.setState({
@@ -211,6 +234,27 @@ class LayoutFormations extends Component {
             nbrParticipants: participants.length
         })
     }
+
+
+
+    modulesFormationSelected(modules) {
+        this.setState({
+            modulesFormationSelected: modules
+        })
+    }
+
+    closeAlertSession() {
+        this.setState({
+            alertAjouterSession: false
+        })
+    }
+
+    refreshCalendrier(formations) {
+        this.setState({
+            formations: formations
+        })
+    }
+
 
     render() {
         return (
@@ -234,7 +278,10 @@ class LayoutFormations extends Component {
                                 onChangeDuree={this.onChangeDuree.bind(this)}
                                 ajouterSessionFormation={this.ajouterSessionFormation.bind(this)}
                                 participantsSelected={this.participantsSelected.bind(this)}
-                                formations = {this.state.formations}
+                                formations={this.state.formations}
+                                listFormations={this.state.listFormations}
+                                refreshCalendrier={this.refreshCalendrier.bind(this)}
+
                             />
                         </div>
                     </div>
@@ -242,6 +289,12 @@ class LayoutFormations extends Component {
                 <Snackbar open={this.state.alertFormation} autoHideDuration={5000} onClose={this.closeAlertFormation.bind(this)}>
                     <Alert onClose={this.closeAlertFormation.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
                         Formation enregistrer avec succès
+                    </Alert>
+                </Snackbar>
+
+                <Snackbar open={this.state.alertAjouterSession} autoHideDuration={5000} onClose={this.closeAlertSession.bind(this)}>
+                    <Alert onClose={this.closeAlertSession.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
+                        Session enregistrer avec succès
                     </Alert>
                 </Snackbar>
             </>

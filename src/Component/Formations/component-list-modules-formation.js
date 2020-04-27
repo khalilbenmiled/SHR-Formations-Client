@@ -95,7 +95,7 @@ TablePaginationActions.propTypes = {
 
 
 export default function CustomPaginationActionsTable(props) {
-  const rows = []
+  const rows = props.modules
   //   const classes = useStyles1();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(4);
@@ -117,15 +117,12 @@ export default function CustomPaginationActionsTable(props) {
   return (
     <>
 
-      <TableContainer className="tableContainerStyles" component={Paper} style={{ marginTop: "30px", width: "100%" }}>
+      <TableContainer className="tableContainerStyles" component={Paper} style={{ marginTop: "30px", width: "100%", height: "250px" }}>
         <Table size="small" className="tableTheme" aria-label="custom pagination table" >
           <TableHead className="tableHead" style={{ backgroundColor: "#B51B10" }}>
             <TableRow>
               <TableCell style={{ fontSize: 16, color: 'white' }}>Nom</TableCell>
-              <TableCell style={{ fontSize: 16, color: 'white' }}>Email</TableCell>
-              <TableCell style={{ fontSize: 16, color: 'white' }}>Adresse</TableCell>
-              <TableCell style={{ fontSize: 16, color: 'white' }}>Telephone</TableCell>
-              <TableCell colSpan={3} style={{ fontSize: 16, color: 'white' }}></TableCell>
+              <TableCell style={{ fontSize: 16, color: 'white' }}>Description</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -133,8 +130,10 @@ export default function CustomPaginationActionsTable(props) {
               ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : rows
             ).map((row, index) => (
-              <>
-              </>
+              <TableRow key={index}>
+                <TableCell> {row.nom} </TableCell>
+                <TableCell> {row.description} </TableCell>
+              </TableRow>
             ))}
 
             {emptyRows > 0 && (

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Line} from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 
 const data = {
   labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
@@ -28,16 +28,16 @@ const data = {
   ]
 };
 
-class LineChart extends Component{
-  
+class LineChart extends Component {
+
 
   render() {
     return (
-        <Line 
-            data={data} 
-            height={250}
-            options={{ maintainAspectRatio: false }}
-        />
+      <Line
+        data={data}
+        height={250}
+        options={{ maintainAspectRatio: false }}
+      />
     );
   }
 }

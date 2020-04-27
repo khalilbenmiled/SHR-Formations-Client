@@ -47,8 +47,7 @@ const useStyles1 = makeStyles(theme => ({
         height: "30px",
         cursor: "pointer",
         color: "#ED7E0A"
-    },
-
+    }
 }));
 
 
@@ -66,8 +65,6 @@ function TablePaginationActions(props) {
     const handleNextButtonClick = event => {
         onChangePage(event, page + 1);
     };
-
-
 
     return (
         <div className={classes.root}>
@@ -96,12 +93,13 @@ TablePaginationActions.propTypes = {
 
 
 export default function CustomPaginationActionsTable(props) {
-    const rows = props.listParticipants.flat()
-    const classes = useStyles1();
+    const rows = props.listParticipants
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(4);
-    const [participantSelected, setParticipantSelected] = React.useState([]);
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+    const classes = useStyles1();
+    const [participantSelected, setParticipantSelected] = React.useState([]);
+
 
 
 
@@ -114,7 +112,7 @@ export default function CustomPaginationActionsTable(props) {
         setPage(0);
     };
 
-    const participantChecked = e => {
+    const participantChecked = (e) => {
         if (e.target.checked) {
             const tabs = participantSelected
             tabs.push(JSON.parse(e.target.value))
@@ -127,16 +125,15 @@ export default function CustomPaginationActionsTable(props) {
             setParticipantSelected(tabs)
             props.participantsSelected(participantSelected)
         }
-
     }
 
 
     return (
         <>
 
-            <TableContainer className="tableContainerStyles" component={Paper} style={{ marginTop: "30px", width: "100%" }}>
+            <TableContainer className="tableContainerStyles" component={Paper} style={{ marginTop: "30px", width: "100%", height: "250px" }}>
                 <Table size="small" className="tableTheme" aria-label="custom pagination table" >
-                    <TableHead className="tableHead" style={{ backgroundColor: "#3D707E" }}>
+                    <TableHead className="tableHead" style={{ backgroundColor: "#B51B10" }}>
                         <TableRow>
                             <TableCell style={{ fontSize: 16, color: 'white' }}>BU</TableCell>
                             <TableCell style={{ fontSize: 16, color: 'white' }}>Nom</TableCell>

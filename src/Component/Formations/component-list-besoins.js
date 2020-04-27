@@ -171,15 +171,15 @@ export default function CustomPaginationActionsTable(props) {
     } else {
       props.besoinDisabled(id, -1)
       props.besoinUnselected(JSON.parse(e.target.value))
-      if(JSON.parse(e.target.value).listParticipants.length === 0) {
-          const index = participants.findIndex(p => p.id === JSON.parse(e.target.value).idUser)
-          participants.splice(index,1)
-          setParticipants(participants)  
-          props.afficherListParticipant(participants) 
-      }else {
-        JSON.parse(e.target.value).listParticipants.map(p => {    
+      if (JSON.parse(e.target.value).listParticipants.length === 0) {
+        const index = participants.findIndex(p => p.id === JSON.parse(e.target.value).idUser)
+        participants.splice(index, 1)
+        setParticipants(participants)
+        props.afficherListParticipant(participants)
+      } else {
+        JSON.parse(e.target.value).listParticipants.map(p => {
           const index = participants.findIndex(part => part.id === p.idParticipant)
-          participants.splice(index,1)
+          participants.splice(index, 1)
           return null
         })
         setParticipants(participants)
@@ -224,7 +224,7 @@ export default function CustomPaginationActionsTable(props) {
           setInfos(obj)
           setOpenModal1(true)
           setOpenModal2(false)
- 
+
         }
       }
     })
@@ -303,14 +303,14 @@ export default function CustomPaginationActionsTable(props) {
 
 
 
-        {openModal1 ? 
+      {openModal1 ?
         <ComponentModalUserProcess open={openModal1} handleClose={handleClose} infos={infos} />
         : openModal2 ?
-        <ComponentModalUserProcess2 open={openModal2} handleClose={handleClose} infos={infos} />
-        :
-        ""
+          <ComponentModalUserProcess2 open={openModal2} handleClose={handleClose} infos={infos} />
+          :
+          ""
       }
-        
+
     </div>
 
   );

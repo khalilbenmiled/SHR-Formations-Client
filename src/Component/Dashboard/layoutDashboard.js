@@ -1,23 +1,23 @@
-import React , { Component } from "react"
+import React, { Component } from "react"
 import Dashboard from "./dashboard"
 import LayoutNavbar from "../NavBar/layoutNavbar"
 import "./dashboard.css"
 
-class LayoutDashboard extends Component{
+class LayoutDashboard extends Component {
 
-    disconnect(){
+    disconnect() {
         this.props.history.push({
-            pathname : "/"
+            pathname: "/"
         })
     }
-    
-    render(){
-        return(
+
+    render() {
+        return (
             <>
-                <LayoutNavbar EventEmitter = {null} disconnect={this.disconnect.bind(this)}/>
+                <LayoutNavbar disconnect={this.disconnect.bind(this)} />
                 <div className="content">
                     <Dashboard />
-                </div>    
+                </div>
             </>
         )
     }

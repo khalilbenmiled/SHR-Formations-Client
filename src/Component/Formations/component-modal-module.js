@@ -57,13 +57,12 @@ const useStyles = makeStyles(theme => ({
 
 export default function TransitionsModal(props) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
   const [nom, setNom] = React.useState("");
   const [description, setDescription] = React.useState("");
 
   const handleSubmit = () => {
 
-    setOpen(false);
+    props.handleClose()
     const module = {
       nom: nom,
       description: description
@@ -81,13 +80,6 @@ export default function TransitionsModal(props) {
     setDescription(e.target.value)
   }
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const verifierSaisie = () => {
     if (nom === "" || description === "") {
@@ -99,22 +91,20 @@ export default function TransitionsModal(props) {
 
   return (
     <div>
-      <Button hidden={JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false} style={{ margin: "10px 0px", marginLeft: 240 }} color="secondary" className={classes.buttonStyles} size="small" variant="outlined" onClick={handleOpen}>
-        Ajouter un module
-      </Button>
+
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         className={classes.modal}
-        open={open}
-        onClose={handleClose}
+        open={props.open}
+        onClose={props.handleClose}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
         }}
       >
-        <Fade in={open}>
+        <Fade in={props.open}>
           <div className={classes.paper}>
 
 
@@ -151,7 +141,7 @@ export default function TransitionsModal(props) {
                     />
                   </div>
                   <div style={{ marginLeft: 322, display: "flex", flexDirection: "row", justifyContent: "space-between", width: 170 }}>
-                    <Button size="small" variant="contained" className={classes.buttonAnnuler} onClick={handleClose}> Annuler</Button>
+                    <Button size="small" variant="contained" className={classes.buttonAnnuler} onClick={props.handleClose}> Annuler</Button>
                     <Button disabled={verifierSaisie() === 0 ? true : false} size="small" variant="contained" className={classes.buttonConfirmer} onClick={handleSubmit}> Ajouter</Button>
                   </div>
                 </div>
