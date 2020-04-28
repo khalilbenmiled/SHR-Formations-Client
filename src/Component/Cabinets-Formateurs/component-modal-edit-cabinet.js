@@ -143,14 +143,6 @@ export default function TransitionsModal(props) {
         props.handleClose()
     }
 
-    const verifierSaisie = () => {
-        if (nomCabinet === "" || emailCabinet === "" || telCabinet === "" || contactCabinet === "" || typeCabinet === "" || typeCabinet === "null") {
-            return 0
-        } else {
-            return 1
-        }
-    }
-
     return (
         <div>
             <Modal
@@ -186,31 +178,31 @@ export default function TransitionsModal(props) {
                                         <div className="input-group-prepend">
                                             <label style={{ width: 130 }} className="input-group-text" >Nom </label>
                                         </div>
-                                        <TextField onChange={onChangeNomCabinet} size="small" label="Nom" variant="outlined" style={{ width: 260, backgroundColor: "white" }}  > </TextField>
+                                        <TextField defaultValue={props.cabinet.nom} onChange={onChangeNomCabinet} size="small" label="Nom" variant="outlined" style={{ width: 260, backgroundColor: "white" }}  > </TextField>
                                     </div>
                                     <div className="input-group mb-3 ">
                                         <div className="input-group-prepend">
                                             <label style={{ width: 130 }} className="input-group-text" >Email </label>
                                         </div>
-                                        <TextField onChange={onChangeEmailCabinet} size="small" label="Email" variant="outlined" style={{ width: 260, backgroundColor: "white" }}   > </TextField>
+                                        <TextField defaultValue={props.cabinet.email} onChange={onChangeEmailCabinet} size="small" label="Email" variant="outlined" style={{ width: 260, backgroundColor: "white" }}   > </TextField>
                                     </div>
                                     <div className="input-group mb-3 ">
                                         <div className="input-group-prepend">
                                             <label style={{ width: 130 }} className="input-group-text" >Contact </label>
                                         </div>
-                                        <TextField onChange={onChangeContactCabinet} size="small" label="Contact" variant="outlined" style={{ width: 260, backgroundColor: "white" }}  > </TextField>
+                                        <TextField defaultValue={props.cabinet.contact} onChange={onChangeContactCabinet} size="small" label="Contact" variant="outlined" style={{ width: 260, backgroundColor: "white" }}  > </TextField>
                                     </div>
                                     <div className="input-group mb-3 ">
                                         <div className="input-group-prepend">
                                             <label style={{ width: 130 }} className="input-group-text" >Telephone </label>
                                         </div>
-                                        <TextField onChange={onChangeTelephoneCabinet} size="small" label="Telephone" variant="outlined" style={{ width: 260, backgroundColor: "white" }} > </TextField>
+                                        <TextField defaultValue={props.cabinet.tel} onChange={onChangeTelephoneCabinet} size="small" label="Telephone" variant="outlined" style={{ width: 260, backgroundColor: "white" }} > </TextField>
                                     </div>
                                     <div style={{ width: 390 }} className="input-group mb-3">
                                         <div className="input-group-prepend" >
                                             <label style={{ width: 130 }} className="input-group-text"  >Type cabinet</label>
                                         </div>
-                                        <select className="custom-select" onChange={onChangeTypeCabinet}>
+                                        <select defaultValue={props.cabinet.typeFormation} className="custom-select" onChange={onChangeTypeCabinet}>
                                             <option defaultValue value="null"> -----------------------------------------------------</option>
                                             <option value="TECHNIQUE">TECHNIQUE</option>
                                             <option value="SOFTWARE">PRODUITS</option>
@@ -220,7 +212,7 @@ export default function TransitionsModal(props) {
 
                                 </div>
                                 <div className="col-lg-6 col-md-6">
-                                    <ComponentListDomaine domaines={props.domaines} getListDomaines={getListDomaines} />
+                                    <ComponentListDomaine domaines={props.cabinet.listDomaines} getListDomaines={getListDomaines} />
                                     <div style={{ marginLeft: "80px" }} className="input-group mb-3 ">
                                         <div className="input-group-prepend">
                                             <label style={{ width: 130 }} className="input-group-text" >Nom </label>
@@ -241,7 +233,7 @@ export default function TransitionsModal(props) {
                                 <div className="col-lg-12 col-md-12">
                                     <div style={{ marginLeft: "400px" }} >
                                         <Button style={{ marginRight: "10px" }} size="small" variant="contained" className={classes.buttonAnnuler} onClick={handleClose}> Annuler</Button>
-                                        <Button disabled={verifierSaisie() === 0 ? true : false} onClick={addCabinet} size="small" variant="contained" className={classes.buttonConfirmer} > Valider</Button>
+                                        <Button onClick={addCabinet} size="small" variant="contained" className={classes.buttonConfirmer} > Valider</Button>
                                     </div>
                                 </div>
                             </div>

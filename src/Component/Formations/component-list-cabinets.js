@@ -95,7 +95,7 @@ TablePaginationActions.propTypes = {
 
 
 export default function CustomPaginationActionsTable(props) {
-  const rows = []
+  const rows = props.cabinets
   //   const classes = useStyles1();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(4);
@@ -109,6 +109,10 @@ export default function CustomPaginationActionsTable(props) {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  const cabinetSelected = (e) => {
+    props.cabinetSelected(JSON.parse(e.target.value))
+  }
 
 
 
@@ -134,8 +138,14 @@ export default function CustomPaginationActionsTable(props) {
               ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : rows
             ).map((row, index) => (
-              <>
-              </>
+              <TableRow key={index}>
+              <TableCell> {row.nom} </TableCell>
+              <TableCell> {row.email} </TableCell>
+              <TableCell> {row.contact} </TableCell>
+              <TableCell> {row.tel} </TableCell>
+              <TableCell> {row.typeFormation} </TableCell>
+              <TableCell><input className="checkStyle" type="radio" name="actionRadio" onChange={cabinetSelected} value={JSON.stringify(row)} /></TableCell>
+            </TableRow>
             ))}
 
             {emptyRows > 0 && (

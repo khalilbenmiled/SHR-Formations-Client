@@ -21,7 +21,8 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import ComponentModalAddFormation from "./component-modal-add-formation"
 import Alert from '@material-ui/lab/Alert';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-
+import GroupAddIcon from '@material-ui/icons/GroupAdd';
+import ComponentModalAddParticipants from "./component-modal-add-participants"
 
 const useStyles1 = makeStyles(theme => ({
   root: {
@@ -129,13 +130,23 @@ export default function CustomPaginationActionsTable(props) {
   const [dateDebut, setDateDebut] = React.useState("");
   const [dateFin, setDateFin] = React.useState("");
   const [maxParticipants, setMaxParticipants] = React.useState("");
-  const [duree, setDuree] = React.useState("");
+  // const [duree, setDuree] = React.useState("");
   const [quarter, setQuarter] = React.useState("");
   const [alertAction, setAlertAction] = React.useState(false);
   const [alertModule, setAlertModule] = React.useState(false);
   const [formationToDelete, setFormationToDelete] = React.useState("");
   const [alertRemove, setAlertRemove] = React.useState(false);
   const [alertSuccessRemove, setAlertSuccessRemove] = React.useState(false);
+  const [openModalAddParticipants, setOpenModalAddParticipants] = React.useState(false);
+  const [formateurCabinet, setFormateurCabinet] = React.useState(0);
+  const [cabinetFormateur, setFetchCabinetFormateur] = React.useState({
+    role: "",
+    data: {
+      nom: "",
+      prenom: "",
+      contact: ""
+    }
+  });
 
 
   const handleChangePage = (event, newPage) => {
@@ -148,9 +159,11 @@ export default function CustomPaginationActionsTable(props) {
   };
 
   const detailsFormations = (formation) => {
-    setOpen(true)
+    
     setFormation(formation)
     fetchParticipants(formation.id)
+    fetchCabinetFormateur(formation.idCF)
+    setOpen(true)
   }
 
   const openDeleteFormation = (formation) => {
@@ -220,6 +233,42 @@ export default function CustomPaginationActionsTable(props) {
         setParticipants(res.data.Participants)
       }
 
+    })
+  }
+
+  const fetchCabinetFormateur = (id) => {
+
+    const input = {
+      id: id
+    }
+    axios.post("http://localhost:8282/cabinets/cabinetOrFormateur",
+      querystring.stringify(input), {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      }
+    }).then(res => {
+      if (res.data.Cabinet) {
+        const obj = {
+          role: "Cabinet",
+          data: res.data.Cabinet
+        }
+        setFetchCabinetFormateur(obj)
+      }else if (res.data.Formateur) {
+        const obj = {
+          role: "Formateur",
+          data: res.data.Formateur
+        }
+        setFetchCabinetFormateur(obj)
+      }else {
+        setFetchCabinetFormateur({
+          role: "",
+          data: {
+            nom: "",
+            prenom: "",
+            contact: ""
+          }
+        })
+      }
     })
   }
 
@@ -316,7 +365,7 @@ export default function CustomPaginationActionsTable(props) {
   }
 
   const onChangeDuree = (e) => {
-    setDuree(e.target.value)
+    // setDuree(0)
   }
 
   const onChangeMaxParticipants = (e) => {
@@ -344,13 +393,14 @@ export default function CustomPaginationActionsTable(props) {
       dateDebut: dateDebut.toString(),
       dateFin: dateFin.toString(),
       maxParticipants: maxParticipants,
-      duree: duree,
+      duree: "0",
       idSession: sessionS.id,
       quarter: quarter,
       listModules: tabs,
-      listParticipants: participantsS
+      listParticipants: participantsS,
+      idCF: formateurCabinet
     }
-    console.log(obj)
+
     axios.post("http://localhost:8585/formations/", obj).then(res => {
       console.log(res.data)
 
@@ -368,6 +418,22 @@ export default function CustomPaginationActionsTable(props) {
 
   const closeAlertSuccessRemove = () => {
     setAlertSuccessRemove(false)
+  }
+
+  const formateurSelected = (formateur) => {
+    setFormateurCabinet(formateur.id)
+  }
+
+  const cabinetSelected = (cabinet) => {
+    setFormateurCabinet(cabinet.id)
+  }
+
+  const openAddParticipants = (formation) => {
+    setOpenModalAddParticipants(true)
+  }
+
+  const closeModalAddParticipants = () => {
+    setOpenModalAddParticipants(false)
   }
 
 
@@ -399,6 +465,7 @@ export default function CustomPaginationActionsTable(props) {
                 <TableCell> {row.dateFin} </TableCell>
                 <TableCell> {row.etat} </TableCell>
                 <TableCell> <VisibilityIcon className={classes.iconInfo} onClick={detailsFormations.bind(this, row)} /> </TableCell>
+                <TableCell> <GroupAddIcon className={classes.iconCheck} onClick={openAddParticipants.bind(this, row)} /> </TableCell>
                 <TableCell> <DeleteForeverIcon className={classes.iconRemove} onClick={openDeleteFormation.bind(this, row)} /> </TableCell>
               </TableRow>
             ))}
@@ -435,7 +502,13 @@ export default function CustomPaginationActionsTable(props) {
         Ajouter une formation
         </Button>
 
-      <ComponentModalFormation open={open} handleClose={handleClose} formation={formation} participants={participants} />
+      <ComponentModalFormation
+        open={open}
+        handleClose={handleClose}
+        formation={formation}
+        participants={participants}
+        cabinetFormateur={cabinetFormateur}
+      />
       <ComponentModalAddFormation
         open={openAddFormation}
         handleClose={handleCloseAddFormation}
@@ -456,7 +529,11 @@ export default function CustomPaginationActionsTable(props) {
         onChangeMaxParticipants={onChangeMaxParticipants}
         ajouterNouvelleFormation={ajouterNouvelleFormation}
         participantsSelected={participantsSelected}
+        formateurSelected={formateurSelected}
+        cabinetSelected={cabinetSelected}
       />
+
+      <ComponentModalAddParticipants open={openModalAddParticipants} handleClose={closeModalAddParticipants} />
 
       <Snackbar open={alertAction} autoHideDuration={5000} onClose={closeAlertAction}>
         <Alert onClose={closeAlertAction} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>

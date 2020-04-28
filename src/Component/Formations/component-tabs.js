@@ -87,6 +87,10 @@ export default function ScrollableTabsButtonAuto(props) {
           onChangeDuree={props.onChangeDuree}
           ajouterSessionFormation={props.ajouterSessionFormation}
           participantsSelected={props.participantsSelected}
+          formateurSelected={props.formateurSelected}
+          cabinetSelected={props.cabinetSelected}
+          deleteBesoin={props.deleteBesoin}
+          closePanel={props.closePanel}
         />
       </TabPanel>
       <TabPanel value={value} index={1}>

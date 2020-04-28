@@ -231,9 +231,13 @@ export default function CustomPaginationActionsTable(props) {
 
   }
 
-  return (
-    <div >
+  const deleteBesoin = (besoin) => {
 
+    props.deleteBesoin(besoin.id , id)
+  }
+
+  return (
+    <div>
       <TableContainer className="tableContainerStyles" component={Paper} style={{ marginTop: "30px", width: "100%" }}>
         <Table size="small" className="tableTheme" aria-label="custom pagination table" >
           <TableHead className="tableHead" style={{ backgroundColor: "#B51B10" }}>
@@ -263,7 +267,7 @@ export default function CustomPaginationActionsTable(props) {
                 </TableCell>
 
                 <TableCell>
-                  <DeleteForeverIcon className={classes.iconRemove} />
+                  <DeleteForeverIcon onClick={deleteBesoin.bind(this, row)} className={classes.iconRemove} />
                 </TableCell>
 
                 <TableCell>

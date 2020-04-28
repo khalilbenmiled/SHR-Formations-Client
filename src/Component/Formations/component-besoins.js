@@ -65,7 +65,7 @@ export default function ActionsInExpansionPanelSummary(props) {
       {besoins.map((besoin, index) => {
         return (
           <div key={index}>
-            <ExpansionPanel disabled={(disableBesoin !== besoin.id && nbcheck !== 0) ? true : false} key={index} square expanded={expanded === index} onChange={handleChange(index)} className={classes.expansionPanel} size="small">
+            <ExpansionPanel disabled={(disableBesoin !== besoin.id && nbcheck !== 0) ? true : false} key={index} square expanded={expanded === index } onChange={handleChange(index)} className={classes.expansionPanel} size="small">
               <ExpansionPanelSummary
                 className={classes.expansionPanelSummary}
                 expandIcon={<ExpandMoreIcon />}
@@ -78,7 +78,7 @@ export default function ActionsInExpansionPanelSummary(props) {
                 </Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails style={{ width: "100%", display: " flex", flexDirection: "column", borderBottom: "10px solid #DCDCDC" }}>
-                <ComponentListBesoins afficherListParticipant={afficherListParticipant} besoinUnselected={props.besoinUnselected} besoinSelected={props.besoinSelected} besoins={besoin.listBesoins} besoinDisabled={besoinDisabled} id={besoin.id} />
+                <ComponentListBesoins deleteBesoin={props.deleteBesoin} afficherListParticipant={afficherListParticipant} besoinUnselected={props.besoinUnselected} besoinSelected={props.besoinSelected} besoins={besoin.listBesoins} besoinDisabled={besoinDisabled} id={besoin.id} />
                 <h5 style={{ marginTop: "10px", marginLeft: "400px", marginBottom: "-10px", color: "#3D707E" }}> Participants </h5>
                 <ComponentListParticipantsToSelect participantsSelected={props.participantsSelected} listParticipants={listParticipants} />
               </ExpansionPanelDetails>

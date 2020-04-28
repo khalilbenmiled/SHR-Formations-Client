@@ -115,12 +115,14 @@ export default function HorizontalLabelPositionBelowStepper(props) {
     const [open, setOpen] = React.useState(false);
     const [sessionS, setSessionS] = React.useState("");
     const [quarterS, setQuarterS] = React.useState("");
-    const [dureeS, setDureeS] = React.useState("");
+    // const [dureeS, setDureeS] = React.useState("");
     const [themeSelect, setThemeSelect] = React.useState("");
     const [radioSelect, setRadioSelect] = React.useState(false);
     const [modulesSelect, setModulesSelect] = React.useState([]);
     const [collaborateurs, setCollaborateurs] = React.useState([]);
     const [maxParticipants, setMaxParticipants] = React.useState(0);
+    const [formateurs, setFormateurs] = React.useState([]);
+    const [cabinets, setCabinets] = React.useState([]);
 
 
     const quarter = [
@@ -141,6 +143,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
         props.dateFinSelected(Moment(date).format("DD/MM/YYYY HH:mm"))
     };
 
+
     const handleNext = () => {
         if (activeStep === 1) {
             axios.get("http://localhost:8181/users/collaborateurs").then(res => {
@@ -151,7 +154,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
         }
         if (activeStep === 3) {
             props.ajouterNouvelleFormation()
-            window.location.reload(true)
+            // window.location.reload(true)
         }
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
         setActiveContent((prevActiveStep) => prevActiveStep + 1)
@@ -167,14 +170,23 @@ export default function HorizontalLabelPositionBelowStepper(props) {
     }
 
     const onSelectFormateurCabinet = (e, values) => {
-        console.log(values)
         if (values !== null) {
             if (values.title === "Formateur") {
-                setFormateur(false)
-                setCabinet(true)
+                axios.get("http://localhost:8282/formateurs").then(res => {
+                    if (res.data.formateurs) {
+                        setFormateurs(res.data.formateurs)
+                        setFormateur(false)
+                        setCabinet(true)
+                    }
+                })
             } else if (values.title === "Cabinet") {
-                setFormateur(true)
-                setCabinet(false)
+                axios.get("http://localhost:8282/cabinets").then(res => {
+                    if (res.data.cabinets) {
+                        setCabinets(res.data.cabinets)
+                        setFormateur(true)
+                        setCabinet(false)
+                    }
+                })
             } else {
                 setFormateur(true)
                 setCabinet(true)
@@ -192,7 +204,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
     }
 
     const onChangeDuree = (e) => {
-        setDureeS(e.target.value)
+        // setDureeS(e.target.value)
         props.onChangeDuree(e)
     }
 
@@ -208,7 +220,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
     }
 
     function verifierSaisie() {
-        if (sessionS === "" || sessionS === null || selectedDateDebut === null || selectedDateFin === null || dureeS === "" || quarterS === "" || quarterS === null || maxParticipants === 0) {
+        if (sessionS === "" || sessionS === null || selectedDateDebut === null || selectedDateFin === null || quarterS === "" || quarterS === null || maxParticipants === 0) {
             return 1
         }
         return 0
@@ -429,7 +441,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 
                             </div>
 
-                            <div className="col-lg-5 col-md-5 ">
+                            <div hidden className="col-lg-5 col-md-5 ">
                                 <div style={{ width: 420 }} className="input-group mb-3">
                                     <div style={{ height: 40 }} className="input-group-prepend" >
                                         <label style={{ width: 120 }} className="input-group-text" >Durée</label>
@@ -473,16 +485,12 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 
                         <div className="row" style={{ paddingTop: "20px" }}>
                             <div hidden={formateur ? true : false} className="col-lg-12 col-md-12">
-                                <ComponentListFormateurs />
-                                <Button className={classes.buttonStyles} size="small" variant="outlined" >
-                                    Ajouter un formateur
-                        </Button>
+                                <ComponentListFormateurs formateurs={formateurs} formateurSelected={props.formateurSelected} />
+
                             </div>
                             <div hidden={cabinet ? true : false} className="col-lg-12 col-md-12">
-                                <ComponentListCabinets />
-                                <Button className={classes.buttonStyles} size="small" variant="outlined" >
-                                    Ajouter une cabinet
-                                </Button>
+                                <ComponentListCabinets cabinets={cabinets} cabinetSelected={props.cabinetSelected}/>
+
                             </div>
                         </div>
                     </div>

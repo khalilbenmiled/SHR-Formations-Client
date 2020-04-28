@@ -131,6 +131,8 @@ export default function TransitionsModal(props) {
                                         onChangeMaxParticipants={props.onChangeMaxParticipants}
                                         ajouterNouvelleFormation={props.ajouterNouvelleFormation}
                                         participantsSelected={props.participantsSelected}
+                                        formateurSelected={props.formateurSelected}
+                                        cabinetSelected={props.cabinetSelected}
                                     />
                                 </div>
                             </div>

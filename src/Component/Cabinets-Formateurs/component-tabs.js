@@ -113,14 +113,14 @@ export default function FullWidthTabs(props) {
             >
 
                 <TabPanel value={value} index={0} dir={theme.direction} >
-                    <ComponentListCabinets />
+                    <ComponentListCabinets cabinets={props.cabinets} deleteCabinet={props.deleteCabinet} />
                     <Button className={classes.buttonStyles} size="small" variant="outlined" onClick={openModalCabinet} >
-                        Ajouter une cabinet
+                        Ajouter un cabinet
                     </Button>
                 </TabPanel>
 
                 <TabPanel value={value} index={1} dir={theme.direction}>
-                    <ComponentListFormateurs />
+                    <ComponentListFormateurs formateurs={props.formateurs} deleteFormateur={props.deleteFormateur} updateFormateur={props.updateFormateur}/>
                     <Button className={classes.buttonStyles} size="small" variant="outlined" onClick={openModalFormateur}>
                         Ajouter un formateur
                     </Button>
@@ -128,8 +128,18 @@ export default function FullWidthTabs(props) {
 
             </SwipeableViews>
 
-            <ComponentModalCabinet open={openCabinet} handleClose={handleCloseCabinet} />
-            <ComponentModalFormateur open={openFormateur} handleClose={handleCloseFormateur} />
+            <ComponentModalCabinet
+                open={openCabinet}
+                handleClose={handleCloseCabinet}
+                addDomaine={props.addDomaine}
+                addCabinet={props.addCabinet}
+                domaines={props.domaines}
+            />
+            <ComponentModalFormateur
+                open={openFormateur}
+                handleClose={handleCloseFormateur}
+                addFormateur={props.addFormateur}
+            />
         </div>
 
 

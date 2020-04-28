@@ -21,6 +21,7 @@ import Moment from 'moment';
 import 'moment/locale/fr'
 import ComponentListFormateurs from "./component-list-formateurs"
 import ComponentListCabinets from "./component-list-cabinets"
+import axios from "axios"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -107,9 +108,10 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 
   const [sessionS, setSessionS] = React.useState("");
   const [quarterS, setQuarterS] = React.useState("");
-  const [dureeS, setDureeS] = React.useState("");
+  // const [dureeS, setDureeS] = React.useState("");
   const [participants, setParticipants] = React.useState("");
-
+  const [formateurs, setFormateurs] = React.useState([]);
+  const [cabinets, setCabinets] = React.useState([]);
   const [besoinS, setBesoinSelected] = React.useState({
     nom: "",
     quarter: ""
@@ -159,14 +161,23 @@ export default function HorizontalLabelPositionBelowStepper(props) {
   }
 
   const onSelectFormateurCabinet = (e, values) => {
-    console.log(values)
     if (values !== null) {
       if (values.title === "Formateur") {
-        setFormateur(false)
-        setCabinet(true)
+        axios.get("http://localhost:8282/formateurs").then(res => {
+          if (res.data.formateurs) {
+            setFormateurs(res.data.formateurs)
+            setFormateur(false)
+            setCabinet(true)
+          }
+        })
       } else if (values.title === "Cabinet") {
-        setFormateur(true)
-        setCabinet(false)
+        axios.get("http://localhost:8282/cabinets").then(res => {
+          if (res.data.cabinets) {
+            setCabinets(res.data.cabinets)
+            setFormateur(true)
+            setCabinet(false)
+          }
+        })
       } else {
         setFormateur(true)
         setCabinet(true)
@@ -187,7 +198,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
   }
 
   const onChangeDuree = (e) => {
-    setDureeS(e.target.value)
+    // setDureeS(e.target.value)
     props.onChangeDuree(e.target.value)
   }
 
@@ -210,7 +221,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
   }
 
   function verifierSaisie() {
-    if (sessionS === "" || sessionS === null || selectedDateDebut === null || selectedDateFin === null || dureeS === "" || quarterS === "" || quarterS === null) {
+    if (sessionS === "" || sessionS === null || selectedDateDebut === null || selectedDateFin === null || quarterS === "" || quarterS === null) {
       return 1
     }
     return 0
@@ -228,7 +239,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
       </Stepper>
       <div hidden={activeContent === 0 ? false : true} className="row">
         <div className="col-lg-12 col-md-12">
-          <ComponentBesoins participantsSelected={participantsSelected} besoinUnselected={props.besoinUnselected} nbrCheck={nbrCheck} besoinSelected={besoinSelected} listBesoins={props.listBesoins} />
+          <ComponentBesoins closePanel={props.closePanel} deleteBesoin={props.deleteBesoin} participantsSelected={participantsSelected} besoinUnselected={props.besoinUnselected} nbrCheck={nbrCheck} besoinSelected={besoinSelected} listBesoins={props.listBesoins} />
         </div>
       </div>
 
@@ -350,7 +361,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 
               </div>
 
-              <div className="col-lg-5 col-md-5 ">
+              <div hidden className="col-lg-5 col-md-5 ">
                 <div style={{ width: 420 }} className="input-group mb-3">
                   <div style={{ height: 40 }} className="input-group-prepend" >
                     <label style={{ width: 120 }} className="input-group-text" >Durée</label>
@@ -385,16 +396,10 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 
             <div className="row" style={{ paddingTop: "20px" }}>
               <div hidden={formateur ? true : false} className="col-lg-12 col-md-12">
-                <ComponentListFormateurs />
-                <Button className={classes.buttonStyles} size="small" variant="outlined" >
-                  Ajouter un formateur
-                        </Button>
+                <ComponentListFormateurs formateurs={formateurs} formateurSelected={props.formateurSelected}/>
               </div>
               <div hidden={cabinet ? true : false} className="col-lg-12 col-md-12">
-                <ComponentListCabinets />
-                <Button className={classes.buttonStyles} size="small" variant="outlined" >
-                  Ajouter une cabinet
-                        </Button>
+                <ComponentListCabinets cabinets={cabinets} cabinetSelected={props.cabinetSelected}/>
               </div>
             </div>
           </div>

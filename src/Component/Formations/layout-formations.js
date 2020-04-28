@@ -27,7 +27,9 @@ class LayoutFormations extends Component {
             participants: [],
             formations: [],
             listFormations: [],
-            alertAjouterSession: false
+            alertAjouterSession: false,
+            formateurCabinet: 0,
+            closePanel : false
         }
     }
 
@@ -202,11 +204,12 @@ class LayoutFormations extends Component {
             dateDebut: this.state.dateDebutSelected.toString(),
             dateFin: this.state.dateFinSelected.toString(),
             maxParticipants: this.state.nbrParticipants,
-            duree: this.state.duree,
+            duree: "0",
             idSession: idSession,
             quarter: this.state.quarterSelected,
             listModules: listModules,
-            listParticipants: this.state.participants
+            listParticipants: this.state.participants,
+            idCF: this.state.formateurCabinet
         }
 
         axios.post("http://localhost:8585/formations/", obj).then(res => {
@@ -255,6 +258,49 @@ class LayoutFormations extends Component {
         })
     }
 
+    formateurSelected(formateur) {
+        this.setState({
+            formateurCabinet: formateur.id
+        })
+    }
+
+    cabinetSelected(cabinet) {
+        this.setState({
+            formateurCabinet: cabinet.id
+        })
+    }
+
+    deleteBesoin(idBesoin, idBesoinPublier) {
+ 
+        const input = {
+            idB: idBesoin,
+            idBP: idBesoinPublier
+        }
+        axios.post("http://localhost:8686/besoins/deleteBP", querystring.stringify(input), {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        }).then(res => {
+            if (res.data.BesoinPublier) {
+                const tabs = this.state.listBesoins
+                const index = tabs.findIndex(b => b.id === idBesoinPublier)
+                tabs.splice(index, 1 , res.data.BesoinPublier)
+                this.setState({
+                    listBesoins : tabs
+                })
+
+            } else if (res.data.Delete) {
+                const tabs = this.state.listBesoins
+                const index = tabs.findIndex(b => b.id === idBesoinPublier)
+                tabs.splice(index, 1)
+                this.setState({
+                    listBesoins : tabs,
+                    closePanel : true
+                })
+            }
+        })
+    }
+
 
     render() {
         return (
@@ -281,6 +327,10 @@ class LayoutFormations extends Component {
                                 formations={this.state.formations}
                                 listFormations={this.state.listFormations}
                                 refreshCalendrier={this.refreshCalendrier.bind(this)}
+                                formateurSelected={this.formateurSelected.bind(this)}
+                                cabinetSelected={this.cabinetSelected.bind(this)}
+                                deleteBesoin={this.deleteBesoin.bind(this)}
+                                closePanel={this.state.closePanel}
 
                             />
                         </div>

@@ -12,7 +12,11 @@ import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import { TableHead } from '@material-ui/core';
+import { TableHead, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import ComponentModalEditCabinet from "./component-modal-edit-cabinet"
+
 
 
 const useStyles1 = makeStyles(theme => ({
@@ -95,11 +99,16 @@ TablePaginationActions.propTypes = {
 
 
 export default function CustomPaginationActionsTable(props) {
-  const rows = []
-  //   const classes = useStyles1();
+  const rows = props.cabinets
+  const classes = useStyles1();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(4);
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+
+  const [cabinetToDelete, setCabinetToDelete] = React.useState("");
+  const [cabinetToEdit, setCabinetToEdit] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+  const [openDetails, setOpenDetails] = React.useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -110,7 +119,28 @@ export default function CustomPaginationActionsTable(props) {
     setPage(0);
   };
 
+  const openDeleteCabinet = (cabinet) => {
+    setCabinetToDelete(cabinet)
+    setOpen(true)
+  }
 
+  const deleteCabinet = () => {
+    props.deleteCabinet(cabinetToDelete)
+    setOpen(false)
+  }
+
+  const closeAlertDelete = () => {
+    setOpen(false)
+  }
+
+  const openDetailsCabinet = (cabinet) => {
+    setCabinetToEdit(cabinet)
+    setOpenDetails(true)
+  }
+
+  const handleClose = () => {
+    setOpenDetails(false)
+  }
 
 
 
@@ -126,7 +156,7 @@ export default function CustomPaginationActionsTable(props) {
               <TableCell style={{ fontSize: 16, color: 'white' }}>Contact</TableCell>
               <TableCell style={{ fontSize: 16, color: 'white' }}>Telephone</TableCell>
               <TableCell style={{ fontSize: 16, color: 'white' }}>Type Formation</TableCell>
-              <TableCell colSpan={3} style={{ fontSize: 16, color: 'white' }}></TableCell>
+              <TableCell colSpan={2} style={{ fontSize: 16, color: 'white' }}></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -134,8 +164,15 @@ export default function CustomPaginationActionsTable(props) {
               ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : rows
             ).map((row, index) => (
-              <>
-              </>
+              <TableRow key={index}>
+                <TableCell> {row.nom} </TableCell>
+                <TableCell> {row.email} </TableCell>
+                <TableCell> {row.contact} </TableCell>
+                <TableCell> {row.tel} </TableCell>
+                <TableCell> {row.typeFormation} </TableCell>
+                <TableCell> <EditIcon onClick={openDetailsCabinet.bind(this,row)} className={classes.iconCheck} /></TableCell>
+                <TableCell> <DeleteForeverIcon onClick={openDeleteCabinet.bind(this, row)} className={classes.iconAnnuler} /> </TableCell>
+              </TableRow>
             ))}
 
             {emptyRows > 0 && (
@@ -166,6 +203,28 @@ export default function CustomPaginationActionsTable(props) {
 
       </TableContainer>
 
+      <ComponentModalEditCabinet open={openDetails} handleClose={handleClose} cabinet={cabinetToEdit}/>
+      <Dialog
+        open={open}
+        onClose={closeAlertDelete}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle className="titleDialog">Supprimer cabinet</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Voulez-vous vraiment supprimer ce cabinet ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button className="annulerBtn" onClick={closeAlertDelete} style={{ backgroundColor: "#E67A0A", color: "white" }}>
+            Retour
+          </Button>
+          <Button className="supprimerBtn" onClick={deleteCabinet} style={{ backgroundColor: "#B51B10", color: "white" }} >
+            Supprimer
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
 
   );

@@ -104,8 +104,9 @@ export default function TransitionsModal(props) {
         setTel(e.target.value)
     }
 
-    const addFormateur = () => {
+    const updateFormateur = () => {
         const formateur = {
+            id : props.formateur.id,
             nom : nom,
             prenom : prenom,
             email : email,
@@ -113,7 +114,7 @@ export default function TransitionsModal(props) {
             tel : tel
         }
 
-        props.addFormateur(formateur)
+        props.updateFormateur(formateur)
         props.handleClose()
     }
 
@@ -139,7 +140,7 @@ export default function TransitionsModal(props) {
 
                             <div className="row headerModal">
                                 <div className="col-lg-11 col-md-11">
-                                    <h4 className="titreAction">Ajouter un formateur  </h4>
+                                    <h4 className="titreAction">Modifier formateur  </h4>
                                 </div>
                                 <div className="col-lg-1 col-md-1" align="center">
                                     <CancelIcon onClick={handleClose} className={classes.cancelcon} />
@@ -152,36 +153,36 @@ export default function TransitionsModal(props) {
                                         <div className="input-group-prepend">
                                             <label style={{ width: 130 }} className="input-group-text" >Nom </label>
                                         </div>
-                                        <TextField onChange={onChangeNom} size="small" label="Nom" variant="outlined" style={{ width: 260, backgroundColor: "white" }}  > </TextField>
+                                        <TextField defaultValue={props.formateur.nom} onChange={onChangeNom} size="small" label="Nom" variant="outlined" style={{ width: 260, backgroundColor: "white" }}  > </TextField>
                                     </div>
                                     <div className="input-group mb-3 ">
                                         <div className="input-group-prepend">
                                             <label style={{ width: 130 }} className="input-group-text" >Prenom </label>
                                         </div>
-                                        <TextField onChange={onChangePrenom} size="small"  label="Prenom" variant="outlined" style={{ width: 260, backgroundColor: "white" }}  > </TextField>
+                                        <TextField defaultValue={props.formateur.prenom} onChange={onChangePrenom} size="small"  label="Prenom" variant="outlined" style={{ width: 260, backgroundColor: "white" }}  > </TextField>
                                     </div>
                                     <div className="input-group mb-3 ">
                                         <div className="input-group-prepend">
                                             <label style={{ width: 130 }} className="input-group-text" >Email </label>
                                         </div>
-                                        <TextField onChange={onChangeEmail} size="small" label="Email" variant="outlined" style={{ width: 260, backgroundColor: "white" }}   > </TextField>
+                                        <TextField defaultValue={props.formateur.email} onChange={onChangeEmail} size="small" label="Email" variant="outlined" style={{ width: 260, backgroundColor: "white" }}   > </TextField>
                                     </div>
                                     <div className="input-group mb-3 ">
                                         <div className="input-group-prepend">
                                             <label style={{ width: 130 }} className="input-group-text" >Adresse </label>
                                         </div>
-                                        <TextField onChange={onChangeAdresse} size="small"  label="Contact" variant="outlined" style={{ width: 260, backgroundColor: "white" }}  > </TextField>
+                                        <TextField defaultValue={props.formateur.adresse} onChange={onChangeAdresse} size="small"  label="Contact" variant="outlined" style={{ width: 260, backgroundColor: "white" }}  > </TextField>
                                     </div>
                                     <div className="input-group mb-3 ">
                                         <div className="input-group-prepend">
                                             <label style={{ width: 130 }} className="input-group-text" >Telephone </label>
                                         </div>
-                                        <TextField onChange={onChangeTel} size="small" label="Telephone" variant="outlined" style={{ width: 260, backgroundColor: "white" }} > </TextField>
+                                        <TextField defaultValue={props.formateur.tel} onChange={onChangeTel} size="small" label="Telephone" variant="outlined" style={{ width: 260, backgroundColor: "white" }} > </TextField>
                                     </div>
 
                                     <div style={{ marginLeft: "220px" }} >
                                         <Button style={{ marginRight: "10px" }} size="small" variant="contained" className={classes.buttonAnnuler} onClick={handleClose}> Annuler</Button>
-                                        <Button onClick={addFormateur} size="small" variant="contained" className={classes.buttonConfirmer} > Ajouter</Button>
+                                        <Button onClick={updateFormateur} size="small" variant="contained" className={classes.buttonConfirmer} > Modifier</Button>
                                     </div>
                                 </div>
                             </div>
