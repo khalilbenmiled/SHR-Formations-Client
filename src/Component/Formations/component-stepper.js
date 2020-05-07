@@ -106,12 +106,14 @@ export default function HorizontalLabelPositionBelowStepper(props) {
   const [cabinet, setCabinet] = React.useState(true);
   const [buttonStep1, setButtonStep1] = React.useState(0);
 
-  const [sessionS, setSessionS] = React.useState("");
+  // const [sessionS, setSessionS] = React.useState("");
   const [quarterS, setQuarterS] = React.useState("");
   // const [dureeS, setDureeS] = React.useState("");
   const [participants, setParticipants] = React.useState("");
   const [formateurs, setFormateurs] = React.useState([]);
   const [cabinets, setCabinets] = React.useState([]);
+  const [nbrParticipantsSelected, setNbrParticipantsSelected] = React.useState(0);
+
   const [besoinS, setBesoinSelected] = React.useState({
     nom: "",
     quarter: ""
@@ -155,8 +157,8 @@ export default function HorizontalLabelPositionBelowStepper(props) {
   }
 
   const participantsSelected = (participants) => {
-    console.log(participants)
     setParticipants(participants)
+    setNbrParticipantsSelected(participants.length)
     props.participantsSelected(participants)
   }
 
@@ -193,7 +195,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
   }
 
   const sessionSelected = (e, value) => {
-    setSessionS(value)
+    // setSessionS(value)
     props.sessionSelected(value)
   }
 
@@ -220,8 +222,13 @@ export default function HorizontalLabelPositionBelowStepper(props) {
     }
   }
 
+  const onChangerNbrParticipants = (e) => {
+    setNbrParticipantsSelected(e.target.value)
+    props.onChangerNbrParticipants(e.target.value)
+  }
+
   function verifierSaisie() {
-    if (sessionS === "" || sessionS === null || selectedDateDebut === null || selectedDateFin === null || quarterS === "" || quarterS === null) {
+    if ( selectedDateDebut === null || selectedDateFin === null || quarterS === "" || quarterS === null || nbrParticipantsSelected < participants.length) {
       return 1
     }
     return 0
@@ -267,7 +274,8 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                   />
                 </div>
               </div>
-              <div className="col-lg-5 col-md-5">
+              {/* HIDDEN SESSION */}
+              <div hidden className="col-lg-5 col-md-5">
                 <div style={{ width: 420 }} className="input-group mb-3">
                   <div style={{ height: 40 }} className="input-group-prepend" >
                     <label style={{ width: 120 }} className="input-group-text" >Session</label>
@@ -282,6 +290,19 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                   />
                   <ComponentModalSession ajouterSession={props.ajouterSession} />
                 </div>
+              </div>
+              {/* END HIDDEN SESSION */}
+
+              <div className="col-lg-5 col-md-5 ">
+                <div style={{ width: 420 }} className="input-group mb-3">
+                  <div style={{ height: 40 }} className="input-group-prepend" >
+                    <label style={{ width: 120 }} className="input-group-text" >Participants</label>
+                  </div>
+                  <div className="input-group-prepend">
+                    <TextField value={nbrParticipantsSelected} type="number" style={{ width: 200, backgroundColor: "white" }} size="small" label="Durée" variant="outlined" onChange={onChangerNbrParticipants} />
+                  </div>
+                </div>
+
               </div>
             </div>
 
@@ -348,18 +369,18 @@ export default function HorizontalLabelPositionBelowStepper(props) {
               </div>
             </div>
 
-            <div className="row" style={{ paddingTop: "20px" }}>
-              <div className="col-lg-5 col-md-5 offset-lg-1 offset-md-1">
+            <div hidden className="row" style={{ paddingTop: "20px" }}>
+              {/* <div className="col-lg-5 col-md-5 offset-lg-1 offset-md-1">
                 <div style={{ width: 420 }} className="input-group mb-3">
                   <div style={{ height: 40 }} className="input-group-prepend" >
                     <label style={{ width: 120 }} className="input-group-text" >Participants</label>
                   </div>
                   <div className="input-group-prepend">
-                    <label style={{ fontSize: "14px", minWidth: 200, backgroundColor: "white" }} className="input-group-text" >{props.nbrParticipants}</label>
+                    <TextField value={nbrParticipantsSelected} type="number" style={{ width: 200, backgroundColor: "white" }} size="small" label="Durée" variant="outlined" onChange={onChangerNbrParticipants} />
                   </div>
                 </div>
 
-              </div>
+              </div> */}
 
               <div hidden className="col-lg-5 col-md-5 ">
                 <div style={{ width: 420 }} className="input-group mb-3">
@@ -396,10 +417,10 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 
             <div className="row" style={{ paddingTop: "20px" }}>
               <div hidden={formateur ? true : false} className="col-lg-12 col-md-12">
-                <ComponentListFormateurs formateurs={formateurs} formateurSelected={props.formateurSelected}/>
+                <ComponentListFormateurs formateurs={formateurs} formateurSelected={props.formateurSelected} />
               </div>
               <div hidden={cabinet ? true : false} className="col-lg-12 col-md-12">
-                <ComponentListCabinets cabinets={cabinets} cabinetSelected={props.cabinetSelected}/>
+                <ComponentListCabinets cabinets={cabinets} cabinetSelected={props.cabinetSelected} />
               </div>
             </div>
           </div>

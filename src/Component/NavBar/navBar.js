@@ -236,7 +236,7 @@ export default function NavBar(props) {
                 <ListItemText primary="Documents" />
              </ListItem>
           </Link>
-          <Link to="/eLearning" className="navlink">
+          <Link to="/elearning" className="navlink">
              <ListItem button>
                 <ListItemIcon >
                   < CastForEducationIcon style={{color: "#B51B10"}}/>

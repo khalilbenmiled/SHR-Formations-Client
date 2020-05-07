@@ -23,6 +23,9 @@ import Alert from '@material-ui/lab/Alert';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import ComponentModalAddParticipants from "./component-modal-add-participants"
+import Moment from 'moment';
+import 'moment/locale/fr'
+
 
 const useStyles1 = makeStyles(theme => ({
   root: {
@@ -126,7 +129,7 @@ export default function CustomPaginationActionsTable(props) {
   const [themeSelected, setThemeSelected] = React.useState("");
   const [listModulesSelected, setListModulesSelected] = React.useState([]);
   const [modules, setModules] = React.useState([]);
-  const [sessionS, setSessionSelected] = React.useState("");
+  // const [sessionS, setSessionSelected] = React.useState("");
   const [dateDebut, setDateDebut] = React.useState("");
   const [dateFin, setDateFin] = React.useState("");
   const [maxParticipants, setMaxParticipants] = React.useState("");
@@ -134,11 +137,19 @@ export default function CustomPaginationActionsTable(props) {
   const [quarter, setQuarter] = React.useState("");
   const [alertAction, setAlertAction] = React.useState(false);
   const [alertModule, setAlertModule] = React.useState(false);
+  const [alertFormation, setAlertFormation] = React.useState(false);
   const [formationToDelete, setFormationToDelete] = React.useState("");
   const [alertRemove, setAlertRemove] = React.useState(false);
   const [alertSuccessRemove, setAlertSuccessRemove] = React.useState(false);
   const [openModalAddParticipants, setOpenModalAddParticipants] = React.useState(false);
   const [formateurCabinet, setFormateurCabinet] = React.useState(0);
+  const [idFormation, setIdFormation] = React.useState(0);
+  const [participantToSet, setParticipantToSet] = React.useState([]);
+  const [limiteParticipant, setLimiteParticipants] = React.useState(0);
+  const [listParticipants, setListParticipants] = React.useState([]);
+  const [alertSetParticipants, setAlertSetParticipant] = React.useState(false);
+  
+  const [collaborateursAndParticipants, setCollaborateursAndParticipants] = React.useState([]);
   const [cabinetFormateur, setFetchCabinetFormateur] = React.useState({
     role: "",
     data: {
@@ -159,7 +170,7 @@ export default function CustomPaginationActionsTable(props) {
   };
 
   const detailsFormations = (formation) => {
-    
+
     setFormation(formation)
     fetchParticipants(formation.id)
     fetchCabinetFormateur(formation.idCF)
@@ -253,13 +264,13 @@ export default function CustomPaginationActionsTable(props) {
           data: res.data.Cabinet
         }
         setFetchCabinetFormateur(obj)
-      }else if (res.data.Formateur) {
+      } else if (res.data.Formateur) {
         const obj = {
           role: "Formateur",
           data: res.data.Formateur
         }
         setFetchCabinetFormateur(obj)
-      }else {
+      } else {
         setFetchCabinetFormateur({
           role: "",
           data: {
@@ -353,7 +364,7 @@ export default function CustomPaginationActionsTable(props) {
 
   }
   const sessionSelected = (session) => {
-    setSessionSelected(session)
+    // setSessionSelected(session)
   }
 
   const dateDebutSelected = (date) => {
@@ -382,6 +393,52 @@ export default function CustomPaginationActionsTable(props) {
     console.log(participants)
   }
 
+  const participantsToAdd = (participants, id) => {
+    const tabs = []
+    participants.map(participant => {
+      tabs.push(participant.data)
+      return null
+    })
+    setParticipantToSet(tabs)
+  }
+
+  const SetParticipants = () => {
+    const obj = {
+      id: idFormation,
+      participants: participantToSet
+    }
+
+    axios.post("http://localhost:8585/formations/setListParticipantFormation",obj).then(res => {
+      if(res.data.Formation){
+        
+        const listFormation = rows
+        const index = listFormation.findIndex(formation => formation.id === res.data.Formation.id)
+
+        var dateDebut = new Date(res.data.Formation.dateDebut)
+        var dateFin = new Date(res.data.Formation.dateFin)
+        Moment.locale("fr");
+        var new_date = Moment(dateFin, "YYYY-MM-DD").add(1, "days")
+
+        const formation = {
+          id: res.data.Formation.id,
+          nomTheme: res.data.Formation.nomTheme,
+          typeTheme: res.data.Formation.typeTheme,
+          dateDebut: Moment(dateDebut).format("DD-MM-YYYY").toString(),
+          dateFin: Moment(new_date).format("DD-MM-YYYY").toString(),
+          listModules: res.data.Formation.listModules,
+          listParticipants: res.data.Formation.listParticipants,
+          maxParticipants: res.data.Formation.maxParticipants,
+          duree: res.data.Formation.duree,
+          idCF: res.data.Formation.idCF,
+          etat: res.data.Formation.etat
+        }
+        listFormation.splice(index, 1 , formation)
+        setRows(listFormation)
+        setAlertSetParticipant(true)
+      }
+    })
+  }
+
 
   const ajouterNouvelleFormation = () => {
 
@@ -394,7 +451,7 @@ export default function CustomPaginationActionsTable(props) {
       dateFin: dateFin.toString(),
       maxParticipants: maxParticipants,
       duree: "0",
-      idSession: sessionS.id,
+      idSession: "0",
       quarter: quarter,
       listModules: tabs,
       listParticipants: participantsS,
@@ -402,8 +459,9 @@ export default function CustomPaginationActionsTable(props) {
     }
 
     axios.post("http://localhost:8585/formations/", obj).then(res => {
-      console.log(res.data)
-
+      if (res.data.Formation) {
+        setAlertFormation(true)
+      }
     })
   }
 
@@ -429,12 +487,37 @@ export default function CustomPaginationActionsTable(props) {
   }
 
   const openAddParticipants = (formation) => {
+    const obj = {
+      id: formation.id
+    }
+    axios.post("http://localhost:8585/formations/collaborateurWithoutParticipant",
+      querystring.stringify(obj), {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      }
+    }).then(res => {
+      setCollaborateursAndParticipants(res.data.Collaborateurs)
+      setIdFormation(formation.id)
+    })
+    
+    setLimiteParticipants(formation.maxParticipants)
+    setListParticipants(formation.listParticipants)
     setOpenModalAddParticipants(true)
+    
   }
 
   const closeModalAddParticipants = () => {
     setOpenModalAddParticipants(false)
   }
+
+  const closeAlertFormation = () => {
+    setAlertFormation(false)
+  }
+
+  const closeAlertSetParticipant = ()=>{
+    setAlertSetParticipant(false)
+  }
+
 
 
 
@@ -533,7 +616,15 @@ export default function CustomPaginationActionsTable(props) {
         cabinetSelected={cabinetSelected}
       />
 
-      <ComponentModalAddParticipants open={openModalAddParticipants} handleClose={closeModalAddParticipants} />
+      <ComponentModalAddParticipants
+        open={openModalAddParticipants}
+        handleClose={closeModalAddParticipants}
+        users={collaborateursAndParticipants}
+        participantsToAdd={participantsToAdd}
+        SetParticipants={SetParticipants}
+        limiteParticipant = {limiteParticipant}
+        listParticipants={listParticipants}
+      />
 
       <Snackbar open={alertAction} autoHideDuration={5000} onClose={closeAlertAction}>
         <Alert onClose={closeAlertAction} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
@@ -550,6 +641,18 @@ export default function CustomPaginationActionsTable(props) {
       <Snackbar open={alertSuccessRemove} autoHideDuration={5000} onClose={closeAlertSuccessRemove}>
         <Alert onClose={closeAlertSuccessRemove} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
           Formation supprimé avec succées !
+        </Alert>
+      </Snackbar>
+
+      <Snackbar open={alertFormation} autoHideDuration={5000} onClose={closeAlertFormation}>
+        <Alert onClose={closeAlertFormation} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
+          Formation ajouter avec succées !
+        </Alert>
+      </Snackbar>
+
+      <Snackbar open={alertSetParticipants} autoHideDuration={5000} onClose={closeAlertSetParticipant}>
+        <Alert onClose={closeAlertSetParticipant} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
+          Participants ajouter avec succées !
         </Alert>
       </Snackbar>
 

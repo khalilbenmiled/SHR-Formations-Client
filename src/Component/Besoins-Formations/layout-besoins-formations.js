@@ -513,23 +513,45 @@ class Besoins extends Component {
         const besoin = {
             id: this.state.besoinToDelete
         }
-        axios.post("http://localhost:8686/besoins/remove",
-            querystring.stringify(besoin), {
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
-        }).then(res => {
-            if (res.data.Success) {
-                const listBesoins = this.state.listBesoins
-                const index = listBesoins.findIndex(besoin => besoin.id === this.state.besoinToDelete)
-                listBesoins.splice(index, 1)
-                this.setState({
-                    listBesoins: listBesoins,
-                    alertRemove: false,
-                    alertBesoinSupprimer: true
-                })
-            }
-        })
+        if (JSON.parse(localStorage.user).role === "COLLABORATEUR" || JSON.parse(localStorage.user).role === "TEAMLEAD") {
+            axios.post("http://localhost:8686/besoins/removeByCollaborateur",
+                querystring.stringify(besoin), {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
+                if (res.data.Success) {
+                    const listBesoins = this.state.listBesoins
+                    const index = listBesoins.findIndex(besoin => besoin.id === this.state.besoinToDelete)
+                    listBesoins.splice(index, 1)
+                    this.setState({
+                        listBesoins: listBesoins,
+                        alertRemove: false,
+                        alertBesoinSupprimer: true
+                    })
+                }
+            })
+        } else {
+
+            axios.post("http://localhost:8686/besoins/removeByManagerOrSf",
+                querystring.stringify(besoin), {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
+                if (res.data.Success) {
+                    const listBesoins = this.state.listBesoins
+                    const index = listBesoins.findIndex(besoin => besoin.id === this.state.besoinToDelete)
+                    listBesoins.splice(index, 1)
+                    this.setState({
+                        listBesoins: listBesoins,
+                        alertRemove: false,
+                        alertBesoinSupprimer: true
+                    })
+                }
+            })
+        }
+
     }
 
     annulerBesoin() {
@@ -605,34 +627,36 @@ class Besoins extends Component {
                 })
             }
 
-        })
+            axios.post("http://localhost:8686/besoinsPublier/retirer",
+                querystring.stringify(obj), {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
 
-        axios.post("http://localhost:8686/besoinsPublier/retirer",
-            querystring.stringify(obj), {
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
-        }).then(res => {
-
-            if (res.data.BesoinPublier) {
-                if (res.data.BesoinPublier.listBesoins.length === 0) {
+                if (res.data.BesoinPublier) {
+                    if (res.data.BesoinPublier.listBesoins.length === 0) {
+                        const listBesoinsPublier = this.state.listBesoinsPublier
+                        const index = listBesoinsPublier.findIndex(besoin => besoin.id === res.data.BesoinPublier.id)
+                        listBesoinsPublier.splice(index, 1)
+                        this.setState({
+                            listBesoinsPublier: listBesoinsPublier
+                        })
+                    }
+                } else {
                     const listBesoinsPublier = this.state.listBesoinsPublier
-                    const index = listBesoinsPublier.findIndex(besoin => besoin.id === res.data.BesoinPublier.id)
+                    const index = listBesoinsPublier.findIndex(besoin => besoin.id === res.data.Success)
                     listBesoinsPublier.splice(index, 1)
                     this.setState({
                         listBesoinsPublier: listBesoinsPublier
                     })
                 }
-            } else {
-                const listBesoinsPublier = this.state.listBesoinsPublier
-                const index = listBesoinsPublier.findIndex(besoin => besoin.id === res.data.Success)
-                listBesoinsPublier.splice(index, 1)
-                this.setState({
-                    listBesoinsPublier: listBesoinsPublier
-                })
-            }
+
+            })
 
         })
+
+
     }
 
     validerByManager(besoin) {
@@ -655,32 +679,34 @@ class Besoins extends Component {
                 listBesoins: listBesoins,
                 alertValiderBesoin: true
             })
+
+            axios.post("http://localhost:8686/besoinsPublier/publier",
+                querystring.stringify(obj), {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
+
+                if (res.data.BesoinPublier.listBesoins.length === 1) {
+                    const listBesoinsPublier = this.state.listBesoinsPublier
+                    listBesoinsPublier.push(res.data.BesoinPublier)
+                    this.setState({
+                        listBesoinsPublier: listBesoinsPublier
+                    })
+                } else {
+                    const listBesoinsPublier = this.state.listBesoinsPublier
+                    const index = listBesoinsPublier.findIndex(besoin => besoin.id === res.data.BesoinPublier.id)
+                    listBesoinsPublier.splice(index, 1, res.data.BesoinPublier)
+                    this.setState({
+                        listBesoinsPublier: listBesoinsPublier
+                    })
+                }
+
+            })
         })
 
 
-        axios.post("http://localhost:8686/besoinsPublier/publier",
-            querystring.stringify(obj), {
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
-        }).then(res => {
 
-            if (res.data.BesoinPublier.listBesoins.length === 1) {
-                const listBesoinsPublier = this.state.listBesoinsPublier
-                listBesoinsPublier.push(res.data.BesoinPublier)
-                this.setState({
-                    listBesoinsPublier: listBesoinsPublier
-                })
-            } else {
-                const listBesoinsPublier = this.state.listBesoinsPublier
-                const index = listBesoinsPublier.findIndex(besoin => besoin.id === res.data.BesoinPublier.id)
-                listBesoinsPublier.splice(index, 1, res.data.BesoinPublier)
-                this.setState({
-                    listBesoinsPublier: listBesoinsPublier
-                })
-            }
-
-        })
 
 
 

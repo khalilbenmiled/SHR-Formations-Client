@@ -77,7 +77,7 @@ export default function ScrollableTabsButtonAuto(props) {
           besoinSelected={props.besoinSelected}
           quarterSelected={props.quarterSelected}
           listBesoinsSelected={props.listBesoinsSelected}
-          nbrParticipants={props.nbrParticipants}
+          onChangerNbrParticipants={props.onChangerNbrParticipants}
           besoinUnselected={props.besoinUnselected}
           dateDebutSelected={props.dateDebutSelected}
           dateFinSelected={props.dateFinSelected}

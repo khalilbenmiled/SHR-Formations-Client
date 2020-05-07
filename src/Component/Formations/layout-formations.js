@@ -17,7 +17,6 @@ class LayoutFormations extends Component {
             listBesoins: [],
             listBesoinsSelected: [],
             quarterSelected: "",
-            nbrParticipants: 0,
             sessions: [],
             sessionSelected: "",
             dateDebutSelected: "",
@@ -29,7 +28,8 @@ class LayoutFormations extends Component {
             listFormations: [],
             alertAjouterSession: false,
             formateurCabinet: 0,
-            closePanel : false
+            closePanel: false,
+            nbrParticipants: 0
         }
     }
 
@@ -177,7 +177,7 @@ class LayoutFormations extends Component {
 
     ajouterSessionFormation() {
 
-        var idSession = this.state.sessionSelected.id
+        // var idSession = this.state.sessionSelected.id
         const tabs = []
         var nomTheme = this.state.listBesoinsSelected[0].theme.nom
         var typeTheme = this.state.listBesoinsSelected[0].theme.type
@@ -197,7 +197,7 @@ class LayoutFormations extends Component {
         })
 
         var listModules = tabs.filter((ele, ind) => ind === tabs.findIndex(elem => elem.nom === ele.nom))
-        console.log(listModules)
+  
         const obj = {
             nomTheme: nomTheme,
             typeTheme: typeTheme,
@@ -205,7 +205,7 @@ class LayoutFormations extends Component {
             dateFin: this.state.dateFinSelected.toString(),
             maxParticipants: this.state.nbrParticipants,
             duree: "0",
-            idSession: idSession,
+            idSession: "0",
             quarter: this.state.quarterSelected,
             listModules: listModules,
             listParticipants: this.state.participants,
@@ -213,13 +213,14 @@ class LayoutFormations extends Component {
         }
 
         axios.post("http://localhost:8585/formations/", obj).then(res => {
-            console.log(res.data)
+            if (res.data.Formation) {
+                this.setState({
+                    alertFormation: true
+                })
+            }
 
         })
 
-        this.setState({
-            alertFormation: true
-        })
     }
 
 
@@ -233,8 +234,12 @@ class LayoutFormations extends Component {
         this.setState({
             participants: participants,
         })
+
+    }
+
+    onChangerNbrParticipants(nb) {
         this.setState({
-            nbrParticipants: participants.length
+            nbrParticipants: nb
         })
     }
 
@@ -271,7 +276,7 @@ class LayoutFormations extends Component {
     }
 
     deleteBesoin(idBesoin, idBesoinPublier) {
- 
+
         const input = {
             idB: idBesoin,
             idBP: idBesoinPublier
@@ -284,9 +289,9 @@ class LayoutFormations extends Component {
             if (res.data.BesoinPublier) {
                 const tabs = this.state.listBesoins
                 const index = tabs.findIndex(b => b.id === idBesoinPublier)
-                tabs.splice(index, 1 , res.data.BesoinPublier)
+                tabs.splice(index, 1, res.data.BesoinPublier)
                 this.setState({
-                    listBesoins : tabs
+                    listBesoins: tabs
                 })
 
             } else if (res.data.Delete) {
@@ -294,8 +299,8 @@ class LayoutFormations extends Component {
                 const index = tabs.findIndex(b => b.id === idBesoinPublier)
                 tabs.splice(index, 1)
                 this.setState({
-                    listBesoins : tabs,
-                    closePanel : true
+                    listBesoins: tabs,
+                    closePanel: true
                 })
             }
         })
@@ -314,7 +319,6 @@ class LayoutFormations extends Component {
                                 besoinSelected={this.besoinSelected.bind(this)}
                                 quarterSelected={this.quarterSelected.bind(this)}
                                 listBesoinsSelected={this.state.listBesoinsSelected}
-                                nbrParticipants={this.state.nbrParticipants}
                                 besoinUnselected={this.besoinUnselected.bind(this)}
                                 dateDebutSelected={this.dateDebutSelected.bind(this)}
                                 dateFinSelected={this.dateFinSelected.bind(this)}
@@ -331,6 +335,7 @@ class LayoutFormations extends Component {
                                 cabinetSelected={this.cabinetSelected.bind(this)}
                                 deleteBesoin={this.deleteBesoin.bind(this)}
                                 closePanel={this.state.closePanel}
+                                onChangerNbrParticipants={this.onChangerNbrParticipants.bind(this)}
 
                             />
                         </div>

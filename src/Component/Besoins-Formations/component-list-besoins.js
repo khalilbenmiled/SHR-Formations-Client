@@ -271,7 +271,7 @@ export default function CustomPaginationActionsTable(props) {
                     :
                     <TableCell > </TableCell>
                 }
-                <TableCell hidden={JSON.parse(localStorage.user).role === "SERVICEFORMATIONS"} >
+                <TableCell hidden={JSON.parse(localStorage.user).role === "SERVICEFORMATIONS" || (JSON.parse(localStorage.user).id !== row.idUser && JSON.parse(localStorage.user).role === "COLLABORATEUR")} >
                   <DeleteForeverIcon onClick={props.openAlertRemoveBesoin.bind(this, row)} className={classess.iconRemove} />
                 </TableCell>
 

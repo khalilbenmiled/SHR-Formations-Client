@@ -7,6 +7,7 @@ import IsConnect from "./isConnected"
 import LayoutBesoinsFormations from "./Besoins-Formations/layout-besoins-formations";
 import LayoutFormations from "./Formations/layout-formations"
 import LayoutCabinetsFormateurs from "./Cabinets-Formateurs/layout-cabinet-formateur"
+import LayoutELearnin from "./E-Learning/layout-e-learning"
 class Index extends Component{
 
     render(){
@@ -18,6 +19,7 @@ class Index extends Component{
                 <PrivateRoute  path="/besoins" component={LayoutBesoinsFormations}  /> 
                 <PrivateRoute  path="/formations" component={LayoutFormations} /> 
                 <PrivateRoute  path="/cabinetsFormateurs" component={LayoutCabinetsFormateurs} />               
+                <PrivateRoute  path="/elearning" component={LayoutELearnin} />               
             </Switch>
           </BrowserRouter>
         )
