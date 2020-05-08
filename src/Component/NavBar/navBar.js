@@ -30,7 +30,7 @@ import { IconButton, Menu, MenuItem } from '@material-ui/core';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Badge from '@material-ui/core/Badge';
 import { withStyles } from '@material-ui/core/styles';
-
+import Logo from "../../images/logo.png"
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -39,13 +39,13 @@ const useStyles = makeStyles(theme => ({
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
-    backgroundImage : `url(${wallpaper})`,
-    backgroundPosition : "20% 90%"
+    backgroundImage: `url(${wallpaper})`,
+    backgroundPosition: "20% 90%"
   },
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
- 
+
   },
   drawerPaper: {
     width: drawerWidth,
@@ -54,30 +54,30 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     padding: theme.spacing(3),
   },
-  tabulation : {
-    marginLeft : '0px',
-    border : '1px solid #E0E0E0',
-    backgroundColor : '#F5F5F5',
+  tabulation: {
+    marginLeft: '0px',
+    border: '1px solid #E0E0E0',
+    backgroundColor: '#F5F5F5',
   },
   toolbar: theme.mixins.toolbar,
-  Typography : {
-    width : '80%'
+  Typography: {
+    width: '80%'
   },
-  userInfos : {
-    fontSize : "14px",
-    width : "15%"
+  userInfos: {
+    fontSize: "14px",
+    width: "15%"
   },
-  logout : {
-    cursor : 'pointer',
-    color : 'white',
-    width : '35px',
-    height : '35px',
-    "&:focus" : {
-      outline : "none"
+  logout: {
+    cursor: 'pointer',
+    color: 'white',
+    width: '35px',
+    height: '35px',
+    "&:focus": {
+      outline: "none"
     }
   },
-  menu : {
-    marginTop : "30px"
+  menu: {
+    marginTop: "30px"
   }
 }));
 
@@ -87,8 +87,8 @@ const StyledBadge = withStyles((theme) => ({
     top: 0,
     border: `2px solid #FED217`,
     padding: '0 4px',
-    color : "#B51B10",
-    backgroundColor : "#FED217"
+    color: "#B51B10",
+    backgroundColor: "#FED217"
   },
 }))(Badge);
 
@@ -96,7 +96,7 @@ export default function NavBar(props) {
 
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
- 
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleClick = () => {
     setOpen(!open);
@@ -123,32 +123,32 @@ export default function NavBar(props) {
 
           <IconButton hidden aria-describedby={id} onClick={openNotification} aria-label="cart">
             <StyledBadge badgeContent={4}  >
-              <NotificationsIcon style={{color : "#FED217" , width : 25 , height : 25}}/>
+              <NotificationsIcon style={{ color: "#FED217", width: 25, height: 25 }} />
             </StyledBadge>
           </IconButton>
 
-        
-          
-            <Menu
-              id={id}
-              anchorEl={anchorEl}
-              keepMounted
-              open={openNotif}
-              onClose={closeNotification}
-              className={classes.menu}
-            >
-              <MenuItem onClick={closeNotification}>Profile</MenuItem>
-              <MenuItem onClick={closeNotification}>My account</MenuItem>
-              <MenuItem onClick={closeNotification}>Logout</MenuItem>
-            </Menu>
-         
-          
+
+
+          <Menu
+            id={id}
+            anchorEl={anchorEl}
+            keepMounted
+            open={openNotif}
+            onClose={closeNotification}
+            className={classes.menu}
+          >
+            <MenuItem onClick={closeNotification}>Profile</MenuItem>
+            <MenuItem onClick={closeNotification}>My account</MenuItem>
+            <MenuItem onClick={closeNotification}>Logout</MenuItem>
+          </Menu>
+
+
 
           <Typography variant="h6" noWrap className={classes.userInfos}>
             {props.user.email}
           </Typography>
-          <Button onClick={props.onLogOut}>< ExitToAppIcon className={classes.logout}/></Button>
-            
+          <Button onClick={props.onLogOut}>< ExitToAppIcon className={classes.logout} /></Button>
+
         </Toolbar>
       </AppBar>
       <Drawer
@@ -159,96 +159,98 @@ export default function NavBar(props) {
         }}
       >
         <div className={classes.toolbar} />
-       
-        
+
+
         <List >
-            <Link to="/dashboard" className="navlink">
+          <Link to="/dashboard" className="navlink">
             <ListItem button>
-                <ListItemIcon>
-                  < DashboardIcon  style={{color: "#B51B10"}}/>
-                </ListItemIcon>
-                <ListItemText primary="Dashboard" className={classes.itemText}/>
-             </ListItem>
-            </Link>
-            <Link to="/besoins" className="navlink">
-             <ListItem button >
-                <ListItemIcon>
-                  < HelpOutlineIcon style={{color: "#B51B10"}}/>
-                </ListItemIcon>
-                <ListItemText primary="Besoins" />
-             </ListItem>
-            </Link>
-          
-              <ListItem  button onClick={handleClick}>
-                  <ListItemIcon>
-                    <SupervisorAccountIcon style={{color: "#B51B10"}}/>
-                  </ListItemIcon>
-                  <ListItemText primary="Collaborateur" />
-                  {open ? <ExpandLess /> : <ExpandMore />}
-             </ListItem>
-            
-             <Collapse in={open} timeout="auto" unmountOnExit>
-                    <List component="div"  className={classes.tabulation}>
-                      <ListItem button className={classes.nested}>
-                        <ListItemIcon />
-                        <ListItemText primary="Profile" />
-                      </ListItem>
-                      <ListItem button className={classes.nested}>
-                        <ListItemIcon />
-                        <ListItemText primary="Cursus" />
-                      </ListItem>
-                    </List>
-              </Collapse>
-             <Link to="/formations" className="navlink">
-              <ListItem button>
-                  <ListItemIcon>
-                    
-                    < LocalLibraryIcon style={{color: "#B51B10"}}/>
-                  </ListItemIcon>
-                  <ListItemText primary="Formations" />
+              <ListItemIcon>
+                < DashboardIcon style={{ color: "#B51B10" }} />
+              </ListItemIcon>
+              <ListItemText primary="Dashboard" className={classes.itemText} />
+            </ListItem>
+          </Link>
+          <Link to="/besoins" className="navlink">
+            <ListItem button >
+              <ListItemIcon>
+                < HelpOutlineIcon style={{ color: "#B51B10" }} />
+              </ListItemIcon>
+              <ListItemText primary="Besoins" />
+            </ListItem>
+          </Link>
+
+          <ListItem button onClick={handleClick}>
+            <ListItemIcon>
+              <SupervisorAccountIcon style={{ color: "#B51B10" }} />
+            </ListItemIcon>
+            <ListItemText primary="Collaborateur" />
+            {open ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <List component="div" className={classes.tabulation}>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon />
+                <ListItemText primary="Profile" />
               </ListItem>
-             </Link>
-             <Link to="/cabinetsFormateurs" className="navlink">
-              <ListItem button>
-                  <ListItemIcon>
-                    < AccountBalanceIcon style={{color: "#B51B10"}} />
-                  </ListItemIcon>
-                  <ListItemText primary="Cabinets/Formateurs" />
+              <ListItem button className={classes.nested}>
+                <ListItemIcon />
+                <ListItemText primary="Cursus" />
               </ListItem>
-             </Link>
-             <Link to="/salles" className="navlink">
-              <ListItem button>
-                  <ListItemIcon>
-                    < MeetingRoomIcon style={{color: "#B51B10"}}/>
-                  </ListItemIcon>
-                  <ListItemText primary="Salles" />
-              </ListItem>
-             </Link>
+            </List>
+          </Collapse>
+          <Link to="/formations" className="navlink">
+            <ListItem button>
+              <ListItemIcon>
+
+                < LocalLibraryIcon style={{ color: "#B51B10" }} />
+              </ListItemIcon>
+              <ListItemText primary="Formations" />
+            </ListItem>
+          </Link>
+          <Link to="/cabinetsFormateurs" className="navlink">
+            <ListItem button>
+              <ListItemIcon>
+                < AccountBalanceIcon style={{ color: "#B51B10" }} />
+              </ListItemIcon>
+              <ListItemText primary="Cabinets/Formateurs" />
+            </ListItem>
+          </Link>
+          <Link to="/salles" className="navlink">
+            <ListItem button>
+              <ListItemIcon>
+                < MeetingRoomIcon style={{ color: "#B51B10" }} />
+              </ListItemIcon>
+              <ListItemText primary="Salles" />
+            </ListItem>
+          </Link>
 
         </List>
         <Divider />
         <List>
           <Link to="/documents" className="navlink">
             <ListItem button>
-                <ListItemIcon>
-                  < DescriptionIcon style={{color: "#B51B10"}}/>
-                </ListItemIcon>
-                <ListItemText primary="Documents" />
-             </ListItem>
+              <ListItemIcon>
+                < DescriptionIcon style={{ color: "#B51B10" }} />
+              </ListItemIcon>
+              <ListItemText primary="Documents" />
+            </ListItem>
           </Link>
           <Link to="/elearning" className="navlink">
-             <ListItem button>
-                <ListItemIcon >
-                  < CastForEducationIcon style={{color: "#B51B10"}}/>
-                </ListItemIcon>
-                <ListItemText primary="E-Learning" />
-             </ListItem>
+            <ListItem button>
+              <ListItemIcon >
+                < CastForEducationIcon style={{ color: "#B51B10" }} />
+              </ListItemIcon>
+              <ListItemText primary="E-Learning" />
+            </ListItem>
           </Link>
-          
+
         </List>
+
+        <img src={Logo} alt="logo" style={{height : "80px" , width : "200px" , position :"fixed" , top :"88%" }} />
       </Drawer>
 
-      
+
    }
     </div>
   );

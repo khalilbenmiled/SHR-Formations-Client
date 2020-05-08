@@ -12,11 +12,18 @@ import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import { TableHead } from '@material-ui/core';
+import { TableHead, Snackbar } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-
+import ComponentModalInfos from "./component-modal-infos"
+import ComponentModalEdit from "./component-modal-edit"
+import ComponentModalAddQTF from "./component-modal-addQTF"
+import axios from "axios"
+import querystring from 'querystring'
+import Alert from '@material-ui/lab/Alert';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import AddToQueueIcon from '@material-ui/icons/AddToQueue';
 
 const useStyles1 = makeStyles(theme => ({
   root: {
@@ -104,6 +111,16 @@ export default function CustomPaginationActionsTable(props) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(4);
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const [openInfos, setOpenInfos] = React.useState(false);
+  const [openEdit, setOpenEdit] = React.useState(false);
+  const [alertQuiz, setAlertQuiz] = React.useState(false);
+  const [quizInfos, setQuizInfos] = React.useState("");
+  const [listQuestions, setListQuestions] = React.useState([]);
+  const [openAddQTF, setOpenAddQTF] = React.useState(false);
+  const [idQuiz, setIdQuiz] = React.useState("");
+  const [formations, setFormations] = React.useState([]);
+  
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -113,6 +130,77 @@ export default function CustomPaginationActionsTable(props) {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  const openModalInfos = (quiz) => {
+    setQuizInfos(quiz)
+    setListQuestions(quiz.listQuestions)
+    setOpenInfos(true)
+  }
+
+  const closeModalInfos = () => {
+    setOpenInfos(false)
+  }
+
+  const openModalEdit = (quiz) => {
+    setQuizInfos(quiz)
+    setOpenEdit(true)
+  }
+
+  const closeModalEdit = () => {
+    setOpenEdit(false)
+  }
+
+  const updateQuestion = (question) => {
+    axios.put("http://localhost:8787/quiz/", question).then(res => {
+      if (res.data.Question) {
+        const tabs = listQuestions
+        const index = tabs.findIndex(q => q.id === res.data.Question.id)
+        tabs.splice(index, 1, res.data.Question)
+        setListQuestions(tabs)
+        setOpenInfos(false)
+        setAlertQuiz(true)
+      }
+    })
+  }
+
+  const closeAlertQuiz = () => {
+    setAlertQuiz(false)
+  }
+
+  const openModalDeleteQuiz = (quiz) => {
+    props.openModalDeleteQuiz(quiz)
+  }
+
+  const openModalAddQuizToFormation = (quiz) => {
+    const obj = {
+      id : quiz.idFormation
+    }
+    axios.post("http://localhost:8585/formations/getFormationsWithouThistId",
+      querystring.stringify(obj), {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      }
+    }).then(res => {
+        if(res.data.Formations) {
+          setFormations(res.data.Formations)
+        }
+     })
+    setIdQuiz(quiz.id)
+    setOpenAddQTF(true)
+  }
+
+  const closeModalAddQTF = () => {
+    setOpenAddQTF(false)
+  }
+
+  const addQTF = (idFormation) => {
+    const obj = {
+      idQ: idQuiz,
+      idF: idFormation
+    }
+    props.addQTF(obj)
+  }
+
 
 
   return (
@@ -127,7 +215,7 @@ export default function CustomPaginationActionsTable(props) {
               <TableCell style={{ fontSize: 16, color: 'white' }}>Formation</TableCell>
               <TableCell style={{ fontSize: 16, color: 'white' }}>Du</TableCell>
               <TableCell style={{ fontSize: 16, color: 'white' }}>Au</TableCell>
-              <TableCell colSpan={3} style={{ fontSize: 16, color: 'white' }}></TableCell>
+              <TableCell colSpan={4} style={{ fontSize: 16, color: 'white' }}></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -141,9 +229,11 @@ export default function CustomPaginationActionsTable(props) {
                 <TableCell>{allFormations.find(f => f.id === row.idFormation).nomTheme}</TableCell>
                 <TableCell>{allFormations.find(f => f.id === row.idFormation).dateDebut}</TableCell>
                 <TableCell>{allFormations.find(f => f.id === row.idFormation).dateFin}</TableCell>
-                <TableCell><VisibilityIcon className={classes.iconInfo} /></TableCell>
-                <TableCell> <EditIcon className={classes.iconCheck} /></TableCell>
-                <TableCell> <DeleteForeverIcon className={classes.iconAnnuler} /> </TableCell>
+                <TableCell><VisibilityIcon onClick={openModalInfos.bind(this, row)} className={classes.iconInfo} /></TableCell>
+                <TableCell> <EditIcon onClick={openModalEdit.bind(this, row)} className={classes.iconCheck} /></TableCell>
+                <TableCell> <AddToQueueIcon onClick={openModalAddQuizToFormation.bind(this, row)} className={classes.iconCheck} /> </TableCell>
+                <TableCell> <DeleteForeverIcon onClick={openModalDeleteQuiz.bind(this, row)} className={classes.iconAnnuler} /> </TableCell>
+
 
               </TableRow>
             ))}
@@ -176,6 +266,34 @@ export default function CustomPaginationActionsTable(props) {
 
       </TableContainer>
 
+      <ComponentModalInfos
+        open={openInfos}
+        handleClose={closeModalInfos}
+        quizInfos={quizInfos}
+        listQuestions={listQuestions}
+        updateQuestion={updateQuestion}
+      />
+      <ComponentModalEdit
+        open={openEdit}
+        handleClose={closeModalEdit}
+        nomQuiz={quizInfos.nomQuiz}
+        nbrQuestion={quizInfos.nbrQuestion}
+        formations={props.formations}
+      />
+
+      <ComponentModalAddQTF
+        open={openAddQTF}
+        handleClose={closeModalAddQTF}
+        formations={formations}
+        addQTF={addQTF}
+      />
+
+
+      <Snackbar open={alertQuiz} autoHideDuration={5000} onClose={closeAlertQuiz}>
+        <Alert onClose={closeAlertQuiz} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
+          Question modifier !
+        </Alert>
+      </Snackbar>
     </>
 
   );

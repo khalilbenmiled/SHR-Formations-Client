@@ -10,7 +10,7 @@ import Box from '@material-ui/core/Box';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ComponentListQuiz from "./component-list-quiz"
-import { Button } from '@material-ui/core';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText } from '@material-ui/core';
 import ComponentModalQuiz from "./component-modal-quiz"
 
 function TabPanel(props) {
@@ -60,6 +60,8 @@ export default function FullWidthTabs(props) {
     const theme = useTheme();
     const [value, setValue] = React.useState(0);
     const [openQuiz, setOpenQuiz] = React.useState(false);
+    const [quizToDelete, setQuizToDelete] = React.useState("");
+    const [openModalDelete, setOpenModalDelete] = React.useState(false);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -77,6 +79,19 @@ export default function FullWidthTabs(props) {
         setOpenQuiz(true)
     }
 
+    const openModalDeleteQuiz = (quiz) => {
+        setQuizToDelete(quiz)
+        setOpenModalDelete(true)
+    }
+
+    const closeModalDelete = () => {
+        setOpenModalDelete(false)
+    }
+
+    const deleteQuiz = () => {
+        props.deleteQuiz(quizToDelete)
+        closeModalDelete(true)
+    }
 
     return (
         <div className={classes.root} >
@@ -100,7 +115,12 @@ export default function FullWidthTabs(props) {
             >
 
                 <TabPanel value={value} index={0} dir={theme.direction} >
-                    <ComponentListQuiz listQuiz={props.listQuiz} formations={props.formations}/>
+                    <ComponentListQuiz
+                        listQuiz={props.listQuiz}
+                        formations={props.formations}
+                        openModalDeleteQuiz={openModalDeleteQuiz}
+                        addQTF={props.addQTF}
+                    />
                     <Button onClick={openModalQuiz} className={classes.buttonStyles} size="small" variant="outlined" >
                         Ajouter un QUIZ
                     </Button>
@@ -111,7 +131,29 @@ export default function FullWidthTabs(props) {
                 </TabPanel>
 
             </SwipeableViews>
-            <ComponentModalQuiz ajouterQuiz={props.ajouterQuiz} open={openQuiz} handleClose={closeQuiz} formations={props.formations}/>
+            <ComponentModalQuiz ajouterQuiz={props.ajouterQuiz} open={openQuiz} handleClose={closeQuiz} formations={props.formations} />
+
+            <Dialog
+                open={openModalDelete}
+                onClose={closeModalDelete}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle className="titleDialog">Supprimer BESOIN</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Voulez-vous vraiment supprimer ce quiz ?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button className="annulerBtn" onClick={closeModalDelete} style={{ backgroundColor: "#E67A0A", color: "white" }}>
+                        Retour
+                    </Button>
+                    <Button className="supprimerBtn" onClick={deleteQuiz} style={{ backgroundColor: "#B51B10", color: "white" }} >
+                        Supprimer
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
 
 

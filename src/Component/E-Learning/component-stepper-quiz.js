@@ -308,23 +308,23 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                     </Step>
                 ))}
             </Stepper>
-            <div hidden={activeContent === 0 ? false : true} className="row" style={{marginTop : "10px"}}>
-                <div className="col-lg-12 col-md-12">
-                    <div className="input-group mb-3 ">
+            <div hidden={activeContent === 0 ? false : true} className="row" style={{marginTop : "10px" , width : "90%" , margin : "auto" , paddingTop :"20px" , backgroundColor : "#FAFAFA" , boxShadow : "0px 0px 1px"}}>
+                <div className="col-lg-12 col-md-12" > 
+                    <div className="input-group mb-3" style={{marginLeft : "130px"}}>
                         <div className="input-group-prepend">
                             <label style={{ width: 130 }} className="input-group-text" >Nom </label>
                         </div>
                         <TextField onChange={onChangeNom} size="small" label="Nom" variant="outlined" style={{ width: 260, backgroundColor: "white" }}  > </TextField>
                     </div>
 
-                    <div className="input-group mb-3 ">
+                    <div className="input-group mb-3 "  style={{marginLeft : "130px"}}>
                         <div className="input-group-prepend">
                             <label style={{ width: 130 }} className="input-group-text" >Nbr Questions </label>
                         </div>
                         <TextField type="number" onChange={onChangeNombreQuestion} size="small" label="Nombre de questions" variant="outlined" style={{ width: 260, backgroundColor: "white" }}  > </TextField>
                     </div>
 
-                    <div className="input-group mb-3 ">
+                    <div className="input-group mb-3 "  style={{marginLeft : "130px"}}>
                         <div className="input-group-prepend">
                             <label style={{ width: 130 }} className="input-group-text" >Formation </label>
                         </div>
@@ -341,7 +341,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                 </div>
             </div>
 
-            <div hidden={activeContent === 1 ? false : true} className="row">
+            <div hidden={activeContent === 1 ? false : true} className="row" style={{ paddingTop : "10px", width : "98%" , margin : "auto" ,marginBottom : "20px", backgroundColor : "#FAFAFA" , boxShadow : "0px 0px 1px"}}>
                 <div className="col-lg-12 col-md-12">
                     <div className="row">
                         <div className="col-lg-8 col-md-8 offset-lg-3 offset-md-3">
@@ -436,7 +436,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
             </div>
 
 
-            <div style={{ position: "fixed", top: "75%" }}>
+            <div style={{ position: "fixed", top: "80%" }}>
                 {activeStep === steps.length ? (
                     <div>
                         <Typography className={classes.instructions}>All steps completed</Typography>
