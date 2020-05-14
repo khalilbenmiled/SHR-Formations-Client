@@ -12,6 +12,10 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import ComponentListQuiz from "./component-list-quiz"
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText } from '@material-ui/core';
 import ComponentModalQuiz from "./component-modal-quiz"
+import StarsIcon from '@material-ui/icons/Stars';
+import ComponentQuiz from "./component-quiz"
+import ComponentListScores from "./component-list-scores"
+
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -106,6 +110,7 @@ export default function FullWidthTabs(props) {
                 >
                     <Tab style={{ outline: "none" }} label="Gerer QUIZ" icon={<SettingsIcon />} />
                     <Tab style={{ outline: "none" }} label="Resultats Quiz" icon={<ListAltIcon />} />
+                    <Tab style={{ outline: "none" }} label="Quiz" icon={<StarsIcon />} />
                 </Tabs>
             </AppBar>
             <SwipeableViews
@@ -127,7 +132,16 @@ export default function FullWidthTabs(props) {
                 </TabPanel>
 
                 <TabPanel value={value} index={1} dir={theme.direction}>
+                    <ComponentListScores scores={props.scores} formations={props.formations} />
+                </TabPanel>
 
+                <TabPanel value={value} index={2} dir={theme.direction}>
+                    <ComponentQuiz
+                        quizCollaborateurs={props.quizCollaborateurs}
+                        passerQuiz={props.passerQuiz}
+                        rateFormation={props.rateFormation}
+                        formations={props.formations}
+                    />
                 </TabPanel>
 
             </SwipeableViews>

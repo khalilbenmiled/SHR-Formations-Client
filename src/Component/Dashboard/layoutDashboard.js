@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import Dashboard from "./dashboard"
+import ComponentTabs from "./component-tabs"
 import LayoutNavbar from "../NavBar/layoutNavbar"
 import "./dashboard.css"
 
@@ -15,8 +15,13 @@ class LayoutDashboard extends Component {
         return (
             <>
                 <LayoutNavbar disconnect={this.disconnect.bind(this)} />
-                <div className="content">
-                    <Dashboard />
+
+                <div className="container content layoutBesoins">
+                    <div className="row">
+                        <div className="col-lg-12 col-md-12">
+                            <ComponentTabs />
+                        </div>
+                    </div>
                 </div>
             </>
         )

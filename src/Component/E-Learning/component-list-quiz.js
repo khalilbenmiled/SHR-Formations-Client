@@ -13,14 +13,14 @@ import IconButton from '@material-ui/core/IconButton';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import { TableHead, Snackbar } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
+// import EditIcon from '@material-ui/icons/Edit';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import ComponentModalInfos from "./component-modal-infos"
 import ComponentModalEdit from "./component-modal-edit"
 import ComponentModalAddQTF from "./component-modal-addQTF"
 import axios from "axios"
-import querystring from 'querystring'
+// import querystring from 'querystring'
 import Alert from '@material-ui/lab/Alert';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import AddToQueueIcon from '@material-ui/icons/AddToQueue';
@@ -118,8 +118,8 @@ export default function CustomPaginationActionsTable(props) {
   const [listQuestions, setListQuestions] = React.useState([]);
   const [openAddQTF, setOpenAddQTF] = React.useState(false);
   const [idQuiz, setIdQuiz] = React.useState("");
-  const [formations, setFormations] = React.useState([]);
-  
+  // const [formations, setFormations] = React.useState([]);
+
 
 
   const handleChangePage = (event, newPage) => {
@@ -141,10 +141,10 @@ export default function CustomPaginationActionsTable(props) {
     setOpenInfos(false)
   }
 
-  const openModalEdit = (quiz) => {
-    setQuizInfos(quiz)
-    setOpenEdit(true)
-  }
+  // const openModalEdit = (quiz) => {
+  //   setQuizInfos(quiz)
+  //   setOpenEdit(true)
+  // }
 
   const closeModalEdit = () => {
     setOpenEdit(false)
@@ -172,19 +172,19 @@ export default function CustomPaginationActionsTable(props) {
   }
 
   const openModalAddQuizToFormation = (quiz) => {
-    const obj = {
-      id : quiz.idFormation
-    }
-    axios.post("http://localhost:8585/formations/getFormationsWithouThistId",
-      querystring.stringify(obj), {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      }
-    }).then(res => {
-        if(res.data.Formations) {
-          setFormations(res.data.Formations)
-        }
-     })
+    // const obj = {
+    //   id: quiz.idFormation
+    // }
+    // axios.post("http://localhost:8585/formations/getFormationsWithouThistId",
+    //   querystring.stringify(obj), {
+    //   headers: {
+    //     "Content-Type": "application/x-www-form-urlencoded"
+    //   }
+    // }).then(res => {
+    //   if (res.data.Formations) {
+    //     setFormations(res.data.Formations)
+    //   }
+    // })
     setIdQuiz(quiz.id)
     setOpenAddQTF(true)
   }
@@ -199,6 +199,18 @@ export default function CustomPaginationActionsTable(props) {
       idF: idFormation
     }
     props.addQTF(obj)
+  }
+
+  const getFormationNom = (row) => {
+    return allFormations.find(f => f.id === row.idFormation).nomTheme
+  }
+
+  const getFormationDu = (row) => {
+    return allFormations.find(f => f.id === row.idFormation).dateDebut
+  }
+
+  const getFormationAu = (row) => {
+    return allFormations.find(f => f.id === row.idFormation).dateFin
   }
 
 
@@ -226,11 +238,11 @@ export default function CustomPaginationActionsTable(props) {
               <TableRow key={index}>
                 <TableCell>{row.id}</TableCell>
                 <TableCell>{row.nomQuiz}</TableCell>
-                <TableCell>{allFormations.find(f => f.id === row.idFormation).nomTheme}</TableCell>
-                <TableCell>{allFormations.find(f => f.id === row.idFormation).dateDebut}</TableCell>
-                <TableCell>{allFormations.find(f => f.id === row.idFormation).dateFin}</TableCell>
+                <TableCell>{getFormationNom(row)}</TableCell>
+                <TableCell>{getFormationDu(row)}</TableCell>
+                <TableCell>{getFormationAu(row)}</TableCell>
                 <TableCell><VisibilityIcon onClick={openModalInfos.bind(this, row)} className={classes.iconInfo} /></TableCell>
-                <TableCell> <EditIcon onClick={openModalEdit.bind(this, row)} className={classes.iconCheck} /></TableCell>
+                {/* <TableCell> <EditIcon onClick={openModalEdit.bind(this, row)} className={classes.iconCheck} /></TableCell> */}
                 <TableCell> <AddToQueueIcon onClick={openModalAddQuizToFormation.bind(this, row)} className={classes.iconCheck} /> </TableCell>
                 <TableCell> <DeleteForeverIcon onClick={openModalDeleteQuiz.bind(this, row)} className={classes.iconAnnuler} /> </TableCell>
 
@@ -284,7 +296,7 @@ export default function CustomPaginationActionsTable(props) {
       <ComponentModalAddQTF
         open={openAddQTF}
         handleClose={closeModalAddQTF}
-        formations={formations}
+        formations={props.formations}
         addQTF={addQTF}
       />
 

@@ -19,7 +19,9 @@ class LayoutCabinetsFormateurs extends Component {
             listQuiz: [],
             alertQuiz: false,
             alertDeleteQuiz: false,
-            alerAddQTF: false
+            alerAddQTF: false,
+            quizCollaborateurs: [],
+            scores: []
         }
     }
 
@@ -67,6 +69,50 @@ class LayoutCabinetsFormateurs extends Component {
             }
 
         })
+
+        if (JSON.parse(localStorage.user).role === "COLLABORATEUR") {
+            const obj = {
+                id: JSON.parse(localStorage.user).id
+            }
+            axios.post("http://localhost:8787/quiz/byCollaborateur",
+                querystring.stringify(obj), {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
+                this.setState({
+                    quizCollaborateurs: res.data.Quiz
+                })
+            })
+
+            axios.post("http://localhost:8787/quiz/getListScoreByCollaborateur",
+                querystring.stringify(obj), {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
+                if (res.data.Scores) {
+                    this.setState({
+                        scores: res.data.Scores
+                    })
+                }
+
+            })
+        }
+
+
+        if (JSON.parse(localStorage.user).role === "SERVICEFORMATIONS") {
+            axios.get("http://localhost:8787/quiz/getListScore").then(res => {
+                if (res.data.Scores) {
+                    this.setState({
+                        scores: res.data.Scores
+                    })
+                }
+            })
+        }
+
+
+
     }
 
     disconnect() {
@@ -118,7 +164,7 @@ class LayoutCabinetsFormateurs extends Component {
     }
 
     addQTF(obj) {
-        console.log(obj)
+
         axios.post("http://localhost:8787/quiz/addQTF",
             querystring.stringify(obj), {
             headers: {
@@ -142,6 +188,55 @@ class LayoutCabinetsFormateurs extends Component {
         })
     }
 
+    passerQuiz(mesReponses, idQuiz) {
+        const input = {
+            mesReponses: mesReponses,
+            idQuiz: idQuiz,
+            idCollaborateur: JSON.parse(localStorage.user).id
+        }
+        axios.post("http://localhost:8787/quiz/calculScore", input).then(res => {
+            const tabs = this.state.quizCollaborateurs
+            const index = tabs.findIndex(q => q.id === idQuiz)
+            tabs.splice(index, 1)
+            this.setState({
+                quizCollaborateurs: tabs
+            })
+
+            const obj = {
+                id: JSON.parse(localStorage.user).id
+            }
+            axios.post("http://localhost:8787/quiz/getListScoreByCollaborateur",
+                querystring.stringify(obj), {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
+                if (res.data.Scores) {
+                    this.setState({
+                        scores: res.data.Scores
+                    })
+                }
+            })
+
+        })
+    }
+
+    rateFormation(idFormation, star) {
+        const input = {
+            idFormation: idFormation,
+            star: star
+        }
+        axios.post("http://localhost:8585/formations/rate",
+            querystring.stringify(input), {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        }).then(res => {
+            console.log(res.data)
+        })
+
+    }
+
     render() {
         return (
             <>
@@ -155,6 +250,10 @@ class LayoutCabinetsFormateurs extends Component {
                                 listQuiz={this.state.listQuiz}
                                 deleteQuiz={this.deleteQuiz.bind(this)}
                                 addQTF={this.addQTF.bind(this)}
+                                quizCollaborateurs={this.state.quizCollaborateurs}
+                                passerQuiz={this.passerQuiz.bind(this)}
+                                scores={this.state.scores}
+                                rateFormation={this.rateFormation.bind(this)}
                             />
                         </div>
                     </div>

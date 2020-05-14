@@ -129,13 +129,13 @@ export default function TransitionsModal(props) {
                                                     <label style={{ fontWeight: "bold" }}>Etat : </label> <label></label> <br />
                                                     <label style={{ fontWeight: "bold" }}>Nombres de participants : </label> <label>{props.participants.length}</label> <br />
                                                     <label style={{ fontWeight: "bold" }}>Max participants : </label> <label>{props.formation.maxParticipants}</label> <br />
-                                                    <label style={{ fontWeight: "bold" }}>Cabinet / Formateur : </label> 
-                                                        <label>
-                                                            {
-                                                            props.cabinetFormateur.role ==="Formateur" ? props.cabinetFormateur.data.nom + " " + props.cabinetFormateur.data.prenom 
-                                                            : props.cabinetFormateur.data.nom + " " + props.cabinetFormateur.data.contact
-                                                            }
-                                                        </label> <br />
+                                                    <label style={{ fontWeight: "bold" }}>Cabinet / Formateur : </label>
+                                                    <label>
+                                                        {
+                                                            props.cabinetFormateur.role === "Formateur" ? props.cabinetFormateur.data.nom + " " + props.cabinetFormateur.data.prenom
+                                                                : props.cabinetFormateur.data.nom + " " + props.cabinetFormateur.data.contact
+                                                        }
+                                                    </label> <br />
                                                 </div>
 
 

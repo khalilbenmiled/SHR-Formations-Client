@@ -8,6 +8,9 @@ import LayoutBesoinsFormations from "./Besoins-Formations/layout-besoins-formati
 import LayoutFormations from "./Formations/layout-formations"
 import LayoutCabinetsFormateurs from "./Cabinets-Formateurs/layout-cabinet-formateur"
 import LayoutELearnin from "./E-Learning/layout-e-learning"
+import LayoutThemesModules from "./Themes&Modules/layout-themes-modules"
+import LayoutUtilisateur from "./Utilisateurs/layout-utilisateurs"
+
 class Index extends Component{
 
     render(){
@@ -20,6 +23,8 @@ class Index extends Component{
                 <PrivateRoute  path="/formations" component={LayoutFormations} /> 
                 <PrivateRoute  path="/cabinetsFormateurs" component={LayoutCabinetsFormateurs} />               
                 <PrivateRoute  path="/elearning" component={LayoutELearnin} />               
+                <PrivateRoute  path="/themes" component={LayoutThemesModules} />               
+                <PrivateRoute  path="/utilisateurs" component={LayoutUtilisateur} />               
             </Switch>
           </BrowserRouter>
         )

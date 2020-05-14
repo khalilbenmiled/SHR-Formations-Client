@@ -140,9 +140,12 @@ class Besoins extends Component {
             })
         } else {
             axios.get("http://localhost:8686/besoins").then(res => {
-                this.setState({
-                    listBesoins: res.data.Besoins
-                })
+                if (res.data.Besoins) {
+                    this.setState({
+                        listBesoins: res.data.Besoins
+                    })
+                }
+
             })
         }
 

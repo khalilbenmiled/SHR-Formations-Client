@@ -17,9 +17,6 @@ import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import DescriptionIcon from '@material-ui/icons/Description';
 import CastForEducationIcon from '@material-ui/icons/CastForEducation';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import Collapse from '@material-ui/core/Collapse';
 import Button from '@material-ui/core/Button'
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
@@ -31,6 +28,9 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import Badge from '@material-ui/core/Badge';
 import { withStyles } from '@material-ui/core/styles';
 import Logo from "../../images/logo.png"
+import GroupWorkIcon from '@material-ui/icons/GroupWork';
+import PersonIcon from '@material-ui/icons/Person';
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -95,12 +95,8 @@ const StyledBadge = withStyles((theme) => ({
 export default function NavBar(props) {
 
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const handleClick = () => {
-    setOpen(!open);
-  };
 
   const openNotification = (event) => {
     setAnchorEl(event.currentTarget);
@@ -158,8 +154,11 @@ export default function NavBar(props) {
           paper: classes.drawerPaper,
         }}
       >
+        
         <div className={classes.toolbar} />
 
+        <img src={Logo} alt="logo" style={{height : "70px" , width : "200px" ,  }} />
+        <Divider />
 
         <List >
           <Link to="/dashboard" className="navlink">
@@ -179,26 +178,17 @@ export default function NavBar(props) {
             </ListItem>
           </Link>
 
-          <ListItem button onClick={handleClick}>
-            <ListItemIcon>
-              <SupervisorAccountIcon style={{ color: "#B51B10" }} />
-            </ListItemIcon>
-            <ListItemText primary="Collaborateur" />
-            {open ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
+         
+          <Link to="/collaborateurs" className="navlink">
+            <ListItem button>
+              <ListItemIcon>
 
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <List component="div" className={classes.tabulation}>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon />
-                <ListItemText primary="Profile" />
-              </ListItem>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon />
-                <ListItemText primary="Cursus" />
-              </ListItem>
-            </List>
-          </Collapse>
+                < PersonIcon style={{ color: "#B51B10" }} />
+              </ListItemIcon>
+              <ListItemText primary="Collaborateurs" />
+            </ListItem>
+          </Link>
+
           <Link to="/formations" className="navlink">
             <ListItem button>
               <ListItemIcon>
@@ -206,6 +196,15 @@ export default function NavBar(props) {
                 < LocalLibraryIcon style={{ color: "#B51B10" }} />
               </ListItemIcon>
               <ListItemText primary="Formations" />
+            </ListItem>
+          </Link>
+          <Link to="/themes" className="navlink">
+            <ListItem button>
+              <ListItemIcon>
+
+                < GroupWorkIcon style={{ color: "#B51B10" }} />
+              </ListItemIcon>
+              <ListItemText primary="Themes/Modules" />
             </ListItem>
           </Link>
           <Link to="/cabinetsFormateurs" className="navlink">
@@ -245,9 +244,19 @@ export default function NavBar(props) {
             </ListItem>
           </Link>
 
+          <Divider />
+          <Divider />
+          <Link to="/utilisateurs" className="navlink">
+            <ListItem button>
+              <ListItemIcon >
+                < SupervisorAccountIcon style={{ color: "#B51B10" }} />
+              </ListItemIcon>
+              <ListItemText primary="Utilisateurs" />
+            </ListItem>
+          </Link>
+
         </List>
 
-        <img src={Logo} alt="logo" style={{height : "80px" , width : "200px" , position :"fixed" , top :"88%" }} />
       </Drawer>
 
 

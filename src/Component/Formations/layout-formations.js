@@ -65,7 +65,7 @@ class LayoutFormations extends Component {
                         nomTheme: formation.nomTheme,
                         typeTheme: formation.typeTheme,
                         dateDebut: Moment(dateDebut).format("DD-MM-YYYY").toString(),
-                        dateFin: Moment(new_date).format("DD-MM-YYYY").toString(),
+                        dateFin: Moment(dateFin).format("DD-MM-YYYY").toString(),
                         listModules: formation.listModules,
                         listParticipants: formation.listParticipants,
                         maxParticipants: formation.maxParticipants,

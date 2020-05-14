@@ -106,6 +106,7 @@ export default class DemoApp extends React.Component {
       }
     }).then(res => {
       if (res.data.Formation) {
+        this.fetchParticipants(res.data.Formation.id)
         this.setState({
           openModal: true,
           formation: res.data.Formation
@@ -118,27 +119,11 @@ export default class DemoApp extends React.Component {
       }
     })
 
-    const obj = {
-      idFormation: event.event.id
-    }
-    axios.post("http://localhost:8585/sessions/byFormation",
-      querystring.stringify(obj), {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      }
-    }).then(res => {
-      if (res.data.Session) {
-        this.setState({
-          session: res.data.Session
-        })
-      }
-    })
-
   }
 
-  fetchParticipants() {
+   fetchParticipants (id)  {
     const input = {
-      id: this.state.formation.id
+      id: id
     }
 
     axios.post("http://localhost:8585/formations/participants",
@@ -149,7 +134,7 @@ export default class DemoApp extends React.Component {
     }).then(res => {
       if (res.data.Participants) {
         this.setState({
-          listParticipants: res.data.Participants
+          listParticipants : res.data.Participants
         })
       }
 
@@ -194,9 +179,7 @@ export default class DemoApp extends React.Component {
           open={this.state.openModal}
           handleClose={this.handleClose.bind(this)}
           formation={this.state.formation}
-          session={this.state.session}
-          fetchParticipants={this.fetchParticipants.bind(this)}
-          listParticipants={this.state.listParticipants}
+          participants={this.state.listParticipants}
         />
       </>
     )
