@@ -111,6 +111,7 @@ export default function FullWidthTabs(props) {
                     <Tab style={{ outline: "none" }} label="Gerer QUIZ" icon={<SettingsIcon />} />
                     <Tab style={{ outline: "none" }} label="Resultats Quiz" icon={<ListAltIcon />} />
                     <Tab style={{ outline: "none" }} label="Quiz" icon={<StarsIcon />} />
+                    <Tab style={{ outline: "none" }} label="Ressources" icon={<StarsIcon />} />
                 </Tabs>
             </AppBar>
             <SwipeableViews

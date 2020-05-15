@@ -25,6 +25,13 @@ class LayoutCabinetsFormateurs extends Component {
         }
     }
 
+    componentWillMount() {
+        if (JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" && JSON.parse(localStorage.user).role !== "COLLABORATEUR" ) {
+            this.props.history.push({
+                pathname: "/404NOTFOUND"
+            })
+        }
+    }
 
 
     componentDidMount() {

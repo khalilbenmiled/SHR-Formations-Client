@@ -154,10 +154,10 @@ export default function NavBar(props) {
           paper: classes.drawerPaper,
         }}
       >
-        
+
         <div className={classes.toolbar} />
 
-        <img src={Logo} alt="logo" style={{height : "70px" , width : "200px" ,  }} />
+        <img src={Logo} alt="logo" style={{ height: "70px", width: "200px", }} />
         <Divider />
 
         <List >
@@ -169,6 +169,7 @@ export default function NavBar(props) {
               <ListItemText primary="Dashboard" className={classes.itemText} />
             </ListItem>
           </Link>
+
           <Link to="/besoins" className="navlink">
             <ListItem button >
               <ListItemIcon>
@@ -178,7 +179,7 @@ export default function NavBar(props) {
             </ListItem>
           </Link>
 
-         
+
           <Link to="/collaborateurs" className="navlink">
             <ListItem button>
               <ListItemIcon>
@@ -189,7 +190,7 @@ export default function NavBar(props) {
             </ListItem>
           </Link>
 
-          <Link to="/formations" className="navlink">
+          <Link  to="/formations" className="navlink">
             <ListItem button>
               <ListItemIcon>
 
@@ -198,7 +199,8 @@ export default function NavBar(props) {
               <ListItemText primary="Formations" />
             </ListItem>
           </Link>
-          <Link to="/themes" className="navlink">
+
+          <Link hidden={JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false} to="/themes" className="navlink">
             <ListItem button>
               <ListItemIcon>
 
@@ -207,7 +209,8 @@ export default function NavBar(props) {
               <ListItemText primary="Themes/Modules" />
             </ListItem>
           </Link>
-          <Link to="/cabinetsFormateurs" className="navlink">
+
+          <Link hidden={JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false} to="/cabinetsFormateurs" className="navlink">
             <ListItem button>
               <ListItemIcon>
                 < AccountBalanceIcon style={{ color: "#B51B10" }} />
@@ -215,7 +218,8 @@ export default function NavBar(props) {
               <ListItemText primary="Cabinets/Formateurs" />
             </ListItem>
           </Link>
-          <Link to="/salles" className="navlink">
+
+          <Link hidden={JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false}  to="/salles" className="navlink">
             <ListItem button>
               <ListItemIcon>
                 < MeetingRoomIcon style={{ color: "#B51B10" }} />
@@ -227,16 +231,18 @@ export default function NavBar(props) {
         </List>
         <Divider />
         <List>
+
           <Link to="/documents" className="navlink">
-            <ListItem button>
+            <ListItem hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS"  ? true : false} button>
               <ListItemIcon>
                 < DescriptionIcon style={{ color: "#B51B10" }} />
               </ListItemIcon>
               <ListItemText primary="Documents" />
             </ListItem>
           </Link>
+
           <Link to="/elearning" className="navlink">
-            <ListItem button>
+            <ListItem hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" && JSON.parse(localStorage.user).role !== "COLLABORATEUR" ? true : false} button>
               <ListItemIcon >
                 < CastForEducationIcon style={{ color: "#B51B10" }} />
               </ListItemIcon>
@@ -244,10 +250,11 @@ export default function NavBar(props) {
             </ListItem>
           </Link>
 
-          <Divider />
-          <Divider />
+          <Divider hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} />
+          <Divider hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false}/>
+
           <Link to="/utilisateurs" className="navlink">
-            <ListItem button>
+            <ListItem hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} button>
               <ListItemIcon >
                 < SupervisorAccountIcon style={{ color: "#B51B10" }} />
               </ListItemIcon>

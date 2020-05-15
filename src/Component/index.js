@@ -10,7 +10,7 @@ import LayoutCabinetsFormateurs from "./Cabinets-Formateurs/layout-cabinet-forma
 import LayoutELearnin from "./E-Learning/layout-e-learning"
 import LayoutThemesModules from "./Themes&Modules/layout-themes-modules"
 import LayoutUtilisateur from "./Utilisateurs/layout-utilisateurs"
-
+import LayoutNOTFOUND from "./404"
 class Index extends Component{
 
     render(){
@@ -24,7 +24,9 @@ class Index extends Component{
                 <PrivateRoute  path="/cabinetsFormateurs" component={LayoutCabinetsFormateurs} />               
                 <PrivateRoute  path="/elearning" component={LayoutELearnin} />               
                 <PrivateRoute  path="/themes" component={LayoutThemesModules} />               
-                <PrivateRoute  path="/utilisateurs" component={LayoutUtilisateur} />               
+                <PrivateRoute  path="/utilisateurs" component={LayoutUtilisateur} />  
+                <PrivateRoute  path="/404NOTFOUND" component={LayoutNOTFOUND} />  
+                             
             </Switch>
           </BrowserRouter>
         )

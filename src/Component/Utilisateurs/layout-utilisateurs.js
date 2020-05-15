@@ -9,6 +9,7 @@ import WarningIcon from '@material-ui/icons/Warning';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+
 class LayoutCabinetsFormateurs extends Component {
 
     constructor(props) {
@@ -28,6 +29,13 @@ class LayoutCabinetsFormateurs extends Component {
         }
     }
 
+    componentWillMount() {
+        if(JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS"){
+            this.props.history.push({
+                pathname: "/404NOTFOUND"
+            })
+        } 
+    }
     componentDidMount() {
         axios.get("http://localhost:8181/users").then(res => {
             if (res.data.Users) {
@@ -289,6 +297,7 @@ class LayoutCabinetsFormateurs extends Component {
 
     render() {
         return (
+
             <>
                 <LayoutNavbar disconnect={this.disconnect.bind(this)} />
                 <div className="container content layoutBesoins">
@@ -336,6 +345,7 @@ class LayoutCabinetsFormateurs extends Component {
                 </Snackbar>
 
             </>
+
         )
     }
 }

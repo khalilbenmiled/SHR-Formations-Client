@@ -16,6 +16,7 @@ class LayoutCabinetsFormateurs extends Component {
         }
     }
 
+
     componentDidMount() {
         axios.get("http://localhost:8282/domaine").then(res => {
             if (res.data.domaines) {
