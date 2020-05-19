@@ -17,6 +17,14 @@ class LayoutCabinetsFormateurs extends Component {
     }
 
 
+    componentWillMount() {
+        if (JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS") {
+            this.props.history.push({
+                pathname: "/404NOTFOUND"
+            })
+        }
+    }
+
     componentDidMount() {
         axios.get("http://localhost:8282/domaine").then(res => {
             if (res.data.domaines) {
@@ -95,8 +103,8 @@ class LayoutCabinetsFormateurs extends Component {
     }
 
     deleteFormateur(formateur) {
-        const id= {
-            id : formateur.id
+        const id = {
+            id: formateur.id
         }
         axios.post("http://localhost:8282/formateurs/delete",
             querystring.stringify(id), {
@@ -132,8 +140,8 @@ class LayoutCabinetsFormateurs extends Component {
             if (res.data.Formateur) {
                 const tabs = this.state.formateurs
                 const index = tabs.findIndex(form => form.id === res.data.Formateur.id)
-                tabs.splice(index,1,res.data.Formateur)
-             
+                tabs.splice(index, 1, res.data.Formateur)
+
                 this.setState({
                     formateurs: tabs
                 })

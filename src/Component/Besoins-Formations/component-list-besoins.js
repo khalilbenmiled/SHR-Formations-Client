@@ -239,11 +239,11 @@ export default function CustomPaginationActionsTable(props) {
                 {JSON.parse(localStorage.user).id === row.idUser && JSON.parse(localStorage.user).role === "TEAMLEAD" ?
                   <TableCell ></TableCell>
                   :
-                  <TableCell >{row.validerTL ? "Valider" : "En attente"}</TableCell>
+                  <TableCell >{row.validerTL ? "Validé" : "En attente"}</TableCell>
                 }
 
                 {JSON.parse(localStorage.user).role !== "COLLABORATEUR" ?
-                  <TableCell >{row.validerMG ? "Valider" : "En attente"}</TableCell>
+                  <TableCell >{row.validerMG ? "Validé" : "En attente"}</TableCell>
                   :
                   <TableCell> </TableCell>
                 }

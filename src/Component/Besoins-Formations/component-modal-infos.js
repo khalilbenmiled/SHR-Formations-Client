@@ -117,10 +117,10 @@ export default function TransitionsModal(props) {
               <div className="row modalFooter" style={{ backgroundColor: showMessage() === 1 || showMessage() === 11 ? "#52A32D" : showMessage() === 0 || showMessage() === -1 ? "#E67A0A" : "" }}>
                 <div className="col-lg-12 col-md-12" align="center">
                   {
-                    showMessage() === 1 ? "Besoin valider par votre supérieur" :
-                      showMessage() === 0 ? "Besoin doit etre valider par votre supérieur" :
-                        showMessage() === 11 ? "Besoin valider par votre manager" :
-                          showMessage() === -1 ? "Besoin doit etre valider par votre manager" :
+                    showMessage() === 1 ? "Besoin validé par votre supérieur" :
+                      showMessage() === 0 ? "Besoin doit etre validé par votre supérieur" :
+                        showMessage() === 11 ? "Besoin validé par votre manager" :
+                          showMessage() === -1 ? "Besoin doit etre validé par votre manager" :
                             ""
                   }
                 </div>

@@ -140,7 +140,7 @@ export default function CustomPaginationActionsTable(props) {
                 <Table size="small" className="tableTheme" aria-label="custom pagination table" >
                     <TableHead className="tableHead" style={{ backgroundColor: "#B51B10" }}>
                         <TableRow>
-                            <TableCell style={{ fontSize: 16, color: 'white' }}>Nom</TableCell>
+                            <TableCell style={{ fontSize: 16, color: 'white' }}>Theme</TableCell>
                             <TableCell style={{ fontSize: 16, color: 'white' }}>Type</TableCell>
                             <TableCell colSpan={2} style={{ fontSize: 16, color: 'white' }}></TableCell>
                         </TableRow>

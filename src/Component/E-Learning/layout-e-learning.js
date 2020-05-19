@@ -21,7 +21,8 @@ class LayoutCabinetsFormateurs extends Component {
             alertDeleteQuiz: false,
             alerAddQTF: false,
             quizCollaborateurs: [],
-            scores: []
+            scores: [],
+            listDocs : []
         }
     }
 
@@ -72,6 +73,15 @@ class LayoutCabinetsFormateurs extends Component {
             if (res.data.Quiz) {
                 this.setState({
                     listQuiz: res.data.Quiz
+                })
+            }
+
+        })
+
+        axios.get("http://localhost:8787/docs/").then(res => {
+            if (res.data.Docs) {
+                this.setState({
+                    listDocs: res.data.Docs
                 })
             }
 
@@ -261,6 +271,7 @@ class LayoutCabinetsFormateurs extends Component {
                                 passerQuiz={this.passerQuiz.bind(this)}
                                 scores={this.state.scores}
                                 rateFormation={this.rateFormation.bind(this)}
+                                listDocs={this.state.listDocs}
                             />
                         </div>
                     </div>

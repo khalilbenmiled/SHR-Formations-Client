@@ -66,12 +66,13 @@ export default function ScrollableTabsButtonAuto(props) {
           aria-label="scrollable auto tabs example"
 
         >
-          <Tab style={{ outline: "none" }} label="Planifier" icon={< EventNoteIcon style={{ color: "#B51B10" }} />} />
+          <Tab  style={{ outline: "none" }} label="Planifier des formations" icon={< EventNoteIcon style={{ color: "#B51B10" }} />} />
           <Tab style={{ outline: "none" }} label="Consulter les formations" icon={< LocalLibraryIcon style={{ color: "#B51B10" }} />} />
-          <Tab style={{ outline: "none" }} label="Gérer formations" icon={< SettingsIcon style={{ color: "#B51B10" }} />} />
+          <Tab  style={{ outline: "none" }} label="Gérer les formations" icon={< SettingsIcon style={{ color: "#B51B10" }} />} />
         </Tabs>
       </AppBar>
-      <TabPanel value={value} index={0}>
+
+      <TabPanel  value={value} index={0}>
         <ComponentStepper
           listBesoins={props.listBesoins}
           besoinSelected={props.besoinSelected}
@@ -96,7 +97,7 @@ export default function ScrollableTabsButtonAuto(props) {
       <TabPanel value={value} index={1}>
         <ComponentCalendrier events={props.formations} />
       </TabPanel>
-      <TabPanel value={value} index={2}>
+      <TabPanel  value={value} index={2}>
         <ComponentListFormations
           formations={props.listFormations}
           sessions={props.sessions}

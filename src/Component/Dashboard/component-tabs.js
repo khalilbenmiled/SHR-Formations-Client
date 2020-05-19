@@ -17,6 +17,18 @@ import ComponentPieChart from "./component-pieChart"
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import StarsIcon from '@material-ui/icons/Stars';
+import 'date-fns';
+import DateFnsUtils from '@date-io/date-fns';
+import fr from "date-fns/locale/fr";
+import {
+    MuiPickersUtilsProvider,
+    KeyboardDatePicker,
+} from '@material-ui/pickers';
+import EventIcon from '@material-ui/icons/Event';
+import Moment from 'moment';
+import 'moment/locale/fr'
+
+
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -99,10 +111,19 @@ export default function FullWidthTabs(props) {
     const [dataFormations, setDataFormations] = React.useState([]);
     const [dataTypeTheme, setDataTypeTheme] = React.useState([]);
     const [dataProjet, setDataProjet] = React.useState([]);
-    
+
     const [buSelected, setBuSelected] = React.useState("");
     const [quarterSelected, setQuarterSelected] = React.useState(0);
     const [themeSelected, setThemeSelected] = React.useState("");
+
+    const [themeFormationSelected, setThemeFormationSelected] = React.useState("");
+    const [selectedDateDebut, setSelectedDateDebut] = React.useState(null);
+    const [selectedDateFin, setSelectedDateFin] = React.useState(null);
+    const [typeFormation, setTypeFormation] = React.useState("");
+    const [listFormations, setListFormations] = React.useState([]);
+    const [dataRatingFormation, setDataRatingFormation] = React.useState([]);
+
+
 
     const bu = [
         { title: "CS" },
@@ -111,10 +132,10 @@ export default function FullWidthTabs(props) {
     ]
 
     const trimester = [
-        { title: "Trimester 1", value: 1 },
-        { title: "Trimester 2", value: 2 },
-        { title: "Trimester 3", value: 3 },
-        { title: "Trimester 4", value: 4 }
+        { title: "Trimestre 1", value: 1 },
+        { title: "Trimestre 2", value: 2 },
+        { title: "Trimestre 3", value: 3 },
+        { title: "Trimestre 4", value: 4 }
     ]
 
     const typeTheme = [
@@ -124,15 +145,55 @@ export default function FullWidthTabs(props) {
     ]
 
     React.useEffect(() => {
-        const inputBesoin = {
-            bu: "",
-            theme: "",
-            quarter: 0
+        axios.get("http://localhost:8585/formations").then(res => {
+            if (res.data.Formations) {
+                const tabs = []
+                res.data.Formations.map(formation => {
+                    var dateDebut = new Date(formation.dateDebut)
+                    var dateFin = new Date(formation.dateFin)
+                    Moment.locale("fr");
+                    tabs.push({
+                        id: formation.id,
+                        nomTheme: formation.nomTheme,
+                        typeTheme: formation.typeTheme,
+                        dateDebut: Moment(dateDebut).format("DD-MM-YYYY").toString(),
+                        dateFin: Moment(dateFin).format("DD-MM-YYYY").toString(),
+                        listModules: formation.listModules,
+                        listParticipants: formation.listParticipants,
+                        maxParticipants: formation.maxParticipants,
+                        duree: formation.duree,
+                        idCF: formation.idCF,
+                        etat: formation.etat
+
+                    })
+                    return null
+                })
+                setListFormations(tabs)
+            }
+        })
+        if (JSON.parse(localStorage.user).role === "SERVICEFORMATION") {
+            const inputBesoin = {
+                bu: "",
+                theme: "",
+                quarter: 0,
+            }
+            filterBesoins(inputBesoin)
+        } else {
+            const inputBesoin = {
+                bu: "",
+                theme: "",
+                quarter: 0,
+                id: JSON.parse(localStorage.user).id
+            }
+            filterBesoins(inputBesoin)
         }
-        filterBesoins(inputBesoin)
+
 
         const inputFormation = {
-            theme: ""
+            theme: "",
+            type: "",
+            dateDebut: "",
+            dateFin: "",
         }
         filterFormations(inputFormation)
 
@@ -159,12 +220,12 @@ export default function FullWidthTabs(props) {
     const onChangeTypeThemeBesoin = (e, value) => {
         if (value != null) {
             const input = {
-                type : value.value
+                type: value.value
             }
             filterTypeTheme(input)
-        }else {
+        } else {
             const input = {
-                type : ""
+                type: ""
             }
             filterTypeTheme(input)
         }
@@ -240,92 +301,309 @@ export default function FullWidthTabs(props) {
 
     const onChangeThemeFormation = (e, value) => {
         if (value != null) {
+            setThemeFormationSelected(value.nom)
             const input = {
-                theme: value.nom
+                theme: value.nom,
+                type: typeFormation,
+                dateDebut: selectedDateDebut,
+                dateFin: selectedDateFin
             }
             filterFormations(input)
         } else {
+            setThemeFormationSelected("")
             const input = {
-                theme: ""
+                theme: "",
+                type: typeFormation,
+                dateDebut: selectedDateDebut,
+                dateFin: selectedDateFin
             }
             filterFormations(input)
         }
     }
 
-    const onChangeProjetBesoin = (e,value) => {
-        if(value != null){
+    const handleDateDebutChange = (date) => {
+        if (date != null) {
+            Moment.locale("fr");
+            setSelectedDateDebut(Moment(date).format("YYYY-MM-DD"));
             const input = {
-                projet : value.nom
+                dateDebut: Moment(date).format("YYYY-MM-DD"),
+                dateFin: selectedDateFin,
+                theme: themeFormationSelected,
+                type: typeFormation
+            }
+            filterFormations(input)
+        } else {
+            setSelectedDateDebut(null);
+            const input = {
+                dateDebut: "",
+                dateFin: selectedDateFin,
+                theme: themeFormationSelected,
+                type: typeFormation
+            }
+            filterFormations(input)
+        }
+
+    };
+
+    const handleDateFinChange = (date) => {
+        if (date != null) {
+            Moment.locale("fr");
+            setSelectedDateFin(Moment(date).format("YYYY-MM-DD"));
+            const input = {
+                theme: themeFormationSelected,
+                type: typeFormation,
+                dateDebut: selectedDateDebut,
+                dateFin: Moment(date).format("YYYY-MM-DD")
+            }
+            filterFormations(input)
+        } else {
+            setSelectedDateFin(null);
+            const input = {
+                theme: themeFormationSelected,
+                type: typeFormation,
+                dateDebut: selectedDateDebut,
+                dateFin: ""
+            }
+            filterFormations(input)
+        }
+
+    };
+
+    const onChangeTypeFormation = (e, value) => {
+        if (value != null) {
+            setTypeFormation(value.value)
+            const input = {
+                theme: themeFormationSelected,
+                type: value.value,
+                dateDebut: selectedDateDebut,
+                dateFin: selectedDateFin
+            }
+            filterFormations(input)
+        } else {
+            const input = {
+                theme: themeFormationSelected,
+                type: "",
+                dateDebut: selectedDateDebut,
+                dateFin: selectedDateFin
+            }
+            filterFormations(input)
+        }
+    }
+
+    const onChangeProjetBesoin = (e, value) => {
+        if (value != null) {
+            const input = {
+                projet: value.nom
             }
             filterProjet(input)
-        }else {
+        } else {
             const input = {
-                projet : ""
+                projet: ""
             }
             filterProjet(input)
         }
     }
 
     const filterBesoins = (input) => {
-        axios.post("http://localhost:8686/besoins/reporting/byFilter", querystring.stringify(input), {
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
+        if (JSON.parse(localStorage.user).role === "SERVICEFORMATIONS") {
+
+            axios.post("http://localhost:8686/besoins/reporting/byFilter", querystring.stringify(input), {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
+                if (res.data.Results) {
+
+                    var NomArray = Object.keys(res.data.Results)
+
+                    const tabsNom = []
+                    const tabsDataAll = []
+                    const tabsDataPlanifier = []
+                    const tabsDataNonPlanifier = []
+                    NomArray.map((key, index) => {
+                        tabsNom.push(key)
+                        tabsDataAll.push(res.data.Results[key].Results.length)
+                        tabsDataPlanifier.push(res.data.Results[key].ResultsPlanifier === null ? 0 : res.data.Results[key].ResultsPlanifier.length)
+                        tabsDataNonPlanifier.push(res.data.Results[key].ResultsNonPlanifier === null ? 0 : res.data.Results[key].ResultsNonPlanifier.length)
+                        return null
+                    })
+
+                    const data = {
+                        labels: tabsNom,
+                        datasets: [
+                            {
+                                label: 'Besoins demandés',
+                                backgroundColor: 'rgba(237,126,10,0.8)',
+                                borderColor: 'rgba(237,126,132,1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(237,126,10,1)',
+                                hoverBorderColor: 'rgba(237,126,10,1)',
+                                data: tabsDataAll
+                            },
+                            {
+                                label: 'Besoins Planifiés',
+                                backgroundColor: 'rgba(2,119,150,0.8)',
+                                borderColor: 'rgba(2,119,150,1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(2,119,150,1)',
+                                hoverBorderColor: 'rgba(2,119,150,1)',
+                                data: tabsDataPlanifier
+                            },
+                            {
+                                label: 'Besoins Non Planifié',
+                                backgroundColor: 'rgba(181, 27, 16, 0.8)',
+                                borderColor: 'rgba(181, 27, 16, 1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(181, 27, 16, 1)',
+                                hoverBorderColor: 'rgba(181, 27, 16, 1)',
+
+                                data: tabsDataNonPlanifier
+                            },
+                        ]
+                    };
+
+                    setDataBesoins(data)
+
+                }
+            })
+        } else if (JSON.parse(localStorage.user).role === "COLLABORATEUR") {
+            const obj = {
+                bu: input.bu,
+                quarter: input.quarter,
+                theme: input.theme,
+                id: JSON.parse(localStorage.user).id
             }
-        }).then(res => {
-            if (res.data.Results) {
+            axios.post("http://localhost:8686/besoins/reporting/byFilterCollaborateur", querystring.stringify(obj), {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
+                if (res.data.Results) {
 
-                var NomArray = Object.keys(res.data.Results)
+                    var NomArray = Object.keys(res.data.Results)
 
-                const tabsNom = []
-                const tabsDataAll = []
-                const tabsDataPlanifier = []
-                const tabsDataNonPlanifier = []
-                NomArray.map((key, index) => {
-                    tabsNom.push(key)
-                    tabsDataAll.push(res.data.Results[key].Results.length)
-                    tabsDataPlanifier.push(res.data.Results[key].ResultsPlanifier === null ? 0 : res.data.Results[key].ResultsPlanifier.length)
-                    tabsDataNonPlanifier.push(res.data.Results[key].ResultsNonPlanifier === null ? 0 : res.data.Results[key].ResultsNonPlanifier.length)
-                    return null
-                })
+                    const tabsNom = []
+                    const tabsDataAll = []
+                    const tabsDataPlanifier = []
+                    const tabsDataNonPlanifier = []
+                    NomArray.map((key, index) => {
+                        tabsNom.push(key)
+                        tabsDataAll.push(res.data.Results[key].Results.length)
+                        tabsDataPlanifier.push(res.data.Results[key].ResultsPlanifier === null ? 0 : res.data.Results[key].ResultsPlanifier.length)
+                        tabsDataNonPlanifier.push(res.data.Results[key].ResultsNonPlanifier === null ? 0 : res.data.Results[key].ResultsNonPlanifier.length)
+                        return null
+                    })
 
-                const data = {
-                    labels: tabsNom,
-                    datasets: [
-                        {
-                            label: 'Besoins demandés',
-                            backgroundColor: 'rgba(237,126,10,0.8)',
-                            borderColor: 'rgba(237,126,132,1)',
-                            borderWidth: 1,
-                            hoverBackgroundColor: 'rgba(237,126,10,1)',
-                            hoverBorderColor: 'rgba(237,126,10,1)',
-                            data: tabsDataAll
-                        },
-                        {
-                            label: 'Besoins Planifiés',
-                            backgroundColor: 'rgba(2,119,150,0.8)',
-                            borderColor: 'rgba(2,119,150,1)',
-                            borderWidth: 1,
-                            hoverBackgroundColor: 'rgba(2,119,150,1)',
-                            hoverBorderColor: 'rgba(2,119,150,1)',
-                            data: tabsDataPlanifier
-                        },
-                        {
-                            label: 'Besoins Non Planifié',
-                            backgroundColor: 'rgba(181, 27, 16, 0.8)',
-                            borderColor: 'rgba(181, 27, 16, 1)',
-                            borderWidth: 1,
-                            hoverBackgroundColor: 'rgba(181, 27, 16, 1)',
-                            hoverBorderColor: 'rgba(181, 27, 16, 1)',
+                    const data = {
+                        labels: tabsNom,
+                        datasets: [
+                            {
+                                label: 'Besoins demandés',
+                                backgroundColor: 'rgba(237,126,10,0.8)',
+                                borderColor: 'rgba(237,126,132,1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(237,126,10,1)',
+                                hoverBorderColor: 'rgba(237,126,10,1)',
+                                data: tabsDataAll
+                            },
+                            {
+                                label: 'Besoins Planifiés',
+                                backgroundColor: 'rgba(2,119,150,0.8)',
+                                borderColor: 'rgba(2,119,150,1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(2,119,150,1)',
+                                hoverBorderColor: 'rgba(2,119,150,1)',
+                                data: tabsDataPlanifier
+                            },
+                            {
+                                label: 'Besoins Non Planifié',
+                                backgroundColor: 'rgba(181, 27, 16, 0.8)',
+                                borderColor: 'rgba(181, 27, 16, 1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(181, 27, 16, 1)',
+                                hoverBorderColor: 'rgba(181, 27, 16, 1)',
 
-                            data: tabsDataNonPlanifier
-                        },
-                    ]
-                };
+                                data: tabsDataNonPlanifier
+                            },
+                        ]
+                    };
 
-                setDataBesoins(data)
+                    setDataBesoins(data)
 
+                }
+            })
+        } else if (JSON.parse(localStorage.user).role === "TEAMLEAD") {
+
+            const obj = {
+                bu: input.bu,
+                quarter: input.quarter,
+                theme: input.theme,
+                id: JSON.parse(localStorage.user).id
             }
-        })
+            axios.post("http://localhost:8686/besoins/reporting/byFilterTeamLead", querystring.stringify(obj), {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
+
+                if (res.data.Results) {
+
+                    var NomArray = Object.keys(res.data.Results)
+
+                    const tabsNom = []
+                    const tabsDataAll = []
+                    const tabsDataPlanifier = []
+                    const tabsDataNonPlanifier = []
+                    NomArray.map((key, index) => {
+                        tabsNom.push(key)
+                        tabsDataAll.push(res.data.Results[key].Results.length)
+                        tabsDataPlanifier.push(res.data.Results[key].ResultsPlanifier === null ? 0 : res.data.Results[key].ResultsPlanifier.length)
+                        tabsDataNonPlanifier.push(res.data.Results[key].ResultsNonPlanifier === null ? 0 : res.data.Results[key].ResultsNonPlanifier.length)
+                        return null
+                    })
+
+                    const data = {
+                        labels: tabsNom,
+                        datasets: [
+                            {
+                                label: 'Besoins demandés',
+                                backgroundColor: 'rgba(237,126,10,0.8)',
+                                borderColor: 'rgba(237,126,132,1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(237,126,10,1)',
+                                hoverBorderColor: 'rgba(237,126,10,1)',
+                                data: tabsDataAll
+                            },
+                            {
+                                label: 'Besoins Planifiés',
+                                backgroundColor: 'rgba(2,119,150,0.8)',
+                                borderColor: 'rgba(2,119,150,1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(2,119,150,1)',
+                                hoverBorderColor: 'rgba(2,119,150,1)',
+                                data: tabsDataPlanifier
+                            },
+                            {
+                                label: 'Besoins Non Planifié',
+                                backgroundColor: 'rgba(181, 27, 16, 0.8)',
+                                borderColor: 'rgba(181, 27, 16, 1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(181, 27, 16, 1)',
+                                hoverBorderColor: 'rgba(181, 27, 16, 1)',
+
+                                data: tabsDataNonPlanifier
+                            },
+                        ]
+                    };
+
+                    setDataBesoins(data)
+
+                }
+            })
+        } else {
+            console.log("oui")
+        }
+
     }
 
     const filterFormations = (input) => {
@@ -340,12 +618,14 @@ export default function FullWidthTabs(props) {
                 const tabsDataAll = []
                 const tabsDataEnCours = []
                 const tabsDataProgrammer = []
+                const tabsDataTerminer = []
 
                 NomArray.map((key, index) => {
                     tabsNom.push(key)
                     tabsDataAll.push(res.data.Results[key].All.length)
                     tabsDataEnCours.push(res.data.Results[key].EnCours === null ? 0 : res.data.Results[key].EnCours.length)
                     tabsDataProgrammer.push(res.data.Results[key].Programmé === null ? 0 : res.data.Results[key].Programmé.length)
+                    tabsDataTerminer.push(res.data.Results[key].Terminer === null ? 0 : res.data.Results[key].Terminer.length)
                     return null
                 })
 
@@ -380,6 +660,16 @@ export default function FullWidthTabs(props) {
 
                             data: tabsDataProgrammer
                         },
+                        {
+                            label: 'Formation terminer',
+                            backgroundColor: 'rgba(0, 128, 16, 0.8)',
+                            borderColor: 'rgba(0, 128, 16, 1)',
+                            borderWidth: 1,
+                            hoverBackgroundColor: 'rgba(0, 128, 16, 1)',
+                            hoverBorderColor: 'rgba(0, 128, 16, 1)',
+
+                            data: tabsDataTerminer
+                        },
                     ]
                 };
 
@@ -398,7 +688,7 @@ export default function FullWidthTabs(props) {
                 var NomArray = Object.keys(res.data.Results)
                 const tabsNom = []
                 const tabsData = []
-            
+
                 const tabsColor = []
                 NomArray.map((key, index) => {
                     tabsNom.push(key)
@@ -431,7 +721,7 @@ export default function FullWidthTabs(props) {
                 var NomArray = Object.keys(res.data.Results)
                 const tabsNom = []
                 const tabsData = []
-            
+
                 const tabsColor = []
                 NomArray.map((key, index) => {
                     tabsNom.push(key)
@@ -454,6 +744,49 @@ export default function FullWidthTabs(props) {
 
     }
 
+    const onChangeFormation = (e, value) => {
+        if (value != null) {
+            const input = {
+                id: value.id
+            }
+
+            axios.post("http://localhost:8585/formations/reporting/rating", querystring.stringify(input), {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
+                console.log(res.data.Formation.rating)
+                if (res.data.Formation.rating != null) {
+                    const tabs = []
+                    tabs.push(res.data.Formation.rating.star1)
+                    tabs.push(res.data.Formation.rating.star2)
+                    tabs.push(res.data.Formation.rating.star3)
+                    tabs.push(res.data.Formation.rating.star4)
+                    tabs.push(res.data.Formation.rating.star5)
+
+
+                    const data = {
+                        labels: ["Mediocre", "Mauvaise", "Passable", "Bonne", "Excellente"],
+                        datasets: [{
+                            data: tabs,
+                            backgroundColor: ["rgba(80, 28, 96, 0.8)", "rgba(181, 27, 16, 0.8)", "rgba(237,126,10,0.8)", "rgba(2,119,150,0.8)", "rgba(0, 128, 16, 0.8)"],
+                        }]
+                    };
+                    setDataRatingFormation(data)
+                } else {
+                    setDataRatingFormation([])
+                }
+
+            })
+        } else {
+            setDataRatingFormation([])
+        }
+    }
+
+    function disableWeekends(date) {
+        return date.getDay() === 0
+    }
+
 
 
 
@@ -473,7 +806,7 @@ export default function FullWidthTabs(props) {
                     <Tab style={{ outline: "none" }} label="Formations" icon={<LocalLibraryIcon />} />
                     <Tab style={{ outline: "none" }} label="Quiz" icon={<StarsIcon />} />
 
-               
+
                 </Tabs>
             </AppBar>
             <SwipeableViews
@@ -499,7 +832,7 @@ export default function FullWidthTabs(props) {
                                 onChange={onChangeTrimesterBesoin}
                                 getOptionLabel={(option) => option.title}
                                 style={{ backgroundColor: "white", width: 300 }}
-                                renderInput={(params) => <TextField {...params} label="Trimester" variant="outlined" />}
+                                renderInput={(params) => <TextField {...params} label="Trimestre" variant="outlined" />}
                             />
                             <Autocomplete
                                 size="small"
@@ -532,7 +865,7 @@ export default function FullWidthTabs(props) {
                                 renderInput={(params) => <TextField {...params} label="Type theme" variant="outlined" />}
                             />
                             <Card>
-                                <ComponentPieChart data={dataTypeTheme}/>
+                                <ComponentPieChart data={dataTypeTheme} />
                             </Card>
                         </div>
 
@@ -556,15 +889,79 @@ export default function FullWidthTabs(props) {
 
                 <TabPanel value={value} index={1} dir={theme.direction}>
                     <div className="row" style={{ marginTop: "10px", padding: "20px 20px", backgroundColor: "#F5F5F5", boxShadow: "0px 0px 2px" }} >
-                        <div className="col-lg-12 col-md-12" style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                            <Autocomplete
-                                size="small"
-                                options={props.themes}
-                                onChange={onChangeThemeFormation}
-                                getOptionLabel={(option) => option.nom}
-                                style={{ backgroundColor: "white", width: 300 }}
-                                renderInput={(params) => <TextField {...params} label="Theme" variant="outlined" />}
-                            />
+                        <div className="col-lg-12 col-md-12">
+                            <div className="row">
+                                <div className="col-lg-4 col-md-4">
+                                    <Autocomplete
+                                        size="small"
+                                        options={props.themes}
+                                        onChange={onChangeThemeFormation}
+                                        getOptionLabel={(option) => option.nom}
+                                        style={{ backgroundColor: "white", width: 300 }}
+                                        renderInput={(params) => <TextField {...params} label="Theme" variant="outlined" />}
+                                    />
+                                </div>
+                                <div className="col-lg-4 col-md-4">
+
+                                    <MuiPickersUtilsProvider locale={fr} utils={DateFnsUtils}>
+
+                                        <KeyboardDatePicker
+                                            size="small"
+                                            clearable
+                                            autoOk
+                                            disableToolbar
+                                            shouldDisableDate={disableWeekends}
+                                            keyboardIcon={<EventIcon style={{ outline: "none", "&:focus": { outline: "none" } }} />}
+                                            inputVariant="outlined"
+                                            format="d MMM yyyy"
+                                            style={{ backgroundColor: "white" }}
+                                            label="Du"
+                                            value={selectedDateDebut}
+                                            onChange={handleDateDebutChange}
+                                            KeyboardButtonProps={{
+                                                'aria-label': 'change date',
+                                            }}
+                                        />
+
+                                    </MuiPickersUtilsProvider>
+                                </div>
+                                <div className="col-lg-4 col-md-4" >
+                                    <MuiPickersUtilsProvider locale={fr} utils={DateFnsUtils}>
+
+                                        <KeyboardDatePicker
+                                            size="small"
+                                            clearable
+                                            autoOk
+                                            disableToolbar
+                                            shouldDisableDate={disableWeekends}
+                                            keyboardIcon={<EventIcon style={{ outline: "none", "&:focus": { outline: "none" } }} />}
+                                            inputVariant="outlined"
+                                            format="d MMM yyyy"
+                                            style={{ backgroundColor: "white" }}
+                                            label="Au"
+                                            value={selectedDateFin}
+                                            onChange={handleDateFinChange}
+                                            KeyboardButtonProps={{
+                                                'aria-label': 'change date',
+                                            }}
+                                        />
+
+                                    </MuiPickersUtilsProvider>
+                                </div>
+                            </div>
+
+                            <div className="row" style={{ marginTop: "10px" }}>
+                                <div className="col-lg-4 col-md-4">
+                                    <Autocomplete
+                                        size="small"
+                                        options={typeTheme}
+                                        onChange={onChangeTypeFormation}
+                                        getOptionLabel={(option) => option.title}
+                                        style={{ backgroundColor: "white", width: 300 }}
+                                        renderInput={(params) => <TextField {...params} label="Type" variant="outlined" />}
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className="row" style={{ marginTop: "10px", padding: "20px 20px", backgroundColor: "#F5F5F5", boxShadow: "0px 0px 2px" }} >
@@ -573,6 +970,29 @@ export default function FullWidthTabs(props) {
                                 <ComponentBarChart data={dataFormations} />
                             </Card>
 
+                        </div>
+                    </div>
+
+                    <div className="row" style={{ marginTop: "10px", padding: "20px 20px", backgroundColor: "#F5F5F5", boxShadow: "0px 0px 2px" }} >
+                        <div className="col-lg-12 col-md-12">
+                            <div className="row" style={{ marginBottom: "30px" }}>
+                                <div className="col-lg-6 col-md-6 offset-lg-3 offset-md-3">
+                                    <h4 style={{ marginLeft: "130px", color: "#3D707E" }}>Notes d'une formation</h4>
+                                    <Autocomplete
+                                        size="small"
+                                        options={listFormations}
+                                        onChange={onChangeFormation}
+                                        getOptionLabel={(option) => option.nomTheme + "  - Du : " + option.dateDebut + " Au : " + option.dateFin}
+                                        style={{ marginLeft: "50px", backgroundColor: "white", width: 400 }}
+                                        renderInput={(params) => <TextField {...params} label="Formation" variant="outlined" />}
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-lg-12 col-md-12">
+                                <Card>
+                                    <ComponentPieChart data={dataRatingFormation} />
+                                </Card>
+                            </div>
                         </div>
                     </div>
 

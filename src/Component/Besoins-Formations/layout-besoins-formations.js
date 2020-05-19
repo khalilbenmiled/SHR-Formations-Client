@@ -150,7 +150,15 @@ class Besoins extends Component {
         }
 
         if (JSON.parse(localStorage.user).role === "MANAGER") {
-            axios.get("http://localhost:8686/besoinsPublier/").then(res => {
+
+            const input = {
+                id : JSON.parse(localStorage.user).id
+            }
+            axios.post("http://localhost:8686/besoinsPublier/" , querystring.stringify(input) , {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
 
                 if (res.data.BesoinsPublier) {
                     this.setState({
@@ -438,7 +446,8 @@ class Besoins extends Component {
 
             if (JSON.parse(localStorage.user).role === "MANAGER") {
                 const obj = {
-                    idBesoin: res.data.Besoin.id
+                    idBesoin: res.data.Besoin.id,
+                    idManager : JSON.parse(localStorage.user).id
                 }
                 axios.post("http://localhost:8686/besoinsPublier/publier",
                     querystring.stringify(obj), {
@@ -612,7 +621,8 @@ class Besoins extends Component {
     annulerByManager(besoin) {
         const id = besoin.id
         const obj = {
-            idBesoin: besoin.id
+            idBesoin: besoin.id,
+            idManager : JSON.parse(localStorage.user).id
         }
         axios.post("http://localhost:8686/besoins/annulerValidationMG",
             querystring.stringify(obj), {
@@ -665,7 +675,8 @@ class Besoins extends Component {
     validerByManager(besoin) {
 
         const obj = {
-            idBesoin: besoin.id
+            idBesoin: besoin.id,
+            
         }
 
 
@@ -683,8 +694,13 @@ class Besoins extends Component {
                 alertValiderBesoin: true
             })
 
+            const input = {
+                idBesoin: besoin.id,
+                idManager : JSON.parse(localStorage.user).id
+                
+            }
             axios.post("http://localhost:8686/besoinsPublier/publier",
-                querystring.stringify(obj), {
+                querystring.stringify(input), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }

@@ -114,7 +114,7 @@ export default function NavBar(props) {
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
           <Typography variant="h6" noWrap className={classes.Typography}>
-            SHR-Formations
+            SHR-Formation
           </Typography>
 
           <IconButton hidden aria-describedby={id} onClick={openNotification} aria-label="cart">
@@ -210,7 +210,7 @@ export default function NavBar(props) {
             </ListItem>
           </Link>
 
-          <Link hidden={JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false} to="/cabinetsFormateurs" className="navlink">
+          <Link hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false}  to="/cabinetsFormateurs" className="navlink">
             <ListItem button>
               <ListItemIcon>
                 < AccountBalanceIcon style={{ color: "#B51B10" }} />

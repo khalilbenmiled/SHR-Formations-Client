@@ -82,7 +82,7 @@ export default function CustomPaginationActionsTable(props) {
       <Table size="small" className="tableTheme" aria-label="custom pagination table" >
         <TableHead style={{ backgroundColor: "#3D707E" }}>
           <TableRow>
-            <TableCell style={{ fontSize: 18, color: 'white' }}>Nom</TableCell>
+            <TableCell style={{ fontSize: 18, color: 'white' }}>Theme</TableCell>
             <TableCell style={{ fontSize: 18, color: 'white' }}>Type</TableCell>
             <TableCell align="left" style={{ fontSize: 18, color: 'white' }}>
 
@@ -97,7 +97,7 @@ export default function CustomPaginationActionsTable(props) {
             <TableRow key={row.id}   >
 
               <TableCell id={row.id} > {row.nom}</TableCell>
-              <TableCell id={row.id} >{row.type}</TableCell>
+              <TableCell id={row.id} >{row.type === "SOFTWARE" ? "PRODUIT" : row.type}</TableCell>
               <TableCell id={row.id} >
                 <input className="checkStyle" type="radio" name="actionRadio" onChange={props.actionSelected} value={JSON.stringify(row)} />
               </TableCell>

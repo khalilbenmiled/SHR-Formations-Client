@@ -262,7 +262,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
               <div className="col-lg-5 col-md-5 offset-lg-1 offset-md-1">
                 <div style={{ width: 420 }} className="input-group mb-3">
                   <div style={{ height: 40 }} className="input-group-prepend" >
-                    <label style={{ width: 120 }} className="input-group-text" >Trimester</label>
+                    <label style={{ width: 120 }} className="input-group-text" >Trimestre</label>
                   </div>
                   <Autocomplete
                     size="small"
@@ -370,17 +370,6 @@ export default function HorizontalLabelPositionBelowStepper(props) {
             </div>
 
             <div hidden className="row" style={{ paddingTop: "20px" }}>
-              {/* <div className="col-lg-5 col-md-5 offset-lg-1 offset-md-1">
-                <div style={{ width: 420 }} className="input-group mb-3">
-                  <div style={{ height: 40 }} className="input-group-prepend" >
-                    <label style={{ width: 120 }} className="input-group-text" >Participants</label>
-                  </div>
-                  <div className="input-group-prepend">
-                    <TextField value={nbrParticipantsSelected} type="number" style={{ width: 200, backgroundColor: "white" }} size="small" label="Durée" variant="outlined" onChange={onChangerNbrParticipants} />
-                  </div>
-                </div>
-
-              </div> */}
 
               <div hidden className="col-lg-5 col-md-5 ">
                 <div style={{ width: 420 }} className="input-group mb-3">

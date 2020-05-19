@@ -142,7 +142,7 @@ export default function FullWidthTabs(props) {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab hidden={JSON.parse(localStorage.user).role === "SERVICEFORMATIONS" ? true : false} style={{ outline: "none" }} label={JSON.parse(localStorage.user).role === "MANAGER" ? "Publier les besoins" : "Saisis des besoins"} icon={JSON.parse(localStorage.user).role === "MANAGER" ? <PublishIcon /> : <CreateIcon />} />
+          <Tab hidden={JSON.parse(localStorage.user).role === "SERVICEFORMATIONS" ? true : false} style={{ outline: "none" }} label={JSON.parse(localStorage.user).role === "MANAGER" ? "Publier les besoins" : "Saisi des besoins"} icon={JSON.parse(localStorage.user).role === "MANAGER" ? <PublishIcon /> : <CreateIcon />} />
           <Tab style={{ outline: "none" }} label="Consulter les besoins" icon={<ListAltIcon />} />
           <Tab hidden={JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false} style={{ outline: "none" }} label="Rapports" icon={<DescriptionIcon />} />
         </Tabs>

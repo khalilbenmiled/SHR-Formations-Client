@@ -65,7 +65,7 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function VerticalLinearStepper(props) {
-
+console.log(props.projets)
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
@@ -135,7 +135,7 @@ export default function VerticalLinearStepper(props) {
                 <select className="custom-select" id="inputGroupSelect01" onChange={props.onChangeTheme}>
                   <option defaultValue value="TOUS">Tous</option>
                   <option value="TECHNIQUE">TECHNIQUE</option>
-                  <option value="SOFTWARE">PRODUITS</option>
+                  <option value="SOFTWARE">PRODUIT</option>
                   <option value="SOFTSKILLS">SOFTSKILLS</option>
                 </select>
               </div>
