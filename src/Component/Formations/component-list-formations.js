@@ -25,6 +25,9 @@ import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import ComponentModalAddParticipants from "./component-modal-add-participants"
 import Moment from 'moment';
 import 'moment/locale/fr'
+import SockJS from "sockjs-client"
+import Stomp from "stomp-websocket"
+
 
 
 const useStyles1 = makeStyles(theme => ({
@@ -114,7 +117,7 @@ TablePaginationActions.propTypes = {
 
 export default function CustomPaginationActionsTable(props) {
 
-  const [rows, setRows] = React.useState(props.formations);
+  const [rows, setRows] = React.useState(props.formations.sort((a, b) => (a.id < b.id) ? 1 : -1));
   const classes = useStyles1();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(4);
@@ -148,7 +151,8 @@ export default function CustomPaginationActionsTable(props) {
   const [limiteParticipant, setLimiteParticipants] = React.useState(0);
   const [listParticipants, setListParticipants] = React.useState([]);
   const [alertSetParticipants, setAlertSetParticipant] = React.useState(false);
-  
+  const [stompClient, setStompClient] = React.useState("");
+
   const [collaborateursAndParticipants, setCollaborateursAndParticipants] = React.useState([]);
   const [cabinetFormateur, setFetchCabinetFormateur] = React.useState({
     role: "",
@@ -160,11 +164,18 @@ export default function CustomPaginationActionsTable(props) {
   });
 
 
+  React.useEffect(() => {
+    var socket = new SockJS('http://localhost:8383/notifications');
+    var stompClient = Stomp.over(socket);
+    setStompClient(stompClient)
+  }, [])
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
   const handleChangeRowsPerPage = event => {
+
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -202,7 +213,7 @@ export default function CustomPaginationActionsTable(props) {
         const listFormation = rows
         const index = listFormation.findIndex(formation => formation.id === formationToDelete.id)
         listFormation.splice(index, 1)
-        setRows(listFormation)
+        setRows(listFormation.sort((a, b) => (a.id < b.id) ? 1 : -1))
         setAlertRemove(false)
         setAlertSuccessRemove(true)
         props.refreshCalendrier(listFormation)
@@ -408,9 +419,9 @@ export default function CustomPaginationActionsTable(props) {
       participants: participantToSet
     }
 
-    axios.post("http://localhost:8585/formations/setListParticipantFormation",obj).then(res => {
-      if(res.data.Formation){
-        
+    axios.post("http://localhost:8585/formations/setListParticipantFormation", obj).then(res => {
+      if (res.data.Formation) {
+
         const listFormation = rows
         const index = listFormation.findIndex(formation => formation.id === res.data.Formation.id)
 
@@ -432,8 +443,8 @@ export default function CustomPaginationActionsTable(props) {
           idCF: res.data.Formation.idCF,
           etat: res.data.Formation.etat
         }
-        listFormation.splice(index, 1 , formation)
-        setRows(listFormation)
+        listFormation.splice(index, 1, formation)
+        setRows(listFormation.sort((a, b) => (a.id < b.id) ? 1 : -1))
         setAlertSetParticipant(true)
       }
     })
@@ -458,9 +469,24 @@ export default function CustomPaginationActionsTable(props) {
       idCF: formateurCabinet
     }
 
+
     axios.post("http://localhost:8585/formations/", obj).then(res => {
       if (res.data.Formation) {
+        participantsS.map(participant => {
+          Moment.locale("fr");
+          var now_date = Moment().format("DD/MM/YYYY HH:mm")
+          const obj = {
+            idCollaborateur: participant.id,
+            message: "Vous etes inscrit à une formation, consulter votre calendrier",
+            opened: false,
+            date: now_date
+          }
+          stompClient.send("/app/valider", {}, JSON.stringify(obj));
+          return null
+        })
+
         setAlertFormation(true)
+
       }
     })
   }
@@ -499,11 +525,11 @@ export default function CustomPaginationActionsTable(props) {
       setCollaborateursAndParticipants(res.data.Collaborateurs)
       setIdFormation(formation.id)
     })
-    
+
     setLimiteParticipants(formation.maxParticipants)
     setListParticipants(formation.listParticipants)
     setOpenModalAddParticipants(true)
-    
+
   }
 
   const closeModalAddParticipants = () => {
@@ -514,9 +540,30 @@ export default function CustomPaginationActionsTable(props) {
     setAlertFormation(false)
   }
 
-  const closeAlertSetParticipant = ()=>{
+  const closeAlertSetParticipant = () => {
     setAlertSetParticipant(false)
   }
+
+  const getEtat = (dateDebut, dateFin) => {
+
+    Moment.locale("fr");
+    var now_date = Moment().format("YYYY-MM-DD")
+    var date_debut = Moment(dateDebut, 'DD-MM-YYYY').format('YYYY-MM-DD')
+    var date_fin = Moment(dateFin, 'DD-MM-YYYY').format('YYYY-MM-DD')
+
+    if (Moment(now_date).isBefore(date_debut) && Moment(now_date).isBefore(date_fin)) {
+      return "Programmée"
+    } else if (Moment(now_date).isAfter(date_debut) && Moment(now_date).isAfter(date_fin)) {
+      return "Terminée"
+    } else if (Moment(now_date).isBetween(date_debut, date_fin)) {
+      return "En cours"
+    } else if (Moment(now_date).isSameOrAfter(date_debut) && Moment(now_date).isSameOrBefore(date_fin)) {
+      return "En cours"
+    }
+
+  }
+
+
 
 
 
@@ -546,7 +593,7 @@ export default function CustomPaginationActionsTable(props) {
                 <TableCell> {row.nomTheme} </TableCell>
                 <TableCell> {row.dateDebut} </TableCell>
                 <TableCell> {row.dateFin} </TableCell>
-                <TableCell> {row.etat} </TableCell>
+                <TableCell> {getEtat(row.dateDebut, row.dateFin)} </TableCell>
                 <TableCell> <VisibilityIcon className={classes.iconInfo} onClick={detailsFormations.bind(this, row)} /> </TableCell>
                 <TableCell> <GroupAddIcon className={classes.iconCheck} onClick={openAddParticipants.bind(this, row)} /> </TableCell>
                 <TableCell> <DeleteForeverIcon className={classes.iconRemove} onClick={openDeleteFormation.bind(this, row)} /> </TableCell>
@@ -622,7 +669,7 @@ export default function CustomPaginationActionsTable(props) {
         users={collaborateursAndParticipants}
         participantsToAdd={participantsToAdd}
         SetParticipants={SetParticipants}
-        limiteParticipant = {limiteParticipant}
+        limiteParticipant={limiteParticipant}
         listParticipants={listParticipants}
       />
 

@@ -284,9 +284,9 @@ export default function TransitionsModal(props) {
         } else {
             return (
                 <>
-                    <div className="row" style={{ paddingLeft: "250px" }}>
+                    <div className="row" style={{ paddingLeft: "280px" }}>
                         <div className="col-lg-12 col-md-12">
-                            <h4 className={classes.titre}>Donnez une note à cette formation ! </h4>
+                            <h4 className={classes.titre}>Evaluer cette formation ! </h4>
                         </div>
                     </div>
                     <div className="row" style={{ paddingLeft: "300px" }}>

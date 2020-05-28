@@ -13,8 +13,9 @@ import { Button } from '@material-ui/core';
 import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
 import { PDFViewer } from '@react-pdf/renderer';
 import "./besoins.css"
-import logo from "../../images/logo.jpg"
-
+import logo from "../../images/logo.png"
+import Moment from 'moment';
+import 'moment/locale/fr'
 
 const ExpansionPanel = withStyles({
   root: {
@@ -94,17 +95,28 @@ export default function CustomizedExpansionPanels(props) {
       fontWeight: "bold"
     },
     infos: {
+      paddingTop: "30px",
+      paddingLeft : "10px" , 
+      width: "65%",
+      flexDirection: 'row',
+    },
+    infosLabel : {
       fontSize: 12,
-      color: "#027796",
-      fontWeight: "bold",
-      padding: "30px 15px",
-      width: "75%"
+      fontWeight: "900px",
+      width: "25%",
+    
+    },
+    infosData : {
+      width: "75%",
+      fontSize: 11,
+  
     },
     logo: {
-      width: "25%"
+      width: "35%",
+      
     },
     logoImg: {
-      width: "150px",
+      width: "200px",
       height: "100px"
     },
     sectionBody: {
@@ -186,7 +198,7 @@ export default function CustomizedExpansionPanels(props) {
   });
   const [expanded, setExpanded] = React.useState('panel1');
   const [themeNoms, setThemeNoms] = React.useState(props.themes);
-  const [pubSelect, setPubSelect] = React.useState("false");
+
   const [typeSelected, setTypeSelected] = React.useState("");
   const [themeSelected, setThemeSelected] = React.useState("");
   const [quarterSelected, setQuarterSelected] = React.useState(0);
@@ -222,18 +234,9 @@ export default function CustomizedExpansionPanels(props) {
     { title: "RD" }
   ]
 
-  const publierSelect = [
-    { title: "OUI" },
-    { title: "NON" }
-  ]
 
-  const onPublierSelect = (e, values) => {
-    if (values != null) {
-      setPubSelect(values.title === "OUI" ? "true" : "false")
-    } else {
-      setPubSelect("false")
-    }
-  }
+
+
   const onTypeSelect = (e, values) => {
     if (values != null) {
       setTypeSelected(values.title)
@@ -249,6 +252,7 @@ export default function CustomizedExpansionPanels(props) {
         setThemeNoms(res.data.Theme)
       })
     } else {
+      setTypeSelected("")
       setThemeNoms(props.themes)
     }
   }
@@ -265,7 +269,7 @@ export default function CustomizedExpansionPanels(props) {
     if (values != null) {
       setQuarterSelected(values.title === "Q1" ? "1" : values.title === "Q2" ? "2" : values.title === "Q3" ? "3" : values.title === "Q4" ? "4" : 0);
     } else {
-      setQuarterSelected("")
+      setQuarterSelected(0)
     }
   }
 
@@ -302,8 +306,14 @@ export default function CustomizedExpansionPanels(props) {
   }
 
   const filter = () => {
-    props.filter(typeSelected, themeSelected, quarterSelected, projetSelected, TlSelected, MgSelected, BUSelected, pubSelect)
+    props.filter(typeSelected, themeSelected, quarterSelected, projetSelected, TlSelected, MgSelected, BUSelected)
 
+  }
+
+  const getDate = () => {
+    Moment.locale("fr");
+    var now_date = Moment().format("DD-MM-YYYY")
+    return now_date
   }
 
 
@@ -317,20 +327,7 @@ export default function CustomizedExpansionPanels(props) {
                 <Typography style={{ color: "#B51B10", fontWeight: "600", fontSize: "18px" }}>Filter</Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails style={{ display: "flex", flexDirection: "column", border: "1px solid #F5F5F5", borderBottom: "3px solid #F8B231" }}>
-                <div hidden={JSON.parse(localStorage.user).role !== "MANAGER" && JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} className="row" style={{ marginBottom: "20px" }}>
-                  <div className="col-lg-4 col-md-4"></div>
-                  <div className="col-lg-4 col-md-4">
-                    <Autocomplete
-                      onChange={onPublierSelect}
-                      disableCloseOnSelect={false}
-                      size="small"
-                      options={publierSelect}
-                      getOptionLabel={option => option.title}
-                      style={{ width: 220 }}
-                      renderInput={params => <TextField {...params} label="Publier ?" variant="outlined" />}
-                    />
-                  </div>
-                </div>
+
                 <div className="row" style={{ marginBottom: "20px" }}>
                   <div className="col-lg-4 col-md-4">
                     <Autocomplete
@@ -428,13 +425,22 @@ export default function CustomizedExpansionPanels(props) {
       <div className="row">
         <div className="col-lg-12 col-md-12">
           <PDFViewer style={{ width: "100%", height: "200mm", marginTop: "30px" }}>
-            <Document title="title">
+            <Document title="Rapport besoins">
               <Page size="A4" style={styles.page}>
                 <View style={styles.sectionHeader}>
                   <View style={styles.infos}>
-                    <Text>Nom et Prenom : {JSON.parse(localStorage.user).nom} {JSON.parse(localStorage.user).prenom}</Text>
-                    <Text>Email : {JSON.parse(localStorage.user).email} </Text>
-                    <Text>BU : {JSON.parse(localStorage.user).bu}</Text>
+                    <View style={styles.infosLabel}>
+                      <Text>Nom et Prenom : </Text>
+                      <Text>Email : </Text>
+                      <Text>BU : </Text>
+                      <Text>Date : </Text>
+                    </View>
+                    <View style={styles.infosData}>
+                      <Text>{JSON.parse(localStorage.user).nom} {JSON.parse(localStorage.user).prenom}</Text>
+                      <Text> {JSON.parse(localStorage.user).email} </Text>
+                      <Text> {JSON.parse(localStorage.user).bu}</Text>
+                      <Text> {getDate()}</Text>
+                    </View>
                   </View>
                   <View style={styles.logo}>
                     <Image style={styles.logoImg} src={logo} />
@@ -487,13 +493,9 @@ export default function CustomizedExpansionPanels(props) {
                         <Text style={styles.tableCell}>{rapport.quarter}</Text>
                       </View>
                     </View>
+
                   ))}
-
-
-
                 </View>
-
-
               </Page>
             </Document>
           </PDFViewer>

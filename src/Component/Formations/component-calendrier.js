@@ -43,6 +43,14 @@ export default class DemoApp extends React.Component {
         },
         duree: "",
         maxParticipants: ""
+      },
+      cabinetFormateur: {
+        role: "",
+        data: {
+          nom: "",
+          prenom: "",
+          contact: ""
+        }
       }
     }
   }
@@ -121,7 +129,7 @@ export default class DemoApp extends React.Component {
 
   }
 
-   fetchParticipants (id)  {
+  fetchParticipants(id) {
     const input = {
       id: id
     }
@@ -134,12 +142,13 @@ export default class DemoApp extends React.Component {
     }).then(res => {
       if (res.data.Participants) {
         this.setState({
-          listParticipants : res.data.Participants
+          listParticipants: res.data.Participants
         })
       }
 
     })
   }
+
 
   render() {
     return (

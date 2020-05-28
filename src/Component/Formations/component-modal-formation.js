@@ -7,6 +7,8 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import ComponentListModulesFormation from "./component-list-modules-formation"
 import ComponentListParticipants from "./component-list-participants"
 import { Card, CardContent } from '@material-ui/core';
+import Moment from 'moment';
+import 'moment/locale/fr'
 
 const useStyles = makeStyles(theme => ({
     modal: {
@@ -84,6 +86,25 @@ export default function TransitionsModal(props) {
         props.handleClose()
     }
 
+    const getEtat = (dateDebut,dateFin) => {
+  
+        Moment.locale("fr");
+        var now_date = Moment().format("YYYY-MM-DD")
+        var date_debut = Moment(dateDebut, 'DD-MM-YYYY').format('YYYY-MM-DD')
+        var date_fin = Moment(dateFin, 'DD-MM-YYYY').format('YYYY-MM-DD')
+     
+        if (Moment(now_date).isBefore(date_debut) && Moment(now_date).isBefore(date_fin)) {
+          return "Programmée"
+        }else if ( Moment(now_date).isAfter(date_debut) && Moment(now_date).isAfter(date_fin) ){
+          return "Terminée"
+        }else if (Moment(now_date).isBetween(date_debut, date_fin)){
+          return "En cours"
+        }else if (Moment(now_date).isSameOrAfter(date_debut) && Moment(now_date).isSameOrBefore(date_fin)){
+          return "En cours"
+        }
+     
+      }
+
     return (
         <div>
             <Modal
@@ -126,7 +147,7 @@ export default function TransitionsModal(props) {
                                                 </div>
 
                                                 <div className="col-lg-5 col-md-5">
-                                                    <label style={{ fontWeight: "bold" }}>Etat : </label> <label></label> <br />
+                                                    <label style={{ fontWeight: "bold" }}>Etat : </label> <label>{getEtat(props.formation.dateDebut,props.formation.dateFin)}</label> <br />
                                                     <label style={{ fontWeight: "bold" }}>Nombres de participants : </label> <label>{props.participants.length}</label> <br />
                                                     <label style={{ fontWeight: "bold" }}>Max participants : </label> <label>{props.formation.maxParticipants}</label> <br />
                                                     <label style={{ fontWeight: "bold" }}>Cabinet / Formateur : </label>

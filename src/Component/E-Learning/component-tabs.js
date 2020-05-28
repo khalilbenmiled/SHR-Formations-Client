@@ -16,8 +16,8 @@ import StarsIcon from '@material-ui/icons/Stars';
 import ComponentQuiz from "./component-quiz"
 import ComponentListScores from "./component-list-scores"
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
-import axios from "axios"
 import ComponentListRessources from "./component-list-ressources"
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -68,6 +68,8 @@ export default function FullWidthTabs(props) {
     const [quizToDelete, setQuizToDelete] = React.useState("");
     const [openModalDelete, setOpenModalDelete] = React.useState(false);
     const [files, setFiles] = React.useState([]);
+    const [nomFile, setNomFile] = React.useState("");
+    const [descriptionFile, setDescriptionFile] = React.useState("");
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -99,31 +101,36 @@ export default function FullWidthTabs(props) {
         closeModalDelete(true)
     }
 
-    // const telecharger = (doc) => {
-    //     axios.get("http://localhost:8787/docs/downloadFile/" + doc.id).then(res => {
-
-    //     })
-    // }
-
     const upload = () => {
 
         const formData = new FormData();
         formData.append('file', files)
-
-        axios.post("http://localhost:8787/docs/uploadFile",
-            formData, {
-            headers: {
-                "Content-Type": "multipart/form-data"
-            }
-        }).then(res => {
-            console.log(res.data)
-
-        })
+        formData.append('nom', nomFile)
+        formData.append('description', descriptionFile)
+        props.upload(formData)
+        setNomFile("")
+        setDescriptionFile("")
+        setFiles([])
     }
 
     const fileChangeHandler = (e) => {
         setFiles(e.target.files[0])
+    }
 
+    const onChangeNomFile = (e) => {
+        setNomFile(e.target.value)
+    }
+
+    const onChangeDescriptionFile = (e) => {
+        setDescriptionFile(e.target.value)
+    }
+
+    const disableUpload = () => {
+        if (nomFile === "" || descriptionFile === "" ) {
+            return 1
+        } else {
+            return 0
+        }
     }
 
     return (
@@ -180,25 +187,26 @@ export default function FullWidthTabs(props) {
                             <ComponentListRessources listDocs={props.listDocs} />
                         </div>
                     </div>
-
+                    <LinearProgress style={{marginTop : "-17px" , marginBottom : "15px" }} hidden={!props.loadingList} variant="query"  />
+                    
                     <div hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} className="row" style={{ marginTop: "10px", padding: "20px 20px", backgroundColor: "#F5F5F5", boxShadow: "0px 0px 2px" }} >
 
                         <div className="col-lg-12 col-md-12">
                             <div className="row">
                                 <div className="col-lg-4 col-md-4" style={{ marginTop: "7px" }}>
-                                    <input  type="file" className={classes.upload} name="file" onChange={fileChangeHandler} />
+                                    <input type="file" className={classes.upload} name="file" onChange={fileChangeHandler} />
                                 </div>
                                 <div className="col-lg-4 col-md-4">
-                                    <TextField type="text" size="small" label="Nom" variant="outlined" style={{ backgroundColor: "white" }}  > </TextField>
+                                    <TextField value={nomFile} onChange={onChangeNomFile} type="text" size="small" label="Nom" variant="outlined" style={{ backgroundColor: "white" }}  > </TextField>
                                 </div>
                                 <div className="col-lg-4 col-md-4">
-                                    <TextField type="text" size="small" label="Description" variant="outlined" style={{ backgroundColor: "white" }}  > </TextField>
+                                    <TextField value={descriptionFile} onChange={onChangeDescriptionFile} type="text" size="small" label="Description" variant="outlined" style={{ backgroundColor: "white" }}  > </TextField>
                                 </div>
                             </div>
 
-                            <div className="row" style={{marginTop : "20px" , paddingLeft : "400px"}}>
+                            <div className="row" style={{ marginTop: "20px", paddingLeft: "400px" }}>
                                 <div className="col-lg-4 col-md-4 offset-lg-8 offset-md-4">
-                                    <Button onClick={upload} className={classes.buttonStyles} size="small" variant="outlined" >
+                                    <Button disabled={disableUpload() === 1 ? true : false} onClick={upload} className={classes.buttonStyles} size="small" variant="outlined" >
                                         Upload
                                     </Button>
                                 </div>
@@ -206,25 +214,7 @@ export default function FullWidthTabs(props) {
                         </div>
 
                     </div>
-
-
-                    {/* <div className="row">
-                        <div className="col-lg-12 col-md-12">
-                            <div className="form-group files color">
-                                <label>Upload Your File </label>
-                                <input type="file" className="form-control" name="file" onChange={fileChangeHandler}  />
-                                <Button onClick={upload}>Upload</Button>
-                            </div>
-                        </div>
-                    </div>
-                    {props.listDocs.map(doc => (
-                        <>
-                            <p>{doc.docName}</p>
-                            <br />
-                            <a href="http://localhost:8787/docs/downloadFile/52" >downolad</a>
-                            <Button onClick={telecharger.bind(this, doc)}>Telecharger</Button>
-                        </>
-                    ))} */}
+                    <LinearProgress hidden={!props.loadingUpload} variant="query" color="secondary" />
                 </TabPanel>
 
             </SwipeableViews>

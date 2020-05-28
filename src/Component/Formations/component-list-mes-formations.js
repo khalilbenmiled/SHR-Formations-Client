@@ -13,6 +13,11 @@ import IconButton from '@material-ui/core/IconButton';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import { TableHead } from '@material-ui/core';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import ComponentModalFormation from "./component-modal-formation"
+import axios from "axios"
+import querystring from 'querystring'
+
 
 
 const useStyles1 = makeStyles(theme => ({
@@ -49,7 +54,13 @@ const useStyles1 = makeStyles(theme => ({
     height: "30px",
     cursor: "pointer",
     color: "#ED7E0A"
-  }
+  },
+  buttonStyles: {
+    color: "#B51B10",
+    "&:focus": {
+      outline: "none"
+    }
+  },
 }));
 
 
@@ -95,14 +106,23 @@ TablePaginationActions.propTypes = {
 
 
 export default function CustomPaginationActionsTable(props) {
-  const rows = props.listDocs.sort((a, b) => (a.id < b.id) ? 1 : -1)
 
-//   const classes = useStyles1();
+  const rows = props.formations
+  const classes = useStyles1();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(6);
+  const [rowsPerPage, setRowsPerPage] = React.useState(4);
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-
-
+  const [open, setOpen] = React.useState(false);
+  const [formation, setFormation] = React.useState([]);
+  const [participants, setParticipants] = React.useState([]);
+  const [cabinetFormateur, setFetchCabinetFormateur] = React.useState({
+    role: "",
+    data: {
+      nom: "",
+      prenom: "",
+      contact: ""
+    }
+  });
 
 
   const handleChangePage = (event, newPage) => {
@@ -114,6 +134,71 @@ export default function CustomPaginationActionsTable(props) {
     setPage(0);
   };
 
+  const detailsFormations = (formation) => {
+
+    setFormation(formation)
+    fetchParticipants(formation.id)
+    fetchCabinetFormateur(formation.idCF)
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  const fetchParticipants = (id) => {
+    const input = {
+      id: id
+    }
+
+    axios.post("http://localhost:8585/formations/participants",
+      querystring.stringify(input), {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      }
+    }).then(res => {
+      if (res.data.Participants) {
+        setParticipants(res.data.Participants)
+      }
+
+    })
+  }
+
+  const fetchCabinetFormateur = (id) => {
+
+    const input = {
+      id: id
+    }
+    axios.post("http://localhost:8282/cabinets/cabinetOrFormateur",
+      querystring.stringify(input), {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      }
+    }).then(res => {
+      if (res.data.Cabinet) {
+        const obj = {
+          role: "Cabinet",
+          data: res.data.Cabinet
+        }
+        setFetchCabinetFormateur(obj)
+      } else if (res.data.Formateur) {
+        const obj = {
+          role: "Formateur",
+          data: res.data.Formateur
+        }
+        setFetchCabinetFormateur(obj)
+      } else {
+        setFetchCabinetFormateur({
+          role: "",
+          data: {
+            nom: "",
+            prenom: "",
+            contact: ""
+          }
+        })
+      }
+    })
+  }
 
   return (
     <>
@@ -122,9 +207,11 @@ export default function CustomPaginationActionsTable(props) {
         <Table size="small" className="tableTheme" aria-label="custom pagination table" >
           <TableHead className="tableHead" style={{ backgroundColor: "#B51B10" }}>
             <TableRow>
-              <TableCell style={{ fontSize: 16, color: 'white' }}>Nom</TableCell>
-              <TableCell style={{ fontSize: 16, color: 'white' }}>Description</TableCell>
-              <TableCell style={{ fontSize: 16, color: 'white' }}>Telecharger</TableCell>
+              <TableCell style={{ fontSize: 16, color: 'white' }}>Action</TableCell>
+              <TableCell style={{ fontSize: 16, color: 'white' }}>Date debut</TableCell>
+              <TableCell style={{ fontSize: 16, color: 'white' }}>Date fin</TableCell>
+              <TableCell style={{ fontSize: 16, color: 'white' }}>Etat</TableCell>
+              <TableCell colSpan={3} style={{ fontSize: 16, color: 'white' }}></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -132,10 +219,12 @@ export default function CustomPaginationActionsTable(props) {
               ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : rows
             ).map((row, index) => (
-              <TableRow key={index} >
-                  <TableCell>{row.nom}</TableCell>
-                  <TableCell>{row.description}</TableCell>
-                  <TableCell><a href={"http://localhost:8787/docs/downloadFile/"+row.id}>{row.docName}</a></TableCell>
+              <TableRow key={index}>
+                <TableCell> {row.nomTheme} </TableCell>
+                <TableCell> {row.dateDebut} </TableCell>
+                <TableCell> {row.dateFin} </TableCell>
+                <TableCell> {row.etat} </TableCell>
+                <TableCell> <VisibilityIcon className={classes.iconInfo} onClick={detailsFormations.bind(this, row)} /> </TableCell>
               </TableRow>
             ))}
 
@@ -166,6 +255,15 @@ export default function CustomPaginationActionsTable(props) {
         </Table>
 
       </TableContainer>
+
+
+      <ComponentModalFormation
+        open={open}
+        handleClose={handleClose}
+        formation={formation}
+        participants={participants}
+        cabinetFormateur={cabinetFormateur}
+      />
 
     </>
 

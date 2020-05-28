@@ -10,7 +10,6 @@ import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import DashboardIcon from '@material-ui/icons/Dashboard';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
@@ -30,6 +29,8 @@ import { withStyles } from '@material-ui/core/styles';
 import Logo from "../../images/logo.png"
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import PersonIcon from '@material-ui/icons/Person';
+import EqualizerIcon from '@material-ui/icons/Equalizer';
+import { useLocation } from 'react-router-dom'
 
 const drawerWidth = 240;
 
@@ -65,7 +66,10 @@ const useStyles = makeStyles(theme => ({
   },
   userInfos: {
     fontSize: "14px",
-    width: "15%"
+    width: "30%",
+    textAlign: "right",
+    marginTop: "5px",
+    marginRight: "2px",
   },
   logout: {
     cursor: 'pointer',
@@ -77,8 +81,10 @@ const useStyles = makeStyles(theme => ({
     }
   },
   menu: {
-    marginTop: "30px"
-  }
+    marginTop: "45px",
+    height: "300px",
+  },
+
 }));
 
 const StyledBadge = withStyles((theme) => ({
@@ -95,14 +101,23 @@ const StyledBadge = withStyles((theme) => ({
 export default function NavBar(props) {
 
   const classes = useStyles();
-
+  const rows = props.mesNotifications
+  const nbrOpened = props.nbrOpened
   const [anchorEl, setAnchorEl] = React.useState(null);
+
+
+  let location = useLocation();
 
   const openNotification = (event) => {
     setAnchorEl(event.currentTarget);
   }
   const closeNotification = () => {
+    props.setNotifications()
     setAnchorEl(null);
+  }
+
+  const deleteNotifications = () => {
+    props.deleteNotifications()
   }
 
   const openNotif = Boolean(anchorEl);
@@ -117,11 +132,7 @@ export default function NavBar(props) {
             SHR-Formation
           </Typography>
 
-          <IconButton hidden aria-describedby={id} onClick={openNotification} aria-label="cart">
-            <StyledBadge badgeContent={4}  >
-              <NotificationsIcon style={{ color: "#FED217", width: 25, height: 25 }} />
-            </StyledBadge>
-          </IconButton>
+
 
 
 
@@ -133,9 +144,28 @@ export default function NavBar(props) {
             onClose={closeNotification}
             className={classes.menu}
           >
-            <MenuItem onClick={closeNotification}>Profile</MenuItem>
-            <MenuItem onClick={closeNotification}>My account</MenuItem>
-            <MenuItem onClick={closeNotification}>Logout</MenuItem>
+
+            {rows.map((notif, index) => {
+              return (
+                <MenuItem style={{ width: "350px", fontSize: "12px" }} key={index} onClick={closeNotification}  >
+
+                  <div className="row">
+                    <div className="col-lg-12 col-md-12">
+                      {notif.message}
+                    </div>
+                  </div>
+                </MenuItem>
+              )
+            })}
+
+            <MenuItem onClick={deleteNotifications} style={{ paddingTop: " 20px", color: "#B51B10", fontSize: "11px", width: "200px", height: "5px" }} >
+              <div className="row">
+                <div className="col-lg-12 col-md-12">
+                  Effacer tous
+                </div>
+              </div>
+            </MenuItem>
+
           </Menu>
 
 
@@ -143,6 +173,11 @@ export default function NavBar(props) {
           <Typography variant="h6" noWrap className={classes.userInfos}>
             {props.user.email}
           </Typography>
+          <IconButton aria-describedby={id} onClick={openNotification} aria-label="cart">
+            <StyledBadge badgeContent={nbrOpened}  >
+              <NotificationsIcon style={{ color: "#FED217", width: 25, height: 25 }} />
+            </StyledBadge>
+          </IconButton>
           <Button onClick={props.onLogOut}>< ExitToAppIcon className={classes.logout} /></Button>
 
         </Toolbar>
@@ -161,17 +196,17 @@ export default function NavBar(props) {
         <Divider />
 
         <List >
-          <Link to="/dashboard" className="navlink">
-            <ListItem button>
+          <Link to="/dashboard" className="navlink"  >
+            <ListItem button style={{ backgroundColor: location.pathname === "/dashboard" ? "rgba(238,134,24,0.7)" : "" }}>
               <ListItemIcon>
-                < DashboardIcon style={{ color: "#B51B10" }} />
+                < EqualizerIcon style={{ color: "#B51B10" }} />
               </ListItemIcon>
               <ListItemText primary="Dashboard" className={classes.itemText} />
             </ListItem>
           </Link>
 
           <Link to="/besoins" className="navlink">
-            <ListItem button >
+            <ListItem button style={{ backgroundColor: location.pathname === "/besoins" ? "rgba(238,134,24,0.7)" : "" }}>
               <ListItemIcon>
                 < HelpOutlineIcon style={{ color: "#B51B10" }} />
               </ListItemIcon>
@@ -181,7 +216,7 @@ export default function NavBar(props) {
 
 
           <Link to="/collaborateurs" className="navlink">
-            <ListItem button>
+            <ListItem button style={{ backgroundColor: location.pathname === "/collaborateurs" ? "rgba(238,134,24,0.7)" : "" }}>
               <ListItemIcon>
 
                 < PersonIcon style={{ color: "#B51B10" }} />
@@ -190,8 +225,8 @@ export default function NavBar(props) {
             </ListItem>
           </Link>
 
-          <Link  to="/formations" className="navlink">
-            <ListItem button>
+          <Link to="/formations" className="navlink">
+            <ListItem button style={{ backgroundColor: location.pathname === "/formations" ? "rgba(238,134,24,0.7)" : "" }}>
               <ListItemIcon>
 
                 < LocalLibraryIcon style={{ color: "#B51B10" }} />
@@ -201,17 +236,16 @@ export default function NavBar(props) {
           </Link>
 
           <Link hidden={JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false} to="/themes" className="navlink">
-            <ListItem button>
+            <ListItem button style={{ backgroundColor: location.pathname === "/themes" ? "rgba(238,134,24,0.7)" : "" }}>
               <ListItemIcon>
-
                 < GroupWorkIcon style={{ color: "#B51B10" }} />
               </ListItemIcon>
               <ListItemText primary="Themes/Modules" />
             </ListItem>
           </Link>
 
-          <Link hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false}  to="/cabinetsFormateurs" className="navlink">
-            <ListItem button>
+          <Link hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} to="/cabinetsFormateurs" className="navlink">
+            <ListItem button style={{ backgroundColor: location.pathname === "/cabinetsFormateurs" ? "rgba(238,134,24,0.7)" : "" }}>
               <ListItemIcon>
                 < AccountBalanceIcon style={{ color: "#B51B10" }} />
               </ListItemIcon>
@@ -219,8 +253,8 @@ export default function NavBar(props) {
             </ListItem>
           </Link>
 
-          <Link hidden={JSON.parse(localStorage.user).role === "COLLABORATEUR" ? true : false}  to="/salles" className="navlink">
-            <ListItem button>
+          <Link to="/salles" className="navlink">
+            <ListItem hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} button style={{ backgroundColor: location.pathname === "/salles" ? "rgba(238,134,24,0.7)" : "" }}>
               <ListItemIcon>
                 < MeetingRoomIcon style={{ color: "#B51B10" }} />
               </ListItemIcon>
@@ -233,7 +267,7 @@ export default function NavBar(props) {
         <List>
 
           <Link to="/documents" className="navlink">
-            <ListItem hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS"  ? true : false} button>
+            <ListItem style={{ backgroundColor: location.pathname === "/documents" ? "rgba(238,134,24,0.7)" : "" }} hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} button>
               <ListItemIcon>
                 < DescriptionIcon style={{ color: "#B51B10" }} />
               </ListItemIcon>
@@ -242,7 +276,7 @@ export default function NavBar(props) {
           </Link>
 
           <Link to="/elearning" className="navlink">
-            <ListItem hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" && JSON.parse(localStorage.user).role !== "COLLABORATEUR" ? true : false} button>
+            <ListItem style={{ backgroundColor: location.pathname === "/elearning" ? "rgba(238,134,24,0.7)" : "" }} hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" && JSON.parse(localStorage.user).role !== "COLLABORATEUR" ? true : false} button>
               <ListItemIcon >
                 < CastForEducationIcon style={{ color: "#B51B10" }} />
               </ListItemIcon>
@@ -251,10 +285,10 @@ export default function NavBar(props) {
           </Link>
 
           <Divider hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} />
-          <Divider hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false}/>
+          <Divider hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} />
 
           <Link to="/utilisateurs" className="navlink">
-            <ListItem hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} button>
+            <ListItem style={{ backgroundColor: location.pathname === "/utilisateurs" ? "rgba(238,134,24,0.7)" : "" }} hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} button>
               <ListItemIcon >
                 < SupervisorAccountIcon style={{ color: "#B51B10" }} />
               </ListItemIcon>

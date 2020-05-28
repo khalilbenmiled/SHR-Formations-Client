@@ -8,6 +8,8 @@ import Alert from "@material-ui/lab/Alert"
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import Moment from 'moment';
 import 'moment/locale/fr'
+import SockJS from "sockjs-client"
+import Stomp from "stomp-websocket"
 
 class LayoutFormations extends Component {
 
@@ -29,60 +31,121 @@ class LayoutFormations extends Component {
             alertAjouterSession: false,
             formateurCabinet: 0,
             closePanel: false,
-            nbrParticipants: 0
+            nbrParticipants: 0,
+            stompClient: null,
         }
     }
 
     componentDidMount() {
-        axios.get("http://localhost:8686/besoinsPublier/all").then(res => {
-            if (res.data.Besoins) {
-                this.setState({
-                    listBesoins: res.data.Besoins
-                })
-            }
+
+        var socket = new SockJS('http://localhost:8383/notifications');
+        var stompClient = Stomp.over(socket);
+
+        this.setState({
+            stompClient: stompClient
         })
 
-        const tabs = []
-        const tabs2 = []
-        axios.get("http://localhost:8585/formations").then(res => {
-            if (res.data.Formations) {
-                res.data.Formations.map(formation => {
-                    var dateDebut = new Date(formation.dateDebut)
-                    var dateFin = new Date(formation.dateFin)
-                    Moment.locale("fr");
-                    var new_date = Moment(dateFin, "YYYY-MM-DD").add(1, "days")
-                    tabs.push({
-                        id: formation.id,
-                        title: formation.nomTheme,
-                        start: Moment(dateDebut).format("YYYY-MM-DD").toString(),
-                        end: Moment(new_date).format("YYYY-MM-DD").toString(),
-                        backgroundColor: formation.typeTheme === "SOFTSKILLS" ? "#ED7E0A" : formation.typeTheme === "TECHNIQUE" ? "#B51B10" : "#027796",
-                        textColor: "white",
-                    })
+        if (JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS") {
 
-                    tabs2.push({
-                        id: formation.id,
-                        nomTheme: formation.nomTheme,
-                        typeTheme: formation.typeTheme,
-                        dateDebut: Moment(dateDebut).format("DD-MM-YYYY").toString(),
-                        dateFin: Moment(dateFin).format("DD-MM-YYYY").toString(),
-                        listModules: formation.listModules,
-                        listParticipants: formation.listParticipants,
-                        maxParticipants: formation.maxParticipants,
-                        duree: formation.duree,
-                        idCF: formation.idCF,
-                        etat: formation.etat
-
-                    })
-                    return null
-
-                })
-                this.setState({
-                    formations: tabs,
-                    listFormations: tabs2
-                })
+            const input = {
+                id: JSON.parse(localStorage.user).id
             }
-        })
+            const tabs = []
+            const tabs2 = []
+            axios.post("http://localhost:8585/formations/byUser", querystring.stringify(input), {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
+                if (res.data.Formations) {
+                    res.data.Formations.map(formation => {
+                        var dateDebut = new Date(formation.dateDebut)
+                        var dateFin = new Date(formation.dateFin)
+                        Moment.locale("fr");
+                        var new_date = Moment(dateFin, "YYYY-MM-DD").add(1, "days")
+                        tabs.push({
+                            id: formation.id,
+                            title: formation.nomTheme,
+                            start: Moment(dateDebut).format("YYYY-MM-DD").toString(),
+                            end: Moment(new_date).format("YYYY-MM-DD").toString(),
+                            backgroundColor: formation.typeTheme === "SOFTSKILLS" ? "#ED7E0A" : formation.typeTheme === "TECHNIQUE" ? "#B51B10" : "#027796",
+                            textColor: "white",
+                        })
+
+                        tabs2.push({
+                            id: formation.id,
+                            nomTheme: formation.nomTheme,
+                            typeTheme: formation.typeTheme,
+                            dateDebut: Moment(dateDebut).format("DD-MM-YYYY").toString(),
+                            dateFin: Moment(dateFin).format("DD-MM-YYYY").toString(),
+                            listModules: formation.listModules,
+                            listParticipants: formation.listParticipants,
+                            maxParticipants: formation.maxParticipants,
+                            duree: formation.duree,
+                            idCF: formation.idCF,
+                            etat: formation.etat
+
+                        })
+                        return null
+
+                    })
+                    this.setState({
+                        formations: tabs,
+                        listFormations: tabs2
+                    })
+                }
+            })
+        } else {
+            axios.get("http://localhost:8686/besoinsPublier/all").then(res => {
+                if (res.data.Besoins) {
+                    this.setState({
+                        listBesoins: res.data.Besoins
+                    })
+                }
+            })
+
+            const tabs = []
+            const tabs2 = []
+            axios.get("http://localhost:8585/formations").then(res => {
+                if (res.data.Formations) {
+                    res.data.Formations.map(formation => {
+                        var dateDebut = new Date(formation.dateDebut)
+                        var dateFin = new Date(formation.dateFin)
+                        Moment.locale("fr");
+                        var new_date = Moment(dateFin, "YYYY-MM-DD").add(1, "days")
+                        tabs.push({
+                            id: formation.id,
+                            title: formation.nomTheme,
+                            start: Moment(dateDebut).format("YYYY-MM-DD").toString(),
+                            end: Moment(new_date).format("YYYY-MM-DD").toString(),
+                            backgroundColor: formation.typeTheme === "SOFTSKILLS" ? "#ED7E0A" : formation.typeTheme === "TECHNIQUE" ? "#B51B10" : "#027796",
+                            textColor: "white",
+                        })
+
+                        tabs2.push({
+                            id: formation.id,
+                            nomTheme: formation.nomTheme,
+                            typeTheme: formation.typeTheme,
+                            dateDebut: Moment(dateDebut).format("DD-MM-YYYY").toString(),
+                            dateFin: Moment(dateFin).format("DD-MM-YYYY").toString(),
+                            listModules: formation.listModules,
+                            listParticipants: formation.listParticipants,
+                            maxParticipants: formation.maxParticipants,
+                            duree: formation.duree,
+                            idCF: formation.idCF,
+                            etat: formation.etat
+
+                        })
+                        return null
+
+                    })
+                    this.setState({
+                        formations: tabs,
+                        listFormations: tabs2
+                    })
+                }
+            })
+        }
     }
 
 
@@ -197,7 +260,7 @@ class LayoutFormations extends Component {
         })
 
         var listModules = tabs.filter((ele, ind) => ind === tabs.findIndex(elem => elem.nom === ele.nom))
-  
+
         const obj = {
             nomTheme: nomTheme,
             typeTheme: typeTheme,
@@ -214,6 +277,18 @@ class LayoutFormations extends Component {
 
         axios.post("http://localhost:8585/formations/", obj).then(res => {
             if (res.data.Formation) {
+                this.state.participants.map(participant => {
+                    Moment.locale("fr");
+                    var now_date = Moment().format("DD/MM/YYYY HH:mm")
+                    const obj = {
+                      idCollaborateur: participant.id,
+                      message: "Vous etes inscrit à une formation, consulter votre calendrier",
+                      opened: false,
+                      date: now_date
+                    }
+                    this.state.stompClient.send("/app/valider", {}, JSON.stringify(obj));
+                    return null
+                })
                 this.setState({
                     alertFormation: true
                 })

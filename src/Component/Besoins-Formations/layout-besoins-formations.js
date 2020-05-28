@@ -12,11 +12,16 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import WarningIcon from '@material-ui/icons/Warning';
+import SockJS from "sockjs-client"
+import Stomp from "stomp-websocket"
+import Moment from 'moment';
+import 'moment/locale/fr'
 
 class Besoins extends Component {
 
     constructor(props) {
         super(props)
+
         this.state = {
             themes: [],
             allThemes: [],
@@ -49,10 +54,19 @@ class Besoins extends Component {
             snackBesoinPublier: false,
             rapports: [],
             mesCollaborateurs: [],
-            mesCollaborateursSelected: []
+            mesCollaborateursSelected: [],
+            stompClient: null,
         }
     }
+
     componentDidMount() {
+        
+        var socket = new SockJS('http://localhost:8383/notifications');
+        var stompClient = Stomp.over(socket);
+
+        this.setState({
+            stompClient: stompClient
+        })
 
         const user = {
             id: JSON.parse(localStorage.user).id
@@ -152,9 +166,9 @@ class Besoins extends Component {
         if (JSON.parse(localStorage.user).role === "MANAGER") {
 
             const input = {
-                id : JSON.parse(localStorage.user).id
+                id: JSON.parse(localStorage.user).id
             }
-            axios.post("http://localhost:8686/besoinsPublier/" , querystring.stringify(input) , {
+            axios.post("http://localhost:8686/besoinsPublier/", querystring.stringify(input), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -320,7 +334,35 @@ class Besoins extends Component {
                     listModules: this.state.listModulesSelected
                 }
             }
-        } else if (JSON.parse(localStorage.user).role === "TEAMLEAD") {
+            axios.post("http://localhost:8686/besoins/addByCollaborateur", besoin).then(res => {
+
+                if (res.data.Error) {
+                    this.setState({
+                        alertBesoinError: true
+                    })
+                } else {
+                    const listBesoins = this.state.listBesoins
+                    const index = listBesoins.findIndex(besoin => besoin.id === res.data.Besoin.id)
+                    if (index === -1) {
+                        const listBesoins = this.state.listBesoins
+                        listBesoins.push(res.data.Besoin)
+                        this.setState({
+                            listBesoins: listBesoins,
+                            alertBesoin: true
+                        })
+                    } else {
+                        listBesoins.splice(index, 1, res.data.Besoin)
+                        this.setState({
+                            listBesoins: listBesoins,
+                            alertBesoin: true
+                        })
+                    }
+
+                }
+
+            })
+
+        } else {
             besoin = {
                 bu: JSON.parse(localStorage.user).bu,
                 idUser: JSON.parse(localStorage.user).id,
@@ -342,38 +384,34 @@ class Besoins extends Component {
                     idTeamLead: this.state.idTeamLead
                 }
             }
-        } else {
+            axios.post("http://localhost:8686/besoins/addByTL", besoin).then(res => {
 
-        }
-
-        axios.post("http://localhost:8686/besoins", besoin).then(res => {
-
-            if (res.data.Error) {
-                this.setState({
-                    alertBesoinError: true
-                })
-            } else {
-                const listBesoins = this.state.listBesoins
-                const index = listBesoins.findIndex(besoin => besoin.id === res.data.Besoin.id)
-                if (index === -1) {
-                    const listBesoins = this.state.listBesoins
-                    listBesoins.push(res.data.Besoin)
+                if (res.data.Error) {
                     this.setState({
-                        listBesoins: listBesoins,
-                        alertBesoin: true
+                        alertBesoinError: true
                     })
                 } else {
-                    listBesoins.splice(index, 1, res.data.Besoin)
-                    this.setState({
-                        listBesoins: listBesoins,
-                        alertBesoin: true
-                    })
+                    const listBesoins = this.state.listBesoins
+                    const index = listBesoins.findIndex(besoin => besoin.id === res.data.Besoin.id)
+                    if (index === -1) {
+                        const listBesoins = this.state.listBesoins
+                        listBesoins.push(res.data.Besoin)
+                        this.setState({
+                            listBesoins: listBesoins,
+                            alertBesoin: true
+                        })
+                    } else {
+                        listBesoins.splice(index, 1, res.data.Besoin)
+                        this.setState({
+                            listBesoins: listBesoins,
+                            alertBesoin: true
+                        })
+                    }
+
                 }
 
-            }
-
-        })
-
+            })
+        }
     }
 
     addAction(theme) {
@@ -443,11 +481,21 @@ class Besoins extends Component {
                 alertValiderBesoin: true
             })
 
-
+            // Declencher un evenmenet apres la validation d'un besoin
+            Moment.locale("fr");
+            var now_date = Moment().format("DD/MM/YYYY HH:mm")
+            const obj = {
+                idCollaborateur: besoin.idUser,
+                message: "Besoin validé",
+                opened: false,
+                date: now_date
+            }
+            this.state.stompClient.send("/app/valider", {}, JSON.stringify(obj));
+            
             if (JSON.parse(localStorage.user).role === "MANAGER") {
                 const obj = {
                     idBesoin: res.data.Besoin.id,
-                    idManager : JSON.parse(localStorage.user).id
+                    idManager: JSON.parse(localStorage.user).id
                 }
                 axios.post("http://localhost:8686/besoinsPublier/publier",
                     querystring.stringify(obj), {
@@ -622,7 +670,7 @@ class Besoins extends Component {
         const id = besoin.id
         const obj = {
             idBesoin: besoin.id,
-            idManager : JSON.parse(localStorage.user).id
+            idManager: JSON.parse(localStorage.user).id
         }
         axios.post("http://localhost:8686/besoins/annulerValidationMG",
             querystring.stringify(obj), {
@@ -676,9 +724,7 @@ class Besoins extends Component {
 
         const obj = {
             idBesoin: besoin.id,
-            
         }
-
 
         axios.post("http://localhost:8686/besoins/validerMG",
             querystring.stringify(obj), {
@@ -696,8 +742,8 @@ class Besoins extends Component {
 
             const input = {
                 idBesoin: besoin.id,
-                idManager : JSON.parse(localStorage.user).id
-                
+                idManager: JSON.parse(localStorage.user).id
+
             }
             axios.post("http://localhost:8686/besoinsPublier/publier",
                 querystring.stringify(input), {
@@ -787,7 +833,6 @@ class Besoins extends Component {
 
     filter(type, nomTheme, quarter, projet, tl, mg, bu, publier) {
         if (JSON.parse(localStorage.user).role === "TEAMLEAD") {
-
 
             const obj = {
                 typeTheme: type,
@@ -961,13 +1006,7 @@ class Besoins extends Component {
         })
     }
 
-    // test () {
-    //     var ee = new EventEmitter()
-    //     ee.on('message', function (text) {
-    //       console.log(text)
-    //     })
-    //     ee.emit('message', 'hello world')
-    // }
+
     render() {
         return (
             <>

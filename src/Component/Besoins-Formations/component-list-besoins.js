@@ -102,7 +102,9 @@ export default function CustomPaginationActionsTable(props) {
   const [projet, setProjet] = React.useState("");
   const [trimestre, setTrimestre] = React.useState("");
   const [idBesoin, setIdBesoin] = React.useState("");
-
+  const [idUser, setIdUser] = React.useState("");
+  const [idCollaborateur, setIdCollaborateur] = React.useState("");
+  
 
 
   const openInfos = (besoin) => {
@@ -142,6 +144,7 @@ export default function CustomPaginationActionsTable(props) {
 
   const openModalValider = (besoin) => {
     setIdBesoin(besoin.id)
+    setIdUser(besoin.idUser)
     setOpenValider(true)
   }
 
@@ -171,6 +174,7 @@ export default function CustomPaginationActionsTable(props) {
 
     const obj = {
       idBesoin: idBesoin,
+      idUser:idUser,
       trimestre: trimestre,
       idProjet: projet,
       validerMG: false
@@ -182,11 +186,11 @@ export default function CustomPaginationActionsTable(props) {
   const onValiderBesoinByManager = () => {
     const obj = {
       idBesoin: idBesoin,
+      idUser : idCollaborateur ,
       trimestre: trimestre,
       idProjet: projet,
       validerMG: true
     }
-    console.log(obj)
     props.onValiderBesoin(obj)
     setOpenValiderMG(false)
   }
@@ -196,6 +200,7 @@ export default function CustomPaginationActionsTable(props) {
       props.validerByManager(besoin)
     } else {
       setIdBesoin(besoin.id)
+      setIdCollaborateur(besoin.idUser)
       setOpenValiderMG(true)
     }
   }

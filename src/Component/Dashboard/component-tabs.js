@@ -16,7 +16,6 @@ import querystring from 'querystring'
 import ComponentPieChart from "./component-pieChart"
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
-import StarsIcon from '@material-ui/icons/Stars';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import fr from "date-fns/locale/fr";
@@ -27,7 +26,6 @@ import {
 import EventIcon from '@material-ui/icons/Event';
 import Moment from 'moment';
 import 'moment/locale/fr'
-
 
 
 function TabPanel(props) {
@@ -178,6 +176,15 @@ export default function FullWidthTabs(props) {
                 quarter: 0,
             }
             filterBesoins(inputBesoin)
+
+            const inputFormation = {
+                theme: "",
+                type: "",
+                dateDebut: "",
+                dateFin: "",
+            }
+            filterFormations(inputFormation)
+
         } else {
             const inputBesoin = {
                 bu: "",
@@ -186,16 +193,16 @@ export default function FullWidthTabs(props) {
                 id: JSON.parse(localStorage.user).id
             }
             filterBesoins(inputBesoin)
-        }
 
-
-        const inputFormation = {
-            theme: "",
-            type: "",
-            dateDebut: "",
-            dateFin: "",
+            const inputFormation = {
+                theme: "",
+                type: "",
+                dateDebut: "",
+                dateFin: "",
+                id: JSON.parse(localStorage.user).id
+            }
+            filterFormations(inputFormation)
         }
-        filterFormations(inputFormation)
 
         const inputTypeTheme = {
             type: ""
@@ -601,81 +608,381 @@ export default function FullWidthTabs(props) {
                 }
             })
         } else {
-            console.log("oui")
+            const obj = {
+                bu: input.bu,
+                quarter: input.quarter,
+                theme: input.theme,
+                id: JSON.parse(localStorage.user).id
+            }
+            axios.post("http://localhost:8686/besoins/reporting/byFilterManager", querystring.stringify(obj), {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
+
+                if (res.data.Results) {
+
+                    var NomArray = Object.keys(res.data.Results)
+
+                    const tabsNom = []
+                    const tabsDataAll = []
+                    const tabsDataPlanifier = []
+                    const tabsDataNonPlanifier = []
+                    NomArray.map((key, index) => {
+                        tabsNom.push(key)
+                        tabsDataAll.push(res.data.Results[key].Results.length)
+                        tabsDataPlanifier.push(res.data.Results[key].ResultsPlanifier === null ? 0 : res.data.Results[key].ResultsPlanifier.length)
+                        tabsDataNonPlanifier.push(res.data.Results[key].ResultsNonPlanifier === null ? 0 : res.data.Results[key].ResultsNonPlanifier.length)
+                        return null
+                    })
+
+                    const data = {
+                        labels: tabsNom,
+                        datasets: [
+                            {
+                                label: 'Besoins demandés',
+                                backgroundColor: 'rgba(237,126,10,0.8)',
+                                borderColor: 'rgba(237,126,132,1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(237,126,10,1)',
+                                hoverBorderColor: 'rgba(237,126,10,1)',
+                                data: tabsDataAll
+                            },
+                            {
+                                label: 'Besoins Planifiés',
+                                backgroundColor: 'rgba(2,119,150,0.8)',
+                                borderColor: 'rgba(2,119,150,1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(2,119,150,1)',
+                                hoverBorderColor: 'rgba(2,119,150,1)',
+                                data: tabsDataPlanifier
+                            },
+                            {
+                                label: 'Besoins Non Planifié',
+                                backgroundColor: 'rgba(181, 27, 16, 0.8)',
+                                borderColor: 'rgba(181, 27, 16, 1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(181, 27, 16, 1)',
+                                hoverBorderColor: 'rgba(181, 27, 16, 1)',
+
+                                data: tabsDataNonPlanifier
+                            },
+                        ]
+                    };
+
+                    setDataBesoins(data)
+
+                }
+            })
         }
 
     }
 
     const filterFormations = (input) => {
-        axios.post("http://localhost:8585/formations/reporting/etat", querystring.stringify(input), {
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
+
+        if (JSON.parse(localStorage.user).role === "SERVICEFORMATIONS") {
+            axios.post("http://localhost:8585/formations/reporting/etat", querystring.stringify(input), {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
+                if (res.data.Results) {
+                    var NomArray = Object.keys(res.data.Results)
+                    const tabsNom = []
+                    const tabsDataAll = []
+                    const tabsDataEnCours = []
+                    const tabsDataProgrammer = []
+                    const tabsDataTerminer = []
+
+                    NomArray.map((key, index) => {
+                        tabsNom.push(key)
+                        tabsDataAll.push(res.data.Results[key].All.length)
+                        tabsDataEnCours.push(res.data.Results[key].EnCours === null ? 0 : res.data.Results[key].EnCours.length)
+                        tabsDataProgrammer.push(res.data.Results[key].Programmé === null ? 0 : res.data.Results[key].Programmé.length)
+                        tabsDataTerminer.push(res.data.Results[key].Terminer === null ? 0 : res.data.Results[key].Terminer.length)
+                        return null
+                    })
+
+                    const data = {
+                        labels: tabsNom,
+                        datasets: [
+                            {
+                                label: 'Tous les formations',
+                                backgroundColor: 'rgba(237,126,10,0.8)',
+                                borderColor: 'rgba(237,126,132,1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(237,126,10,1)',
+                                hoverBorderColor: 'rgba(237,126,10,1)',
+                                data: tabsDataAll
+                            },
+                            {
+                                label: 'Formation en cours',
+                                backgroundColor: 'rgba(2,119,150,0.8)',
+                                borderColor: 'rgba(2,119,150,1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(2,119,150,1)',
+                                hoverBorderColor: 'rgba(2,119,150,1)',
+                                data: tabsDataEnCours
+                            },
+                            {
+                                label: 'Formation programmée',
+                                backgroundColor: 'rgba(181, 27, 16, 0.8)',
+                                borderColor: 'rgba(181, 27, 16, 1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(181, 27, 16, 1)',
+                                hoverBorderColor: 'rgba(181, 27, 16, 1)',
+
+                                data: tabsDataProgrammer
+                            },
+                            {
+                                label: 'Formation terminée',
+                                backgroundColor: 'rgba(0, 128, 16, 0.8)',
+                                borderColor: 'rgba(0, 128, 16, 1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(0, 128, 16, 1)',
+                                hoverBorderColor: 'rgba(0, 128, 16, 1)',
+
+                                data: tabsDataTerminer
+                            },
+                        ]
+                    };
+
+                    setDataFormations(data)
+                }
+            })
+        } else if (JSON.parse(localStorage.user).role === "COLLABORATEUR") {
+            const obj = {
+                theme: input.theme,
+                type: input.type,
+                dateDebut: input.dataDebut,
+                dateFin: input.dateFin,
+                id: JSON.parse(localStorage.user).id
             }
-        }).then(res => {
-            if (res.data.Results) {
-                var NomArray = Object.keys(res.data.Results)
-                const tabsNom = []
-                const tabsDataAll = []
-                const tabsDataEnCours = []
-                const tabsDataProgrammer = []
-                const tabsDataTerminer = []
+            axios.post("http://localhost:8585/formations/reporting/etatByCollaborateur", querystring.stringify(obj), {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
+                if (res.data.Results) {
+                    var NomArray = Object.keys(res.data.Results)
+                    const tabsNom = []
+                    const tabsDataAll = []
+                    const tabsDataEnCours = []
+                    const tabsDataProgrammer = []
+                    const tabsDataTerminer = []
 
-                NomArray.map((key, index) => {
-                    tabsNom.push(key)
-                    tabsDataAll.push(res.data.Results[key].All.length)
-                    tabsDataEnCours.push(res.data.Results[key].EnCours === null ? 0 : res.data.Results[key].EnCours.length)
-                    tabsDataProgrammer.push(res.data.Results[key].Programmé === null ? 0 : res.data.Results[key].Programmé.length)
-                    tabsDataTerminer.push(res.data.Results[key].Terminer === null ? 0 : res.data.Results[key].Terminer.length)
-                    return null
-                })
+                    NomArray.map((key, index) => {
+                        tabsNom.push(key)
+                        tabsDataAll.push(res.data.Results[key].All.length)
+                        tabsDataEnCours.push(res.data.Results[key].EnCours === null ? 0 : res.data.Results[key].EnCours.length)
+                        tabsDataProgrammer.push(res.data.Results[key].Programmé === null ? 0 : res.data.Results[key].Programmé.length)
+                        tabsDataTerminer.push(res.data.Results[key].Terminer === null ? 0 : res.data.Results[key].Terminer.length)
+                        return null
+                    })
 
-                const data = {
-                    labels: tabsNom,
-                    datasets: [
-                        {
-                            label: 'Tous les formations',
-                            backgroundColor: 'rgba(237,126,10,0.8)',
-                            borderColor: 'rgba(237,126,132,1)',
-                            borderWidth: 1,
-                            hoverBackgroundColor: 'rgba(237,126,10,1)',
-                            hoverBorderColor: 'rgba(237,126,10,1)',
-                            data: tabsDataAll
-                        },
-                        {
-                            label: 'Formation en cours',
-                            backgroundColor: 'rgba(2,119,150,0.8)',
-                            borderColor: 'rgba(2,119,150,1)',
-                            borderWidth: 1,
-                            hoverBackgroundColor: 'rgba(2,119,150,1)',
-                            hoverBorderColor: 'rgba(2,119,150,1)',
-                            data: tabsDataEnCours
-                        },
-                        {
-                            label: 'Formation programmée',
-                            backgroundColor: 'rgba(181, 27, 16, 0.8)',
-                            borderColor: 'rgba(181, 27, 16, 1)',
-                            borderWidth: 1,
-                            hoverBackgroundColor: 'rgba(181, 27, 16, 1)',
-                            hoverBorderColor: 'rgba(181, 27, 16, 1)',
+                    const data = {
+                        labels: tabsNom,
+                        datasets: [
+                            {
+                                label: 'Tous les formations',
+                                backgroundColor: 'rgba(237,126,10,0.8)',
+                                borderColor: 'rgba(237,126,132,1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(237,126,10,1)',
+                                hoverBorderColor: 'rgba(237,126,10,1)',
+                                data: tabsDataAll
+                            },
+                            {
+                                label: 'Formation en cours',
+                                backgroundColor: 'rgba(2,119,150,0.8)',
+                                borderColor: 'rgba(2,119,150,1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(2,119,150,1)',
+                                hoverBorderColor: 'rgba(2,119,150,1)',
+                                data: tabsDataEnCours
+                            },
+                            {
+                                label: 'Formation programmée',
+                                backgroundColor: 'rgba(181, 27, 16, 0.8)',
+                                borderColor: 'rgba(181, 27, 16, 1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(181, 27, 16, 1)',
+                                hoverBorderColor: 'rgba(181, 27, 16, 1)',
 
-                            data: tabsDataProgrammer
-                        },
-                        {
-                            label: 'Formation terminer',
-                            backgroundColor: 'rgba(0, 128, 16, 0.8)',
-                            borderColor: 'rgba(0, 128, 16, 1)',
-                            borderWidth: 1,
-                            hoverBackgroundColor: 'rgba(0, 128, 16, 1)',
-                            hoverBorderColor: 'rgba(0, 128, 16, 1)',
+                                data: tabsDataProgrammer
+                            },
+                            {
+                                label: 'Formation terminée',
+                                backgroundColor: 'rgba(0, 128, 16, 0.8)',
+                                borderColor: 'rgba(0, 128, 16, 1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(0, 128, 16, 1)',
+                                hoverBorderColor: 'rgba(0, 128, 16, 1)',
 
-                            data: tabsDataTerminer
-                        },
-                    ]
-                };
+                                data: tabsDataTerminer
+                            },
+                        ]
+                    };
 
-                setDataFormations(data)
+                    setDataFormations(data)
+                }
+            })
+        } else if (JSON.parse(localStorage.user).role === "TEAMLEAD") {
+            const obj = {
+                theme: input.theme,
+                type: input.type,
+                dateDebut: input.dataDebut,
+                dateFin: input.dateFin,
+                id: JSON.parse(localStorage.user).id
             }
-        })
+            axios.post("http://localhost:8585/formations/reporting/etatByTL", querystring.stringify(obj), {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
+                if (res.data.Results) {
+                    var NomArray = Object.keys(res.data.Results)
+                    const tabsNom = []
+                    const tabsDataAll = []
+                    const tabsDataEnCours = []
+                    const tabsDataProgrammer = []
+                    const tabsDataTerminer = []
+
+                    NomArray.map((key, index) => {
+                        tabsNom.push(key)
+                        tabsDataAll.push(res.data.Results[key].All.length)
+                        tabsDataEnCours.push(res.data.Results[key].EnCours === null ? 0 : res.data.Results[key].EnCours.length)
+                        tabsDataProgrammer.push(res.data.Results[key].Programmé === null ? 0 : res.data.Results[key].Programmé.length)
+                        tabsDataTerminer.push(res.data.Results[key].Terminer === null ? 0 : res.data.Results[key].Terminer.length)
+                        return null
+                    })
+
+                    const data = {
+                        labels: tabsNom,
+                        datasets: [
+                            {
+                                label: 'Tous les formations',
+                                backgroundColor: 'rgba(237,126,10,0.8)',
+                                borderColor: 'rgba(237,126,132,1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(237,126,10,1)',
+                                hoverBorderColor: 'rgba(237,126,10,1)',
+                                data: tabsDataAll
+                            },
+                            {
+                                label: 'Formation en cours',
+                                backgroundColor: 'rgba(2,119,150,0.8)',
+                                borderColor: 'rgba(2,119,150,1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(2,119,150,1)',
+                                hoverBorderColor: 'rgba(2,119,150,1)',
+                                data: tabsDataEnCours
+                            },
+                            {
+                                label: 'Formation programmée',
+                                backgroundColor: 'rgba(181, 27, 16, 0.8)',
+                                borderColor: 'rgba(181, 27, 16, 1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(181, 27, 16, 1)',
+                                hoverBorderColor: 'rgba(181, 27, 16, 1)',
+
+                                data: tabsDataProgrammer
+                            },
+                            {
+                                label: 'Formation terminée',
+                                backgroundColor: 'rgba(0, 128, 16, 0.8)',
+                                borderColor: 'rgba(0, 128, 16, 1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(0, 128, 16, 1)',
+                                hoverBorderColor: 'rgba(0, 128, 16, 1)',
+
+                                data: tabsDataTerminer
+                            },
+                        ]
+                    };
+
+                    setDataFormations(data)
+                }
+            })
+        } else {
+            const obj = {
+                theme: input.theme,
+                type: input.type,
+                dateDebut: input.dataDebut,
+                dateFin: input.dateFin,
+                id: JSON.parse(localStorage.user).id
+            }
+            axios.post("http://localhost:8585/formations/reporting/etatByManager", querystring.stringify(obj), {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(res => {
+                if (res.data.Results) {
+                    var NomArray = Object.keys(res.data.Results)
+                    const tabsNom = []
+                    const tabsDataAll = []
+                    const tabsDataEnCours = []
+                    const tabsDataProgrammer = []
+                    const tabsDataTerminer = []
+
+                    NomArray.map((key, index) => {
+                        tabsNom.push(key)
+                        tabsDataAll.push(res.data.Results[key].All.length)
+                        tabsDataEnCours.push(res.data.Results[key].EnCours === null ? 0 : res.data.Results[key].EnCours.length)
+                        tabsDataProgrammer.push(res.data.Results[key].Programmé === null ? 0 : res.data.Results[key].Programmé.length)
+                        tabsDataTerminer.push(res.data.Results[key].Terminer === null ? 0 : res.data.Results[key].Terminer.length)
+                        return null
+                    })
+
+                    const data = {
+                        labels: tabsNom,
+                        datasets: [
+                            {
+                                label: 'Tous les formations',
+                                backgroundColor: 'rgba(237,126,10,0.8)',
+                                borderColor: 'rgba(237,126,132,1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(237,126,10,1)',
+                                hoverBorderColor: 'rgba(237,126,10,1)',
+                                data: tabsDataAll
+                            },
+                            {
+                                label: 'Formation en cours',
+                                backgroundColor: 'rgba(2,119,150,0.8)',
+                                borderColor: 'rgba(2,119,150,1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(2,119,150,1)',
+                                hoverBorderColor: 'rgba(2,119,150,1)',
+                                data: tabsDataEnCours
+                            },
+                            {
+                                label: 'Formation programmée',
+                                backgroundColor: 'rgba(181, 27, 16, 0.8)',
+                                borderColor: 'rgba(181, 27, 16, 1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(181, 27, 16, 1)',
+                                hoverBorderColor: 'rgba(181, 27, 16, 1)',
+
+                                data: tabsDataProgrammer
+                            },
+                            {
+                                label: 'Formation terminée',
+                                backgroundColor: 'rgba(0, 128, 16, 0.8)',
+                                borderColor: 'rgba(0, 128, 16, 1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(0, 128, 16, 1)',
+                                hoverBorderColor: 'rgba(0, 128, 16, 1)',
+
+                                data: tabsDataTerminer
+                            },
+                        ]
+                    };
+
+                    setDataFormations(data)
+                }
+            })
+        }
+
     }
 
     const filterTypeTheme = (input) => {
@@ -804,7 +1111,7 @@ export default function FullWidthTabs(props) {
                 >
                     <Tab style={{ outline: "none" }} label="Besoins" icon={<HelpOutlineIcon />} />
                     <Tab style={{ outline: "none" }} label="Formations" icon={<LocalLibraryIcon />} />
-                    <Tab style={{ outline: "none" }} label="Quiz" icon={<StarsIcon />} />
+                    
 
 
                 </Tabs>
@@ -854,7 +1161,7 @@ export default function FullWidthTabs(props) {
 
                     </div>
 
-                    <div className="row" style={{ marginTop: "20px" }} >
+                    <div hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} className="row" style={{ marginTop: "20px" }} >
                         <div className="col-lg-5 col-md-5 offset-lg-1 offset-md-1" style={{ marginRight: "20px", padding: "20px 20px", backgroundColor: "#F5F5F5", boxShadow: "0px 0px 2px" }}>
                             <Autocomplete
                                 size="small"
@@ -973,11 +1280,11 @@ export default function FullWidthTabs(props) {
                         </div>
                     </div>
 
-                    <div className="row" style={{ marginTop: "10px", padding: "20px 20px", backgroundColor: "#F5F5F5", boxShadow: "0px 0px 2px" }} >
+                    <div hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} className="row" style={{ marginTop: "10px", padding: "20px 20px", backgroundColor: "#F5F5F5", boxShadow: "0px 0px 2px" }} >
                         <div className="col-lg-12 col-md-12">
                             <div className="row" style={{ marginBottom: "30px" }}>
                                 <div className="col-lg-6 col-md-6 offset-lg-3 offset-md-3">
-                                    <h4 style={{ marginLeft: "130px", color: "#3D707E" }}>Notes d'une formation</h4>
+                                    <h4 style={{ marginLeft: "100px", color: "#3D707E" }}>Evaluation d'une formation</h4>
                                     <Autocomplete
                                         size="small"
                                         options={listFormations}

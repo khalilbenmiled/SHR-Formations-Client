@@ -22,12 +22,15 @@ class LayoutCabinetsFormateurs extends Component {
             alerAddQTF: false,
             quizCollaborateurs: [],
             scores: [],
-            listDocs : []
+            listDocs: [],
+            alertAddDocs : false,
+            loadingUpload : false,
+            loadingList : false
         }
     }
 
     componentWillMount() {
-        if (JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" && JSON.parse(localStorage.user).role !== "COLLABORATEUR" ) {
+        if (JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" && JSON.parse(localStorage.user).role !== "COLLABORATEUR") {
             this.props.history.push({
                 pathname: "/404NOTFOUND"
             })
@@ -78,10 +81,18 @@ class LayoutCabinetsFormateurs extends Component {
 
         })
 
+        this.setState({
+            loadingList : true
+        })
         axios.get("http://localhost:8787/docs/").then(res => {
             if (res.data.Docs) {
                 this.setState({
-                    listDocs: res.data.Docs
+                    listDocs: res.data.Docs,
+                    loadingList : false
+                })
+            }else {
+                this.setState({
+                    loadingList : false
                 })
             }
 
@@ -251,7 +262,36 @@ class LayoutCabinetsFormateurs extends Component {
         }).then(res => {
             console.log(res.data)
         })
+    }
 
+    upload(formData) {
+        this.setState({
+            loadingUpload : true
+        })
+        axios.post("http://localhost:8787/docs/uploadFile",
+            formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }).then(res => {
+            if(res.data.Docs) {
+                const tabs = this.state.listDocs
+                tabs.push(res.data.Docs)
+                this.setState({
+                    listDocs : tabs,
+                    alertAddDocs : true,
+                    loadingUpload : false
+                })
+            }
+      
+
+        })
+    }
+
+    closeAletDocs() {
+        this.setState({
+            alertAddDocs : false
+        })
     }
 
     render() {
@@ -272,6 +312,9 @@ class LayoutCabinetsFormateurs extends Component {
                                 scores={this.state.scores}
                                 rateFormation={this.rateFormation.bind(this)}
                                 listDocs={this.state.listDocs}
+                                upload={this.upload.bind(this)}
+                                loadingUpload ={this.state.loadingUpload}
+                                loadingList= {this.state.loadingList}
                             />
                         </div>
                     </div>
@@ -279,6 +322,12 @@ class LayoutCabinetsFormateurs extends Component {
                 <Snackbar open={this.state.alertQuiz} autoHideDuration={5000} onClose={this.closeAletQuiz.bind(this)}>
                     <Alert onClose={this.closeAletQuiz.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
                         Quiz ajouter !
+                    </Alert>
+                </Snackbar>
+
+                <Snackbar open={this.state.alertAddDocs} autoHideDuration={5000} onClose={this.closeAletDocs.bind(this)}>
+                    <Alert onClose={this.closeAletDocs.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
+                        Document ajouter !
                     </Alert>
                 </Snackbar>
 

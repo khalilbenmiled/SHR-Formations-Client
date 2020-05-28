@@ -12,6 +12,10 @@ import ComponentStepper from "./component-stepper"
 import ComponentCalendrier from "./component-calendrier"
 import SettingsIcon from '@material-ui/icons/Settings';
 import ComponentListFormations from "./component-list-formations"
+import ComponentListMesFormations from "./component-list-mes-formations"
+import CreateIcon from '@material-ui/icons/Create';
+
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -66,38 +70,43 @@ export default function ScrollableTabsButtonAuto(props) {
           aria-label="scrollable auto tabs example"
 
         >
-          <Tab  style={{ outline: "none" }} label="Planifier des formations" icon={< EventNoteIcon style={{ color: "#B51B10" }} />} />
-          <Tab style={{ outline: "none" }} label="Consulter les formations" icon={< LocalLibraryIcon style={{ color: "#B51B10" }} />} />
-          <Tab  style={{ outline: "none" }} label="Gérer les formations" icon={< SettingsIcon style={{ color: "#B51B10" }} />} />
+          <Tab style={{ outline: "none" }} label={JSON.parse(localStorage.user).role === "SERVICEFORMATIONS" ? "Planifier des formations" : "Consulter mes formations"} icon={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? < LocalLibraryIcon style={{ color: "#B51B10" }} /> : < CreateIcon style={{ color: "#B51B10" }} /> } />
+          <Tab style={{ outline: "none" }} label="Calendrier" icon={<EventNoteIcon style={{ color: "#B51B10" }} />} />
+          <Tab hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} style={{ outline: "none" }} label="Gérer les formations" icon={< SettingsIcon style={{ color: "#B51B10" }} />} />
         </Tabs>
       </AppBar>
 
-      <TabPanel  value={value} index={0}>
-        <ComponentStepper
-          listBesoins={props.listBesoins}
-          besoinSelected={props.besoinSelected}
-          quarterSelected={props.quarterSelected}
-          listBesoinsSelected={props.listBesoinsSelected}
-          onChangerNbrParticipants={props.onChangerNbrParticipants}
-          besoinUnselected={props.besoinUnselected}
-          dateDebutSelected={props.dateDebutSelected}
-          dateFinSelected={props.dateFinSelected}
-          ajouterSession={props.ajouterSession}
-          sessions={props.sessions}
-          sessionSelected={props.sessionSelected}
-          onChangeDuree={props.onChangeDuree}
-          ajouterSessionFormation={props.ajouterSessionFormation}
-          participantsSelected={props.participantsSelected}
-          formateurSelected={props.formateurSelected}
-          cabinetSelected={props.cabinetSelected}
-          deleteBesoin={props.deleteBesoin}
-          closePanel={props.closePanel}
-        />
+      <TabPanel value={value} index={0}>
+        {JSON.parse(localStorage.user).role === "SERVICEFORMATIONS" ?
+          <ComponentStepper
+            listBesoins={props.listBesoins}
+            besoinSelected={props.besoinSelected}
+            quarterSelected={props.quarterSelected}
+            listBesoinsSelected={props.listBesoinsSelected}
+            onChangerNbrParticipants={props.onChangerNbrParticipants}
+            besoinUnselected={props.besoinUnselected}
+            dateDebutSelected={props.dateDebutSelected}
+            dateFinSelected={props.dateFinSelected}
+            ajouterSession={props.ajouterSession}
+            sessions={props.sessions}
+            sessionSelected={props.sessionSelected}
+            onChangeDuree={props.onChangeDuree}
+            ajouterSessionFormation={props.ajouterSessionFormation}
+            participantsSelected={props.participantsSelected}
+            formateurSelected={props.formateurSelected}
+            cabinetSelected={props.cabinetSelected}
+            deleteBesoin={props.deleteBesoin}
+            closePanel={props.closePanel}
+          />
+          :
+          <ComponentListMesFormations formations={props.listFormations}/>
+        }
+
       </TabPanel>
       <TabPanel value={value} index={1}>
         <ComponentCalendrier events={props.formations} />
       </TabPanel>
-      <TabPanel  value={value} index={2}>
+      <TabPanel hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} value={value} index={2}>
         <ComponentListFormations
           formations={props.listFormations}
           sessions={props.sessions}

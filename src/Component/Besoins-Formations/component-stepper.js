@@ -65,7 +65,7 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function VerticalLinearStepper(props) {
-console.log(props.projets)
+
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;

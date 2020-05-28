@@ -10,7 +10,11 @@ import LayoutCabinetsFormateurs from "./Cabinets-Formateurs/layout-cabinet-forma
 import LayoutELearnin from "./E-Learning/layout-e-learning"
 import LayoutThemesModules from "./Themes&Modules/layout-themes-modules"
 import LayoutUtilisateur from "./Utilisateurs/layout-utilisateurs"
+import LayoutCollaborateurs from "./Collaborateurs/layout-collaborateurs"
+import LayoutDocuments from "./Documents/layout-documents"
+import LayoutSalles from "./Salles/layout-salles"
 import LayoutNOTFOUND from "./404"
+
 class Index extends Component{
 
     render(){
@@ -19,13 +23,17 @@ class Index extends Component{
             <Switch>  
                 <IsConnect path="/" component={LayoutLogIn} exact />  
                 <PrivateRoute  path="/dashboard" component={LayoutDashboard} exact  /> 
-                <PrivateRoute  path="/besoins" component={LayoutBesoinsFormations}  /> 
+                <PrivateRoute  path="/besoins" component={LayoutBesoinsFormations} exact /> 
                 <PrivateRoute  path="/formations" component={LayoutFormations} /> 
-                <PrivateRoute  path="/cabinetsFormateurs" component={LayoutCabinetsFormateurs} />               
-                <PrivateRoute  path="/elearning" component={LayoutELearnin} />               
-                <PrivateRoute  path="/themes" component={LayoutThemesModules} />               
-                <PrivateRoute  path="/utilisateurs" component={LayoutUtilisateur} />  
-                <PrivateRoute  path="/404NOTFOUND" component={LayoutNOTFOUND} />  
+                <PrivateRoute  path="/cabinetsFormateurs" component={LayoutCabinetsFormateurs} exact />               
+                <PrivateRoute  path="/elearning" component={LayoutELearnin} exact />               
+                <PrivateRoute  path="/themes" component={LayoutThemesModules} exact />               
+                <PrivateRoute  path="/utilisateurs" component={LayoutUtilisateur} exact/>  
+                <PrivateRoute  path="/collaborateurs" component={LayoutCollaborateurs} exact />  
+                <PrivateRoute  path="/documents" component={LayoutDocuments} exact />  
+                <PrivateRoute  path="/salles" component={LayoutSalles} exact />  
+                <PrivateRoute  path="/404NOTFOUND" component={LayoutNOTFOUND} exact />  
+                <PrivateRoute  path="*" component={LayoutNOTFOUND} exact />  
                              
             </Switch>
           </BrowserRouter>
