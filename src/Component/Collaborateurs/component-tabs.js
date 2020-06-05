@@ -9,6 +9,8 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import SchoolIcon from '@material-ui/icons/School';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import ComponentProfile from "./component-profile"
+import ComponentParcours from "./component-parcours"
 
 
 function TabPanel(props) {
@@ -92,11 +94,11 @@ export default function FullWidthTabs(props) {
             >
 
                 <TabPanel hidden={JSON.parse(localStorage.user).role !== "COLLABORATEUR" ? true : false} value={value} index={0} dir={theme.direction} >
-                   
+                   <ComponentProfile user={props.user} infosCollaborateur={props.infosCollaborateur}/>
                 </TabPanel>
 
                 <TabPanel value={value} index={1} dir={theme.direction}>
-               
+                    <ComponentParcours parcours={props.parcours} mesScores={props.mesScores}/>
                 </TabPanel>
 
             </SwipeableViews>

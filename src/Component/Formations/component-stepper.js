@@ -299,7 +299,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                     <label style={{ width: 120 }} className="input-group-text" >Participants</label>
                   </div>
                   <div className="input-group-prepend">
-                    <TextField value={nbrParticipantsSelected} type="number" style={{ width: 200, backgroundColor: "white" }} size="small" label="Durée" variant="outlined" onChange={onChangerNbrParticipants} />
+                    <TextField value={nbrParticipantsSelected} type="number" style={{ width: 200, backgroundColor: "white" }} size="small" label="Nombres de participants" variant="outlined" onChange={onChangerNbrParticipants} />
                   </div>
                 </div>
 

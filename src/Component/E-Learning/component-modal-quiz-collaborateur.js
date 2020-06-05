@@ -158,6 +158,7 @@ export default function TransitionsModal(props) {
         if (index === props.listQuestions.length) {
             props.passerQuiz(mesReponses, props.idQuiz)
             props.rateFormation(props.idFormation , rating)
+            props.addParcour(JSON.parse(localStorage.user).id , props.idFormation)
             setIndex(0)
             setMesReponses([])
             setUneReponse("")

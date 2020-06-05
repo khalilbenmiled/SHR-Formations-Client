@@ -23,9 +23,10 @@ class LayoutCabinetsFormateurs extends Component {
             quizCollaborateurs: [],
             scores: [],
             listDocs: [],
-            alertAddDocs : false,
-            loadingUpload : false,
-            loadingList : false
+            alertAddDocs: false,
+            loadingUpload: false,
+            loadingList: false,
+            scoreNow : ""
         }
     }
 
@@ -82,17 +83,17 @@ class LayoutCabinetsFormateurs extends Component {
         })
 
         this.setState({
-            loadingList : true
+            loadingList: true
         })
         axios.get("http://localhost:8787/docs/").then(res => {
             if (res.data.Docs) {
                 this.setState({
                     listDocs: res.data.Docs,
-                    loadingList : false
+                    loadingList: false
                 })
-            }else {
+            } else {
                 this.setState({
-                    loadingList : false
+                    loadingList: false
                 })
             }
 
@@ -227,8 +228,10 @@ class LayoutCabinetsFormateurs extends Component {
             const index = tabs.findIndex(q => q.id === idQuiz)
             tabs.splice(index, 1)
             this.setState({
-                quizCollaborateurs: tabs
+                quizCollaborateurs: tabs,
+                scoreNow : res.data.Score.resultat
             })
+
 
             const obj = {
                 id: JSON.parse(localStorage.user).id
@@ -264,9 +267,25 @@ class LayoutCabinetsFormateurs extends Component {
         })
     }
 
+    addParcour(idCollaborateur, idFormation) {
+        const inputParcour = {
+            idCollaborateur: idCollaborateur,
+            idFormation: idFormation,
+        }
+
+        axios.post("http://localhost:8383/parcours/",
+            querystring.stringify(inputParcour), {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        }).then(res => {
+            console.log(res.data)
+        })
+    }
+
     upload(formData) {
         this.setState({
-            loadingUpload : true
+            loadingUpload: true
         })
         axios.post("http://localhost:8787/docs/uploadFile",
             formData, {
@@ -274,23 +293,23 @@ class LayoutCabinetsFormateurs extends Component {
                 "Content-Type": "multipart/form-data"
             }
         }).then(res => {
-            if(res.data.Docs) {
+            if (res.data.Docs) {
                 const tabs = this.state.listDocs
                 tabs.push(res.data.Docs)
                 this.setState({
-                    listDocs : tabs,
-                    alertAddDocs : true,
-                    loadingUpload : false
+                    listDocs: tabs,
+                    alertAddDocs: true,
+                    loadingUpload: false
                 })
             }
-      
+
 
         })
     }
 
     closeAletDocs() {
         this.setState({
-            alertAddDocs : false
+            alertAddDocs: false
         })
     }
 
@@ -313,8 +332,9 @@ class LayoutCabinetsFormateurs extends Component {
                                 rateFormation={this.rateFormation.bind(this)}
                                 listDocs={this.state.listDocs}
                                 upload={this.upload.bind(this)}
-                                loadingUpload ={this.state.loadingUpload}
-                                loadingList= {this.state.loadingList}
+                                loadingUpload={this.state.loadingUpload}
+                                loadingList={this.state.loadingList}
+                                addParcour={this.addParcour.bind(this)}
                             />
                         </div>
                     </div>

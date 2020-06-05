@@ -178,6 +178,7 @@ export default function FullWidthTabs(props) {
                         passerQuiz={props.passerQuiz}
                         rateFormation={props.rateFormation}
                         formations={props.formations}
+                        addParcour={props.addParcour}
                     />
                 </TabPanel>
 

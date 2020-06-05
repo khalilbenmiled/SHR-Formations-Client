@@ -113,6 +113,7 @@ export default function ActionsInExpansionPanelSummary(props) {
                 passerQuiz={props.passerQuiz}
                 idFormation={idFormation}
                 rateFormation={props.rateFormation}
+                addParcour={props.addParcour}
             />
         </div>
     );
