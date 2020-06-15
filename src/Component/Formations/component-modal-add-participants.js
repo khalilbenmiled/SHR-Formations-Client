@@ -21,8 +21,8 @@ const useStyles = makeStyles(theme => ({
     },
     borderRadius: "20px",
     width: 850,
-    minHeight: "50vh",
-    maxHeight: '90vh',
+    minHeight : "75vh",
+    maxHeight : "80vh",
     boxShadow: theme.shadows[5],
 
   },

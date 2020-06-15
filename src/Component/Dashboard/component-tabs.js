@@ -143,7 +143,7 @@ export default function FullWidthTabs(props) {
     ]
 
     React.useEffect(() => {
-        axios.get("http://localhost:8585/formations").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_SessionsFormations+"/formations").then(res => {
             if (res.data.Formations) {
                 const tabs = []
                 res.data.Formations.map(formation => {
@@ -414,7 +414,7 @@ export default function FullWidthTabs(props) {
     const filterBesoins = (input) => {
         if (JSON.parse(localStorage.user).role === "SERVICEFORMATIONS") {
 
-            axios.post("http://localhost:8686/besoins/reporting/byFilter", querystring.stringify(input), {
+            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/reporting/byFilter", querystring.stringify(input), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -480,7 +480,7 @@ export default function FullWidthTabs(props) {
                 theme: input.theme,
                 id: JSON.parse(localStorage.user).id
             }
-            axios.post("http://localhost:8686/besoins/reporting/byFilterCollaborateur", querystring.stringify(obj), {
+            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/reporting/byFilterCollaborateur", querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -547,7 +547,7 @@ export default function FullWidthTabs(props) {
                 theme: input.theme,
                 id: JSON.parse(localStorage.user).id
             }
-            axios.post("http://localhost:8686/besoins/reporting/byFilterTeamLead", querystring.stringify(obj), {
+            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/reporting/byFilterTeamLead", querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -614,7 +614,7 @@ export default function FullWidthTabs(props) {
                 theme: input.theme,
                 id: JSON.parse(localStorage.user).id
             }
-            axios.post("http://localhost:8686/besoins/reporting/byFilterManager", querystring.stringify(obj), {
+            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/reporting/byFilterManager", querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -681,7 +681,7 @@ export default function FullWidthTabs(props) {
     const filterFormations = (input) => {
 
         if (JSON.parse(localStorage.user).role === "SERVICEFORMATIONS") {
-            axios.post("http://localhost:8585/formations/reporting/etat", querystring.stringify(input), {
+            axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/reporting/etat", querystring.stringify(input), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -758,7 +758,7 @@ export default function FullWidthTabs(props) {
                 dateFin: input.dateFin,
                 id: JSON.parse(localStorage.user).id
             }
-            axios.post("http://localhost:8585/formations/reporting/etatByCollaborateur", querystring.stringify(obj), {
+            axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/reporting/etatByCollaborateur", querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -835,7 +835,7 @@ export default function FullWidthTabs(props) {
                 dateFin: input.dateFin,
                 id: JSON.parse(localStorage.user).id
             }
-            axios.post("http://localhost:8585/formations/reporting/etatByTL", querystring.stringify(obj), {
+            axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/reporting/etatByTL", querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -912,7 +912,7 @@ export default function FullWidthTabs(props) {
                 dateFin: input.dateFin,
                 id: JSON.parse(localStorage.user).id
             }
-            axios.post("http://localhost:8585/formations/reporting/etatByManager", querystring.stringify(obj), {
+            axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/reporting/etatByManager", querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -986,7 +986,7 @@ export default function FullWidthTabs(props) {
     }
 
     const filterTypeTheme = (input) => {
-        axios.post(" http://localhost:8686/besoins/reporting/byTypeTheme", querystring.stringify(input), {
+        axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/reporting/byTypeTheme", querystring.stringify(input), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
@@ -1019,7 +1019,7 @@ export default function FullWidthTabs(props) {
     }
 
     const filterProjet = (input) => {
-        axios.post("http://localhost:8686/besoins/reporting/byProjet", querystring.stringify(input), {
+        axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/reporting/byProjet", querystring.stringify(input), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
@@ -1057,7 +1057,7 @@ export default function FullWidthTabs(props) {
                 id: value.id
             }
 
-            axios.post("http://localhost:8585/formations/reporting/rating", querystring.stringify(input), {
+            axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/reporting/rating", querystring.stringify(input), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }

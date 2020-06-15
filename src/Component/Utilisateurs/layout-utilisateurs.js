@@ -37,7 +37,7 @@ class LayoutCabinetsFormateurs extends Component {
         } 
     }
     componentDidMount() {
-        axios.get("http://localhost:8181/users").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_Utilisateurs+"/users").then(res => {
             if (res.data.Users) {
                 this.setState({
                     users: res.data.Users
@@ -46,7 +46,7 @@ class LayoutCabinetsFormateurs extends Component {
 
         })
 
-        axios.get(" http://localhost:8181/users/tl").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_Utilisateurs+"/users/tl").then(res => {
             if (res.data.Users) {
                 this.setState({
                     listTeamLead: res.data.Users
@@ -54,7 +54,7 @@ class LayoutCabinetsFormateurs extends Component {
             }
         })
 
-        axios.get("http://localhost:8181/users/getFreeTL").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_Utilisateurs+"/users/getFreeTL").then(res => {
             if (res.data.TeamLeads) {
                 this.setState({
                     listFreeTeamLead: res.data.TeamLeads
@@ -62,7 +62,7 @@ class LayoutCabinetsFormateurs extends Component {
             }
         })
 
-        axios.get(" http://localhost:8181/users/mg").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_Utilisateurs+"/users/mg").then(res => {
             if (res.data.Users) {
                 this.setState({
                     listManager: res.data.Users
@@ -83,7 +83,8 @@ class LayoutCabinetsFormateurs extends Component {
         this.setState({
             progressShow: true
         })
-        axios.post("http://localhost:8181/users", user.user).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_Utilisateurs+"/users", user.user).then(res => {
+            console.log(res.data)
             if (res.data.Error) {
                 this.setState({
                     alertError: true,
@@ -106,12 +107,12 @@ class LayoutCabinetsFormateurs extends Component {
                         listTeamLead: this.state.listTeamLeadSelected,
                         idManager: res.data.Collaborateur.id
                     }
-                    axios.post("http://localhost:8686/teamlead/affecterTLMG", obj).then(res => {
+                    axios.post(process.env.REACT_APP_PROXY_Besoins+"/teamlead/affecterTLMG", obj).then(res => {
                         this.setState({
                             alertUser: true,
                             listTeamLeadSelected: []
                         })
-                        axios.get("http://localhost:8181/users/getFreeTL").then(res => {
+                        axios.get(process.env.REACT_APP_PROXY_Utilisateurs+"/users/getFreeTL").then(res => {
                             if (res.data.TeamLeads) {
                                 this.setState({
                                     listFreeTeamLead: res.data.TeamLeads
@@ -126,7 +127,7 @@ class LayoutCabinetsFormateurs extends Component {
                         idCollaborateur: res.data.Collaborateur.id,
                         idTeamLead: user.teamlead === "" ? 0 : user.teamlead.id
                     }
-                    axios.post("http://localhost:8383/collaborateurs/", querystring.stringify(input), {
+                    axios.post(process.env.REACT_APP_PROXY_Collaborateurs+"/collaborateurs/", querystring.stringify(input), {
                         headers: {
                             "Content-Type": "application/x-www-form-urlencoded"
                         }
@@ -154,7 +155,7 @@ class LayoutCabinetsFormateurs extends Component {
                         idTL: res.data.Collaborateur.id,
                         idMG: user.manager === "" ? 0 : user.manager.id
                     }
-                    axios.post("http://localhost:8686/teamlead/", querystring.stringify(input), {
+                    axios.post(process.env.REACT_APP_PROXY_Besoins+"/teamlead", querystring.stringify(input), {
                         headers: {
                             "Content-Type": "application/x-www-form-urlencoded"
                         }
@@ -185,7 +186,7 @@ class LayoutCabinetsFormateurs extends Component {
     }
 
     deleteUser(user) {
-        axios.delete("http://localhost:8181/users/" + user.id).then(res => {
+        axios.delete(process.env.REACT_APP_PROXY_Utilisateurs+"/users/" + user.id).then(res => {
             if (res.data.Success) {
                 const tabs = this.state.users
                 const index = tabs.findIndex(u => u.id === user.id)
@@ -195,7 +196,7 @@ class LayoutCabinetsFormateurs extends Component {
                 })
 
                 if (user.role === "COLLABORATEUR") {
-                    axios.delete("http://localhost:8383/collaborateurs/" + user.id).then(res => {
+                    axios.delete(process.env.REACT_APP_PROXY_Collaborateurs+"/collaborateurs/" + user.id).then(res => {
                         if (res.data.Success) {
                             this.setState({
                                 alertDeleteUser: true
@@ -204,7 +205,7 @@ class LayoutCabinetsFormateurs extends Component {
                     })
                 }
                 if (user.role === "TEAMLEAD") {
-                    axios.delete("http://localhost:8686/teamlead/" + user.id).then(res => {
+                    axios.delete(process.env.REACT_APP_PROXY_Besoins+"/teamlead/" + user.id).then(res => {
                         if (res.data.Success) {
                             this.setState({
                                 alertDeleteUser: true
@@ -214,7 +215,7 @@ class LayoutCabinetsFormateurs extends Component {
                 }
 
                 if (user.role === "MANAGER") {
-                    axios.delete("http://localhost:8686/teamlead/manager/" + user.id).then(res => {
+                    axios.delete(process.env.REACT_APP_PROXY_Besoins+"/teamlead/manager/" + user.id).then(res => {
                         if (res.data.Success) {
                             this.setState({
                                 alertDeleteUser: true
@@ -243,7 +244,7 @@ class LayoutCabinetsFormateurs extends Component {
             listTeamLead: this.state.listTeamLeadSelected,
             idManager: user.id
         }
-        axios.post("http://localhost:8686/teamlead/affecterTLMG", obj).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_Besoins+"/teamlead/affecterTLMG", obj).then(res => {
             this.setState({
                 alertUpdateUser: true,
                 listTeamLeadSelected: []
@@ -264,7 +265,7 @@ class LayoutCabinetsFormateurs extends Component {
             idTL: user.id,
             idMG: manager.id
         }
-        axios.post("http://localhost:8686/teamlead/setManager", querystring.stringify(input), {
+        axios.post(process.env.REACT_APP_PROXY_Besoins+"/teamlead/setManager", querystring.stringify(input), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
@@ -282,7 +283,7 @@ class LayoutCabinetsFormateurs extends Component {
             idC: user.id,
             idTL: teamlead.id
         }
-        axios.post("http://localhost:8383/collaborateurs/setCollaborateur", querystring.stringify(input), {
+        axios.post(process.env.REACT_APP_PROXY_Collaborateurs+"/collaborateurs/setCollaborateur", querystring.stringify(input), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             }

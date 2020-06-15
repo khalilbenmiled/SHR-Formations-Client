@@ -21,30 +21,15 @@ class LayoutDashboard extends Component {
     }
 
     componentDidMount() {
-        // var socket = new SockJS('http://localhost:8686/gs-guide-websocket');
-        // var stompClient = Stomp.over(socket);
-        // stompClient.connect({}, function (frame) {
-        //     console.log('Connected: ' + frame);
-        //     stompClient.subscribe('/topic/greetings', function (greeting) {
-              
-        //         console.log(greeting.body);
-        //     });
-        // });
-
-
-        // this.setState({
-        //     stompClient:stompClient
-        // })
-
-
-        axios.get("http://localhost:8585/themes").then(res => {
+     
+        axios.get(process.env.REACT_APP_PROXY_SessionsFormations+"/themes").then(res => {
             if (res.data.Theme) {
                 this.setState({
                     themes: res.data.Theme,
                 })
             }
         })
-        axios.get("http://localhost:8686/projets").then(res=>{
+        axios.get(process.env.REACT_APP_PROXY_Besoins+"/projets").then(res=>{
             if(res.data.Projets){
                 this.setState({
                     projets : res.data.Projets

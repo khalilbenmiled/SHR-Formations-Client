@@ -26,7 +26,7 @@ class LayoutCabinetsFormateurs extends Component {
     }
 
     componentDidMount() {
-        axios.get("http://localhost:8282/domaine").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_FormateursCabinets+"/domaine").then(res => {
             if (res.data.domaines) {
                 this.setState({
                     domaines: res.data.domaines
@@ -34,7 +34,7 @@ class LayoutCabinetsFormateurs extends Component {
             }
         })
 
-        axios.get("http://localhost:8282/formateurs").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_FormateursCabinets+"/formateurs").then(res => {
             if (res.data.formateurs) {
                 this.setState({
                     formateurs: res.data.formateurs
@@ -42,7 +42,7 @@ class LayoutCabinetsFormateurs extends Component {
             }
         })
 
-        axios.get("http://localhost:8282/cabinets").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_FormateursCabinets+"/cabinets").then(res => {
             if (res.data.cabinets) {
                 this.setState({
                     cabinets: res.data.cabinets
@@ -57,7 +57,7 @@ class LayoutCabinetsFormateurs extends Component {
     }
 
     addDomaine(domaine) {
-        axios.post("http://localhost:8282/domaine", domaine).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_FormateursCabinets+"/domaine", domaine).then(res => {
             if (res.data.domaine) {
                 const tabs = this.state.domaines
                 tabs.push(res.data.domaine)
@@ -70,7 +70,7 @@ class LayoutCabinetsFormateurs extends Component {
 
     addCabinet(cabinet) {
 
-        axios.post("http://localhost:8282/cabinets", cabinet).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_FormateursCabinets+"/cabinets", cabinet).then(res => {
             if (res.data.cabinet) {
                 const tabs = this.state.cabinets
                 tabs.push(res.data.cabinet)
@@ -85,7 +85,7 @@ class LayoutCabinetsFormateurs extends Component {
         const id = {
             id: cabinet.id
         }
-        axios.post("http://localhost:8282/cabinets/delete",
+        axios.post(process.env.REACT_APP_PROXY_FormateursCabinets+"/cabinets/delete",
             querystring.stringify(id), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -106,7 +106,7 @@ class LayoutCabinetsFormateurs extends Component {
         const id = {
             id: formateur.id
         }
-        axios.post("http://localhost:8282/formateurs/delete",
+        axios.post(process.env.REACT_APP_PROXY_FormateursCabinets+"/formateurs/delete",
             querystring.stringify(id), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -124,7 +124,7 @@ class LayoutCabinetsFormateurs extends Component {
     }
 
     addFormateur(formateur) {
-        axios.post("http://localhost:8282/formateurs", formateur).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_FormateursCabinets+"/formateurs", formateur).then(res => {
             if (res.data.formateur) {
                 const tabs = this.state.formateurs
                 tabs.push(res.data.formateur)
@@ -136,7 +136,7 @@ class LayoutCabinetsFormateurs extends Component {
     }
 
     updateFormateur(formateur) {
-        axios.post("http://localhost:8282/formateurs/update", formateur).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_FormateursCabinets+"/formateurs/update", formateur).then(res => {
             if (res.data.Formateur) {
                 const tabs = this.state.formateurs
                 const index = tabs.findIndex(form => form.id === res.data.Formateur.id)

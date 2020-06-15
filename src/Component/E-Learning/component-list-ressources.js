@@ -12,7 +12,10 @@ import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import { TableHead } from '@material-ui/core';
+import { TableHead, DialogContent, Button } from '@material-ui/core';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import { Dialog, DialogTitle, DialogActions, DialogContentText } from '@material-ui/core';
+
 
 
 const useStyles1 = makeStyles(theme => ({
@@ -97,12 +100,12 @@ TablePaginationActions.propTypes = {
 export default function CustomPaginationActionsTable(props) {
   const rows = props.listDocs.sort((a, b) => (a.id < b.id) ? 1 : -1)
 
-//   const classes = useStyles1();
+  const classes = useStyles1();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(6);
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-
-
+  const [openModalDeleteDocs, setOpenModalDeleteDocs] = React.useState(false);
+  const [docId, setDocId] = React.useState("");
 
 
   const handleChangePage = (event, newPage) => {
@@ -113,6 +116,20 @@ export default function CustomPaginationActionsTable(props) {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  const OnOpenModalDeleteDocs = (row) => {
+    setOpenModalDeleteDocs(true)
+    setDocId(row.id)
+  }
+
+  const deleteDocs = () => {
+    props.deleteDocs(docId)    
+    setOpenModalDeleteDocs(false)
+  }
+
+  const OnCloseModalDeleteDocs = () => {
+    setOpenModalDeleteDocs(false)
+  }
 
 
   return (
@@ -125,6 +142,7 @@ export default function CustomPaginationActionsTable(props) {
               <TableCell style={{ fontSize: 16, color: 'white' }}>Nom</TableCell>
               <TableCell style={{ fontSize: 16, color: 'white' }}>Description</TableCell>
               <TableCell style={{ fontSize: 16, color: 'white' }}>Telecharger</TableCell>
+              <TableCell style={{ fontSize: 16, color: 'white' }}></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -133,9 +151,10 @@ export default function CustomPaginationActionsTable(props) {
               : rows
             ).map((row, index) => (
               <TableRow key={index} >
-                  <TableCell>{row.nom}</TableCell>
-                  <TableCell>{row.description}</TableCell>
-                  <TableCell><a href={"http://localhost:8787/docs/downloadFile/"+row.id}>{row.docName}</a></TableCell>
+                <TableCell>{row.nom}</TableCell>
+                <TableCell>{row.description}</TableCell>
+                <TableCell><a href={process.env.REACT_APP_PROXY_ELearning + "/docs/downloadFile/" + row.id}>{row.docName}</a></TableCell>
+                <TableCell> <DeleteForeverIcon onClick={OnOpenModalDeleteDocs.bind(this, row)} className={classes.iconAnnuler} /> </TableCell>
               </TableRow>
             ))}
 
@@ -166,6 +185,28 @@ export default function CustomPaginationActionsTable(props) {
         </Table>
 
       </TableContainer>
+
+      <Dialog
+        open={openModalDeleteDocs}
+        onClose={OnCloseModalDeleteDocs}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle className="titleDialog">Supprimer DOCUMENT</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Voulez-vous vraiment supprimer ce document ?
+                    </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button className="annulerBtn" onClick={OnCloseModalDeleteDocs} style={{ backgroundColor: "#E67A0A", color: "white" }}>
+            Retour
+                    </Button>
+          <Button className="supprimerBtn" onClick={deleteDocs} style={{ backgroundColor: "#B51B10", color: "white" }} >
+            Supprimer
+                    </Button>
+        </DialogActions>
+      </Dialog>
 
     </>
 

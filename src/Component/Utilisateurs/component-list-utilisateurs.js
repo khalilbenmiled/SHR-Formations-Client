@@ -104,7 +104,7 @@ export default function CustomPaginationActionsTable(props) {
   const rows = props.users.sort((a, b) => (a.id < b.id) ? 1 : -1)
   const classes = useStyles1();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(8);
+  const [rowsPerPage, setRowsPerPage] = React.useState(6);
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   const [alertDelete, setAlertDelete] = React.useState(false);
@@ -157,7 +157,7 @@ export default function CustomPaginationActionsTable(props) {
       const obj = {
         id: user.id
       }
-      axios.post("http://localhost:8181/users/getInfosCollaborateur",
+      axios.post(process.env.REACT_APP_PROXY_Utilisateurs+"/users/getInfosCollaborateur",
         querystring.stringify(obj), {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
@@ -177,7 +177,7 @@ export default function CustomPaginationActionsTable(props) {
       const obj = {
         id: user.id
       }
-      axios.post("http://localhost:8181/users/getInfosTL",
+      axios.post(process.env.REACT_APP_PROXY_Utilisateurs+"/users/getInfosTL",
         querystring.stringify(obj), {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
@@ -216,7 +216,7 @@ export default function CustomPaginationActionsTable(props) {
 
   const openEditUser = (user) => {
     if(user.role === "MANAGER") {
-      axios.get("http://localhost:8181/users/getFreeTL").then(res => {
+      axios.get(process.env.REACT_APP_PROXY_Utilisateurs+"/users/getFreeTL").then(res => {
         if(res.data.TeamLeads){
           setListFreeTeamLead(res.data.TeamLeads)
         }

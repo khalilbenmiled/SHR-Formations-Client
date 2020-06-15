@@ -106,7 +106,6 @@ TablePaginationActions.propTypes = {
 
 export default function CustomPaginationActionsTable(props) {
   const rows = props.listQuiz
-  const allFormations = props.formations
   const classes = useStyles1();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(4);
@@ -131,9 +130,9 @@ export default function CustomPaginationActionsTable(props) {
     setPage(0);
   };
 
-  const openModalInfos = (quiz) => {
-    setQuizInfos(quiz)
-    setListQuestions(quiz.listQuestions)
+  const openModalInfos = (row) => {
+    setQuizInfos(row.Quiz)
+    setListQuestions(row.Quiz.listQuestions)
     setOpenInfos(true)
   }
 
@@ -141,17 +140,14 @@ export default function CustomPaginationActionsTable(props) {
     setOpenInfos(false)
   }
 
-  // const openModalEdit = (quiz) => {
-  //   setQuizInfos(quiz)
-  //   setOpenEdit(true)
-  // }
+
 
   const closeModalEdit = () => {
     setOpenEdit(false)
   }
 
   const updateQuestion = (question) => {
-    axios.put("http://localhost:8787/quiz/", question).then(res => {
+    axios.put(process.env.REACT_APP_PROXY_ELearning+"/quiz/", question).then(res => {
       if (res.data.Question) {
         const tabs = listQuestions
         const index = tabs.findIndex(q => q.id === res.data.Question.id)
@@ -167,25 +163,12 @@ export default function CustomPaginationActionsTable(props) {
     setAlertQuiz(false)
   }
 
-  const openModalDeleteQuiz = (quiz) => {
-    props.openModalDeleteQuiz(quiz)
+  const openModalDeleteQuiz = (row) => {
+    props.openModalDeleteQuiz(row.Quiz)
   }
 
-  const openModalAddQuizToFormation = (quiz) => {
-    // const obj = {
-    //   id: quiz.idFormation
-    // }
-    // axios.post("http://localhost:8585/formations/getFormationsWithouThistId",
-    //   querystring.stringify(obj), {
-    //   headers: {
-    //     "Content-Type": "application/x-www-form-urlencoded"
-    //   }
-    // }).then(res => {
-    //   if (res.data.Formations) {
-    //     setFormations(res.data.Formations)
-    //   }
-    // })
-    setIdQuiz(quiz.id)
+  const openModalAddQuizToFormation = (row) => {
+    setIdQuiz(row.Quiz.id)
     setOpenAddQTF(true)
   }
 
@@ -201,17 +184,6 @@ export default function CustomPaginationActionsTable(props) {
     props.addQTF(obj)
   }
 
-  const getFormationNom = (row) => {
-    return allFormations.find(f => f.id === row.idFormation).nomTheme
-  }
-
-  const getFormationDu = (row) => {
-    return allFormations.find(f => f.id === row.idFormation).dateDebut
-  }
-
-  const getFormationAu = (row) => {
-    return allFormations.find(f => f.id === row.idFormation).dateFin
-  }
 
 
 
@@ -236,13 +208,12 @@ export default function CustomPaginationActionsTable(props) {
               : rows
             ).map((row, index) => (
               <TableRow key={index}>
-                <TableCell>{row.id}</TableCell>
-                <TableCell>{row.nomQuiz}</TableCell>
-                <TableCell>{getFormationNom(row)}</TableCell>
-                <TableCell>{getFormationDu(row)}</TableCell>
-                <TableCell>{getFormationAu(row)}</TableCell>
+                <TableCell>{row.Quiz.id}</TableCell>
+                <TableCell>{row.Quiz.nomQuiz}</TableCell>
+                <TableCell>{row.Formation.nomTheme}</TableCell>
+                <TableCell>{row.Formation.dateDebut}</TableCell>
+                <TableCell>{row.Formation.dateFin}</TableCell>
                 <TableCell><VisibilityIcon onClick={openModalInfos.bind(this, row)} className={classes.iconInfo} /></TableCell>
-                {/* <TableCell> <EditIcon onClick={openModalEdit.bind(this, row)} className={classes.iconCheck} /></TableCell> */}
                 <TableCell> <AddToQueueIcon onClick={openModalAddQuizToFormation.bind(this, row)} className={classes.iconCheck} /> </TableCell>
                 <TableCell> <DeleteForeverIcon onClick={openModalDeleteQuiz.bind(this, row)} className={classes.iconAnnuler} /> </TableCell>
 

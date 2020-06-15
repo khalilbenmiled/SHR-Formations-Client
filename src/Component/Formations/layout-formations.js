@@ -38,7 +38,7 @@ class LayoutFormations extends Component {
 
     componentDidMount() {
 
-        var socket = new SockJS('http://localhost:8383/notifications');
+        var socket = new SockJS("http://localhost:8383/notifications");
         var stompClient = Stomp.over(socket);
 
         this.setState({
@@ -52,7 +52,7 @@ class LayoutFormations extends Component {
             }
             const tabs = []
             const tabs2 = []
-            axios.post("http://localhost:8585/formations/byUser", querystring.stringify(input), {
+            axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/byUser", querystring.stringify(input), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -96,7 +96,7 @@ class LayoutFormations extends Component {
                 }
             })
         } else {
-            axios.get("http://localhost:8686/besoinsPublier/all").then(res => {
+            axios.get(process.env.REACT_APP_PROXY_Besoins+"/besoinsPublier/all").then(res => {
                 if (res.data.Besoins) {
                     this.setState({
                         listBesoins: res.data.Besoins
@@ -106,7 +106,7 @@ class LayoutFormations extends Component {
 
             const tabs = []
             const tabs2 = []
-            axios.get("http://localhost:8585/formations").then(res => {
+            axios.get(process.env.REACT_APP_PROXY_SessionsFormations+"/formations").then(res => {
                 if (res.data.Formations) {
                     res.data.Formations.map(formation => {
                         var dateDebut = new Date(formation.dateDebut)
@@ -183,7 +183,7 @@ class LayoutFormations extends Component {
         const obj = {
             quarter: quarterSelected
         }
-        axios.post("http://localhost:8585/sessions/byQuarter",
+        axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/sessions/byQuarter",
             querystring.stringify(obj), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -216,7 +216,7 @@ class LayoutFormations extends Component {
             description: description,
             trimestre: this.state.quarterSelected
         }
-        axios.post("http://localhost:8585/sessions", session).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/sessions", session).then(res => {
             const sessions = this.state.sessions
             sessions.push(res.data.Session)
             this.setState({
@@ -251,7 +251,7 @@ class LayoutFormations extends Component {
                 id: besoin.id,
                 listParticipants: this.state.participants
             }
-            axios.post("http://localhost:8686/besoins/setPlanifier", input).then(res => {
+            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/setPlanifier", input).then(res => {
                 if (res.data.Besoin) {
                     console.log(res.data.Besoin)
                 }
@@ -275,7 +275,7 @@ class LayoutFormations extends Component {
             idCF: this.state.formateurCabinet
         }
 
-        axios.post("http://localhost:8585/formations/", obj).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/", obj).then(res => {
             if (res.data.Formation) {
                 this.state.participants.map(participant => {
                     Moment.locale("fr");
@@ -356,7 +356,7 @@ class LayoutFormations extends Component {
             idB: idBesoin,
             idBP: idBesoinPublier
         }
-        axios.post("http://localhost:8686/besoins/deleteBP", querystring.stringify(input), {
+        axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/deleteBP", querystring.stringify(input), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             }

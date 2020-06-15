@@ -11,7 +11,7 @@ import SchoolIcon from '@material-ui/icons/School';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ComponentProfile from "./component-profile"
 import ComponentParcours from "./component-parcours"
-
+import ComponentParcoursVide from "./component-parcours-vide"
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -59,7 +59,7 @@ export default function FullWidthTabs(props) {
     const classes = useStyles();
     const theme = useTheme();
     const [value, setValue] = React.useState(0);
- 
+
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -93,12 +93,16 @@ export default function FullWidthTabs(props) {
                 onChangeIndex={handleChangeIndex}
             >
 
-                <TabPanel hidden={JSON.parse(localStorage.user).role !== "COLLABORATEUR" ? true : false} value={value} index={0} dir={theme.direction} >
-                   <ComponentProfile user={props.user} infosCollaborateur={props.infosCollaborateur}/>
+                <TabPanel value={value} index={0} dir={theme.direction} >
+                    <ComponentProfile user={props.user} infosCollaborateur={props.infosCollaborateur} />
                 </TabPanel>
 
                 <TabPanel value={value} index={1} dir={theme.direction}>
-                    <ComponentParcours parcours={props.parcours} mesScores={props.mesScores}/>
+                    {props.parcours === null ?
+                        <ComponentParcoursVide />
+                        :
+                        <ComponentParcours parcours={props.parcours} mesScores={props.mesScores} />
+                    }
                 </TabPanel>
 
             </SwipeableViews>

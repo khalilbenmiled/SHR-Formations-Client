@@ -215,7 +215,7 @@ export default function NavBar(props) {
           </Link>
 
 
-          <Link to="/collaborateurs" className="navlink">
+          <Link hidden={JSON.parse(localStorage.user).role !== "COLLABORATEUR" ? true : false} to="/collaborateurs" className="navlink">
             <ListItem button style={{ backgroundColor: location.pathname === "/collaborateurs" ? "rgba(238,134,24,0.7)" : "" }}>
               <ListItemIcon>
 

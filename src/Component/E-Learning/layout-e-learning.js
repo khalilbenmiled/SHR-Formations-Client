@@ -26,7 +26,10 @@ class LayoutCabinetsFormateurs extends Component {
             alertAddDocs: false,
             loadingUpload: false,
             loadingList: false,
-            scoreNow : ""
+            scoreNow: "",
+            showQuiz: false,
+            listQuizWithFormation: [],
+            alertDocsDeleted : false
         }
     }
 
@@ -40,7 +43,7 @@ class LayoutCabinetsFormateurs extends Component {
 
 
     componentDidMount() {
-        axios.get("http://localhost:8585/formations").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_SessionsFormations + "/formations").then(res => {
             const tabs = []
             if (res.data.Formations) {
                 res.data.Formations.map(formation => {
@@ -73,19 +76,19 @@ class LayoutCabinetsFormateurs extends Component {
             }
         })
 
-        axios.get("http://localhost:8787/quiz").then(res => {
-            if (res.data.Quiz) {
+        axios.get(process.env.REACT_APP_PROXY_ELearning + "/quiz").then(res => {
+            if (res.data.Resultats) {
                 this.setState({
-                    listQuiz: res.data.Quiz
+                    listQuiz: res.data.Resultats.sort((a, b) => (a.Quiz.id < b.Quiz.id) ? 1 : -1),
+                    showQuiz: true
                 })
             }
-
         })
 
         this.setState({
             loadingList: true
         })
-        axios.get("http://localhost:8787/docs/").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_ELearning + "/docs/").then(res => {
             if (res.data.Docs) {
                 this.setState({
                     listDocs: res.data.Docs,
@@ -103,7 +106,7 @@ class LayoutCabinetsFormateurs extends Component {
             const obj = {
                 id: JSON.parse(localStorage.user).id
             }
-            axios.post("http://localhost:8787/quiz/byCollaborateur",
+            axios.post(process.env.REACT_APP_PROXY_ELearning + "/quiz/byCollaborateur",
                 querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -114,7 +117,7 @@ class LayoutCabinetsFormateurs extends Component {
                 })
             })
 
-            axios.post("http://localhost:8787/quiz/getListScoreByCollaborateur",
+            axios.post(process.env.REACT_APP_PROXY_ELearning + "/quiz/getListScoreByCollaborateur",
                 querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -131,7 +134,7 @@ class LayoutCabinetsFormateurs extends Component {
 
 
         if (JSON.parse(localStorage.user).role === "SERVICEFORMATIONS") {
-            axios.get("http://localhost:8787/quiz/getListScore").then(res => {
+            axios.get(process.env.REACT_APP_PROXY_ELearning + "/quiz/getListScore").then(res => {
                 if (res.data.Scores) {
                     this.setState({
                         scores: res.data.Scores
@@ -158,14 +161,19 @@ class LayoutCabinetsFormateurs extends Component {
 
     ajouterQuiz(quiz) {
 
-        axios.post("http://localhost:8787/quiz/", quiz).then(res => {
+
+        axios.post(process.env.REACT_APP_PROXY_ELearning + "/quiz/", quiz).then(res => {
             if (res.data.Quiz) {
-                const listQuiz = this.state.listQuiz
-                listQuiz.push(res.data.Quiz)
-                this.setState({
-                    listQuiz: listQuiz,
-                    alertQuiz: true
+
+                axios.get(process.env.REACT_APP_PROXY_ELearning + "/quiz").then(res => {
+                    if (res.data.Resultats) {
+                        this.setState({
+                            listQuiz: res.data.Resultats.sort((a, b) => (a.Quiz.id < b.Quiz.id) ? 1 : -1),
+                            alertQuiz: true
+                        })
+                    }
                 })
+
             }
 
         })
@@ -173,15 +181,17 @@ class LayoutCabinetsFormateurs extends Component {
 
     deleteQuiz(quiz) {
 
-        axios.delete("http://localhost:8787/quiz/" + quiz.id).then(res => {
+        axios.delete(process.env.REACT_APP_PROXY_ELearning + "/quiz/" + quiz.id).then(res => {
             if (res.data.Success) {
-                const tabs = this.state.listQuiz
-                const index = tabs.indexOf(q => q.id === quiz.id)
-                tabs.splice(index, 1)
-                this.setState({
-                    listQuiz: tabs,
-                    alertDeleteQuiz: true
+                axios.get(process.env.REACT_APP_PROXY_ELearning + "/quiz").then(res => {
+                    if (res.data.Resultats) {
+                        this.setState({
+                            listQuiz: res.data.Resultats.sort((a, b) => (a.Quiz.id < b.Quiz.id) ? 1 : -1),
+                            alertDeleteQuiz: true
+                        })
+                    }
                 })
+
             }
         })
     }
@@ -194,18 +204,20 @@ class LayoutCabinetsFormateurs extends Component {
 
     addQTF(obj) {
 
-        axios.post("http://localhost:8787/quiz/addQTF",
+        axios.post(process.env.REACT_APP_PROXY_ELearning + "/quiz/addQTF",
             querystring.stringify(obj), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
         }).then(res => {
             if (res.data.Quiz) {
-                const tabs = this.state.listQuiz
-                tabs.push(res.data.Quiz)
-                this.setState({
-                    listQuiz: tabs,
-                    alerAddQTF: true
+                axios.get(process.env.REACT_APP_PROXY_ELearning + "/quiz").then(res => {
+                    if (res.data.Resultats) {
+                        this.setState({
+                            listQuiz: res.data.Resultats.sort((a, b) => (a.Quiz.id < b.Quiz.id) ? 1 : -1),
+                            alerAddQTF: true
+                        })
+                    }
                 })
             }
         })
@@ -223,20 +235,20 @@ class LayoutCabinetsFormateurs extends Component {
             idQuiz: idQuiz,
             idCollaborateur: JSON.parse(localStorage.user).id
         }
-        axios.post("http://localhost:8787/quiz/calculScore", input).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_ELearning + "/quiz/calculScore", input).then(res => {
             const tabs = this.state.quizCollaborateurs
             const index = tabs.findIndex(q => q.id === idQuiz)
             tabs.splice(index, 1)
             this.setState({
                 quizCollaborateurs: tabs,
-                scoreNow : res.data.Score.resultat
+                scoreNow: res.data.Score.resultat
             })
 
 
             const obj = {
                 id: JSON.parse(localStorage.user).id
             }
-            axios.post("http://localhost:8787/quiz/getListScoreByCollaborateur",
+            axios.post(process.env.REACT_APP_PROXY_ELearning + "/quiz/getListScoreByCollaborateur",
                 querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -257,7 +269,7 @@ class LayoutCabinetsFormateurs extends Component {
             idFormation: idFormation,
             star: star
         }
-        axios.post("http://localhost:8585/formations/rate",
+        axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/formations/rate",
             querystring.stringify(input), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -273,7 +285,7 @@ class LayoutCabinetsFormateurs extends Component {
             idFormation: idFormation,
         }
 
-        axios.post("http://localhost:8383/parcours/",
+        axios.post(process.env.REACT_APP_PROXY_Collaborateurs + "/parcours",
             querystring.stringify(inputParcour), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -287,7 +299,7 @@ class LayoutCabinetsFormateurs extends Component {
         this.setState({
             loadingUpload: true
         })
-        axios.post("http://localhost:8787/docs/uploadFile",
+        axios.post(process.env.REACT_APP_PROXY_ELearning + "/docs/uploadFile",
             formData, {
             headers: {
                 "Content-Type": "multipart/form-data"
@@ -313,6 +325,38 @@ class LayoutCabinetsFormateurs extends Component {
         })
     }
 
+    deleteDocs(id) {
+        this.setState({
+            loadingList: true
+        })
+        axios.delete(process.env.REACT_APP_PROXY_ELearning + "/docs/" + id).then(res => {
+            
+            if (res.data.Success) {
+                axios.get(process.env.REACT_APP_PROXY_ELearning + "/docs/").then(res => {
+                    if (res.data.Docs) {
+                        this.setState({
+                            listDocs: res.data.Docs,
+                            loadingList: false,
+                            alertDocsDeleted : true
+                        })
+                    } else {
+                        this.setState({
+                            loadingList: false
+                        })
+                    }
+
+                })
+
+            }
+        })
+    }
+
+    closeAlertDocsDeleted () {
+        this.setState({
+            alertDocsDeleted : false
+        })
+    }
+
     render() {
         return (
             <>
@@ -335,6 +379,8 @@ class LayoutCabinetsFormateurs extends Component {
                                 loadingUpload={this.state.loadingUpload}
                                 loadingList={this.state.loadingList}
                                 addParcour={this.addParcour.bind(this)}
+                                showQuiz={this.state.showQuiz}
+                                deleteDocs={this.deleteDocs.bind(this)}
                             />
                         </div>
                     </div>
@@ -360,6 +406,13 @@ class LayoutCabinetsFormateurs extends Component {
                 <Snackbar open={this.state.alerAddQTF} autoHideDuration={5000} onClose={this.closeAletAddQTF.bind(this)}>
                     <Alert onClose={this.closeAletAddQTF.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
                         Quiz ajouter !
+                    </Alert>
+                </Snackbar>
+
+                
+                <Snackbar open={this.state.alertDocsDeleted} autoHideDuration={5000} onClose={this.closeAlertDocsDeleted.bind(this)}>
+                    <Alert onClose={this.closeAlertDocsDeleted.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
+                        Docs supprimé !
                     </Alert>
                 </Snackbar>
             </>

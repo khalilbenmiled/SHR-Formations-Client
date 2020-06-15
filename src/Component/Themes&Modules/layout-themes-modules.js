@@ -22,7 +22,7 @@ class LayoutCabinetsFormateurs extends Component {
     }
 
     componentDidMount() {
-        axios.get("http://localhost:8585/themes").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_SessionsFormations+"/themes").then(res => {
             if (res.data.Theme) {
                 this.setState({
                     themes: res.data.Theme
@@ -38,7 +38,7 @@ class LayoutCabinetsFormateurs extends Component {
     }
 
     addAction(theme) {
-        axios.post("http://localhost:8585/themes", theme).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes", theme).then(res => {
             const listThemes = this.state.themes
             listThemes.push(res.data.Theme)
             this.setState({
@@ -49,7 +49,7 @@ class LayoutCabinetsFormateurs extends Component {
     }
 
     deleteTheme(theme) {
-        axios.delete("http://localhost:8585/themes/" + theme.id).then(res => {
+        axios.delete(process.env.REACT_APP_PROXY_SessionsFormations+"/themes/" + theme.id).then(res => {
             if (res.data.Success) {
                 const tabs = this.state.themes
                 const index = tabs.findIndex(t => t.id === theme.id)
@@ -76,14 +76,14 @@ class LayoutCabinetsFormateurs extends Component {
 
 
     addModule(module, theme) {
-        axios.post("http://localhost:8585/modules", module).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/modules", module).then(res => {
 
 
             const obj = {
                 idTheme: theme.id,
                 idModule: res.data.Module.id
             }
-            axios.post("http://localhost:8585/themes/affecterMAT",
+            axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes/affecterMAT",
                 querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -104,7 +104,7 @@ class LayoutCabinetsFormateurs extends Component {
     }
 
     deleteModule(module) {
-        axios.delete("http://localhost:8585/modules/"+module.id).then(res=>{
+        axios.delete(process.env.REACT_APP_PROXY_SessionsFormations+"/modules/"+module.id).then(res=>{
             console.log(res.data)
             const tabs = this.state.modules
             const index = tabs.findIndex(m=>m.id === module.id)
@@ -129,7 +129,7 @@ class LayoutCabinetsFormateurs extends Component {
                 id: value.id
             }
 
-            axios.post("http://localhost:8585/themes/modules",
+            axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes/modules",
                 querystring.stringify(theme), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"

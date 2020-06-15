@@ -126,7 +126,7 @@ export default function CustomPaginationActionsTable(props) {
   const id = props.id
   const classes = useStyles1();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(4);
+  const [rowsPerPage, setRowsPerPage] = React.useState(6);
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   const [infos, setInfos] = React.useState("");
@@ -154,7 +154,7 @@ export default function CustomPaginationActionsTable(props) {
         id: JSON.parse(e.target.value).id
       }
 
-      axios.post("http://localhost:8686/besoins/listParticipantsBesoins",
+      axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/listParticipantsBesoins",
         querystring.stringify(input), {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
@@ -200,7 +200,7 @@ export default function CustomPaginationActionsTable(props) {
     const user = {
       id: besoin.idUser
     }
-    axios.post("http://localhost:8686/besoinsPublier/userInfos",
+    axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoinsPublier/userInfos",
       querystring.stringify(user), {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"

@@ -120,7 +120,7 @@ export default function CustomPaginationActionsTable(props) {
   const [rows, setRows] = React.useState(props.formations.sort((a, b) => (a.id < b.id) ? 1 : -1));
   const classes = useStyles1();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(4);
+  const [rowsPerPage, setRowsPerPage] = React.useState(6);
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
   const [open, setOpen] = React.useState(false);
   const [openAddFormation, setOpenAddFormation] = React.useState(false);
@@ -165,7 +165,7 @@ export default function CustomPaginationActionsTable(props) {
 
 
   React.useEffect(() => {
-    var socket = new SockJS('http://localhost:8383/notifications');
+    var socket = new SockJS("http://localhost:8383/notifications");
     var stompClient = Stomp.over(socket);
     setStompClient(stompClient)
   }, [])
@@ -202,7 +202,7 @@ export default function CustomPaginationActionsTable(props) {
     const input = {
       id: formationToDelete.id
     }
-    axios.post("http://localhost:8585/formations/delete",
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/delete",
       querystring.stringify(input), {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -232,7 +232,7 @@ export default function CustomPaginationActionsTable(props) {
 
   const addFormation = () => {
     setOpenAddFormation(true)
-    axios.get("http://localhost:8585/themes").then(res => {
+    axios.get(process.env.REACT_APP_PROXY_SessionsFormations+"/themes").then(res => {
       if (res.data.Theme) {
         setThemes(res.data.Theme)
         setAllThemes(res.data.Theme)
@@ -245,7 +245,7 @@ export default function CustomPaginationActionsTable(props) {
       id: id
     }
 
-    axios.post("http://localhost:8585/formations/participants",
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/participants",
       querystring.stringify(input), {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -263,7 +263,7 @@ export default function CustomPaginationActionsTable(props) {
     const input = {
       id: id
     }
-    axios.post("http://localhost:8282/cabinets/cabinetOrFormateur",
+    axios.post(process.env.REACT_APP_PROXY_FormateursCabinets+"/cabinets/cabinetOrFormateur",
       querystring.stringify(input), {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -295,7 +295,7 @@ export default function CustomPaginationActionsTable(props) {
   }
 
   const addAction = (theme) => {
-    axios.post("http://localhost:8585/themes", theme).then(res => {
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes", theme).then(res => {
       const listThemes = themes
       listThemes.push(res.data.Theme)
       setThemes(listThemes)
@@ -311,7 +311,7 @@ export default function CustomPaginationActionsTable(props) {
       const typeFormation = {
         type: e.target.value
       }
-      axios.post("http://localhost:8585/themes/type",
+      axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes/type",
         querystring.stringify(typeFormation), {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
@@ -333,7 +333,7 @@ export default function CustomPaginationActionsTable(props) {
       id: JSON.parse(e.target.value).id,
     }
 
-    axios.post("http://localhost:8585/themes/modules",
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes/modules",
       querystring.stringify(theme), {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -352,14 +352,14 @@ export default function CustomPaginationActionsTable(props) {
   }
 
   const addModule = (module) => {
-    axios.post("http://localhost:8585/modules", module).then(res => {
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/modules", module).then(res => {
 
 
       const obj = {
         idTheme: themeSelected.id,
         idModule: res.data.Module.id
       }
-      axios.post("http://localhost:8585/themes/affecterMAT",
+      axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes/affecterMAT",
         querystring.stringify(obj), {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
@@ -419,7 +419,7 @@ export default function CustomPaginationActionsTable(props) {
       participants: participantToSet
     }
 
-    axios.post("http://localhost:8585/formations/setListParticipantFormation", obj).then(res => {
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/setListParticipantFormation", obj).then(res => {
       if (res.data.Formation) {
 
         const listFormation = rows
@@ -470,7 +470,7 @@ export default function CustomPaginationActionsTable(props) {
     }
 
 
-    axios.post("http://localhost:8585/formations/", obj).then(res => {
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/", obj).then(res => {
       if (res.data.Formation) {
         participantsS.map(participant => {
           Moment.locale("fr");
@@ -516,7 +516,7 @@ export default function CustomPaginationActionsTable(props) {
     const obj = {
       id: formation.id
     }
-    axios.post("http://localhost:8585/formations/collaborateurWithoutParticipant",
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/collaborateurWithoutParticipant",
       querystring.stringify(obj), {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -570,6 +570,8 @@ export default function CustomPaginationActionsTable(props) {
 
 
 
+
+
   return (
     <>
 
@@ -595,8 +597,8 @@ export default function CustomPaginationActionsTable(props) {
                 <TableCell> {row.dateFin} </TableCell>
                 <TableCell> {getEtat(row.dateDebut, row.dateFin)} </TableCell>
                 <TableCell> <VisibilityIcon className={classes.iconInfo} onClick={detailsFormations.bind(this, row)} /> </TableCell>
-                <TableCell> <GroupAddIcon className={classes.iconCheck} onClick={openAddParticipants.bind(this, row)} /> </TableCell>
-                <TableCell> <DeleteForeverIcon className={classes.iconRemove} onClick={openDeleteFormation.bind(this, row)} /> </TableCell>
+                <TableCell> <GroupAddIcon hidden={getEtat(row.dateDebut, row.dateFin) === "Programmée" ? false : true} className={classes.iconCheck} onClick={openAddParticipants.bind(this, row)} /> </TableCell>
+                <TableCell> <DeleteForeverIcon hidden={getEtat(row.dateDebut, row.dateFin) === "En cours" ? true : false}  className={classes.iconRemove} onClick={openDeleteFormation.bind(this, row)} /> </TableCell>
               </TableRow>
             ))}
 

@@ -65,7 +65,7 @@ export default function TransitionsModal(props) {
       id: row.id
     }
 
-    axios.post("http://localhost:8686/besoins/listParticipantsBesoins",
+    axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/listParticipantsBesoins",
       querystring.stringify(besoin), {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"

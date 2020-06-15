@@ -165,7 +165,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
   const onSelectFormateurCabinet = (e, values) => {
     if (values !== null) {
       if (values.title === "Formateur") {
-        axios.get("http://localhost:8282/formateurs").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_FormateursCabinets+"/formateurs").then(res => {
           if (res.data.formateurs) {
             setFormateurs(res.data.formateurs)
             setFormateur(false)
@@ -173,7 +173,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
           }
         })
       } else if (values.title === "Cabinet") {
-        axios.get("http://localhost:8282/cabinets").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_FormateursCabinets+"/cabinets").then(res => {
           if (res.data.cabinets) {
             setCabinets(res.data.cabinets)
             setFormateur(true)

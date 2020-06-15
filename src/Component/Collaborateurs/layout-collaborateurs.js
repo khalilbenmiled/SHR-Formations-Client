@@ -21,10 +21,21 @@ class LayoutCabinetsFormateurs extends Component {
                 }
             },
             user: "",
-            mesScores : []
+            mesScores: [],
+            allParcours: [],
+            parcours: null,
+            allScores : [],
+           
         }
     }
 
+    componentWillMount() {
+        if(JSON.parse(localStorage.user).role !== "COLLABORATEUR"){
+            this.props.history.push({
+                pathname: "/404NOTFOUND"
+            })
+        } 
+    }
 
     componentDidMount() {
         if (JSON.parse(localStorage.user).role === "COLLABORATEUR") {
@@ -32,7 +43,7 @@ class LayoutCabinetsFormateurs extends Component {
             const obj = {
                 id: JSON.parse(localStorage.user).id
             }
-            axios.post("http://localhost:8181/users/getInfosCollaborateur",
+            axios.post(process.env.REACT_APP_PROXY_Utilisateurs + "/users/getInfosCollaborateur",
                 querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -53,7 +64,7 @@ class LayoutCabinetsFormateurs extends Component {
             const input = {
                 idCollaborateur: JSON.parse(localStorage.user).id
             }
-            axios.post("http://localhost:8383/parcours/byCollaborateur",
+            axios.post(process.env.REACT_APP_PROXY_Collaborateurs + "/parcours/byCollaborateur",
                 querystring.stringify(input), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -64,6 +75,24 @@ class LayoutCabinetsFormateurs extends Component {
                     this.setState({
                         parcours: res.data.Results
                     })
+
+                    axios.post(process.env.REACT_APP_PROXY_ELearning + "/quiz/getListScoreByCollaborateur",
+                        querystring.stringify(objQuiz), {
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        }
+                    }).then(res => {
+                        if (res.data.Scores) {
+                            this.setState({
+                                mesScores: res.data.Scores
+                            })
+                        }
+
+                    })
+                } else {
+                    this.setState({
+                        parcours: null
+                    })
                 }
             })
 
@@ -71,20 +100,36 @@ class LayoutCabinetsFormateurs extends Component {
                 id: JSON.parse(localStorage.user).id
             }
 
-            axios.post(process.env.REACT_APP_PROXY+":8787/quiz/getListScoreByCollaborateur",
-                querystring.stringify(objQuiz), {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                }
-            }).then(res => {
-                if (res.data.Scores) {
-                    this.setState({
-                        mesScores : res.data.Scores
-                    })
-                }
 
-            })
         }
+
+    
+        // if (JSON.parse(localStorage.user).role === "SERVICEFORMATIONS") {
+            
+        //     axios.get(process.env.REACT_APP_PROXY_Collaborateurs+"/parcours/allParcours").then(res => {
+         
+        //         if (res.data.Results) {
+                    
+        //             this.setState({
+        //                 allParcours: res.data.Results,
+                       
+        //             })
+
+        //             axios.get(process.env.REACT_APP_PROXY_ELearning + "/quiz/getListScore").then(res=>{
+        //                 if(res.data.Scores){
+        //                     this.setState({
+        //                         allScores : res.data.Scores
+        //                     })
+        //                 }
+        //             })
+        //         }else {
+        //             this.setState({
+        //                 allParcours: null
+                       
+        //             })
+        //         }
+        //     })
+        // }
     }
 
     disconnect() {
@@ -106,6 +151,9 @@ class LayoutCabinetsFormateurs extends Component {
                                 user={this.state.user}
                                 parcours={this.state.parcours}
                                 mesScores={this.state.mesScores}
+                                allParcours={this.state.allParcours}
+                                allScores={this.state.allScores}
+                             
                             />
                         </div>
                     </div>

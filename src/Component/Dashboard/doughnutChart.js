@@ -16,7 +16,7 @@ class DoughnutChart extends Component {
 		const input = {
 			id : 219
 		}
-		axios.post("http://localhost:8585/formations/reporting/rating", querystring.stringify(input), {
+		axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/reporting/rating", querystring.stringify(input), {
 			headers: {
 				"Content-Type": "application/x-www-form-urlencoded"
 			}

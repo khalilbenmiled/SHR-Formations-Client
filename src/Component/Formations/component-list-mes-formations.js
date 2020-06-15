@@ -151,7 +151,7 @@ export default function CustomPaginationActionsTable(props) {
       id: id
     }
 
-    axios.post("http://localhost:8585/formations/participants",
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/participants",
       querystring.stringify(input), {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -169,7 +169,7 @@ export default function CustomPaginationActionsTable(props) {
     const input = {
       id: id
     }
-    axios.post("http://localhost:8282/cabinets/cabinetOrFormateur",
+    axios.post(process.env.REACT_APP_PROXY_FormateursCabinets+"/cabinets/cabinetOrFormateur",
       querystring.stringify(input), {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"

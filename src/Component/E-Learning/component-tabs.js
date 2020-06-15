@@ -126,7 +126,7 @@ export default function FullWidthTabs(props) {
     }
 
     const disableUpload = () => {
-        if (nomFile === "" || descriptionFile === "" ) {
+        if (nomFile === "" || descriptionFile === "") {
             return 1
         } else {
             return 0
@@ -163,6 +163,8 @@ export default function FullWidthTabs(props) {
                         openModalDeleteQuiz={openModalDeleteQuiz}
                         addQTF={props.addQTF}
                     />
+                    <LinearProgress style={{ marginTop: "-17px", marginBottom: "15px" }} hidden={props.showQuiz} variant="query" />
+
                     <Button onClick={openModalQuiz} className={classes.buttonStyles} size="small" variant="outlined" >
                         Ajouter un QUIZ
                     </Button>
@@ -185,11 +187,11 @@ export default function FullWidthTabs(props) {
                 <TabPanel value={value} index={3} dir={theme.direction}>
                     <div className="row">
                         <div className="col-lg-12 col-md-12">
-                            <ComponentListRessources listDocs={props.listDocs} />
+                            <ComponentListRessources listDocs={props.listDocs} deleteDocs={props.deleteDocs}/>
                         </div>
                     </div>
-                    <LinearProgress style={{marginTop : "-17px" , marginBottom : "15px" }} hidden={!props.loadingList} variant="query"  />
-                    
+                    <LinearProgress style={{ marginTop: "-17px", marginBottom: "15px" }} hidden={!props.loadingList} variant="query" />
+
                     <div hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} className="row" style={{ marginTop: "10px", padding: "20px 20px", backgroundColor: "#F5F5F5", boxShadow: "0px 0px 2px" }} >
 
                         <div className="col-lg-12 col-md-12">

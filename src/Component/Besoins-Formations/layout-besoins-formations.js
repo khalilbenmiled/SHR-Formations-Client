@@ -61,7 +61,7 @@ class Besoins extends Component {
 
     componentDidMount() {
         
-        var socket = new SockJS('http://localhost:8383/notifications');
+        var socket = new SockJS("http://localhost:8383/notifications");
         var stompClient = Stomp.over(socket);
 
         this.setState({
@@ -72,7 +72,7 @@ class Besoins extends Component {
             id: JSON.parse(localStorage.user).id
         }
 
-        axios.get("http://localhost:8585/themes").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_SessionsFormations+"/themes").then(res => {
             if (res.data.Theme) {
                 this.setState({
                     themes: res.data.Theme,
@@ -83,7 +83,7 @@ class Besoins extends Component {
 
         if (JSON.parse(localStorage.user).role === "TEAMLEAD") {
 
-            axios.post("http://localhost:8686/projets/byTL", querystring.stringify(user), {
+            axios.post(process.env.REACT_APP_PROXY_Besoins+"/projets/byTL", querystring.stringify(user), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -95,7 +95,7 @@ class Besoins extends Component {
                 }
             })
         } else {
-            axios.post("http://localhost:8686/projets/byMG", querystring.stringify(user), {
+            axios.post(process.env.REACT_APP_PROXY_Besoins+"/projets/byMG", querystring.stringify(user), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -113,7 +113,7 @@ class Besoins extends Component {
 
         if (JSON.parse(localStorage.user).role === "TEAMLEAD") {
 
-            axios.post("http://localhost:8686/besoins/byTL", querystring.stringify(user), {
+            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/byTL", querystring.stringify(user), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -128,7 +128,7 @@ class Besoins extends Component {
 
         } else if (JSON.parse(localStorage.user).role === "COLLABORATEUR") {
 
-            axios.post("http://localhost:8686/besoins/byUser", querystring.stringify(user), {
+            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/byUser", querystring.stringify(user), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -141,7 +141,7 @@ class Besoins extends Component {
             })
 
         } else if (JSON.parse(localStorage.user).role === "MANAGER") {
-            axios.post("http://localhost:8686/besoins/byMG", querystring.stringify(user), {
+            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/byMG", querystring.stringify(user), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -153,7 +153,7 @@ class Besoins extends Component {
                 }
             })
         } else {
-            axios.get("http://localhost:8686/besoins").then(res => {
+            axios.get(process.env.REACT_APP_PROXY_Besoins+"/besoins").then(res => {
                 if (res.data.Besoins) {
                     this.setState({
                         listBesoins: res.data.Besoins
@@ -168,7 +168,7 @@ class Besoins extends Component {
             const input = {
                 id: JSON.parse(localStorage.user).id
             }
-            axios.post("http://localhost:8686/besoinsPublier/", querystring.stringify(input), {
+            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoinsPublier/", querystring.stringify(input), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -187,7 +187,7 @@ class Besoins extends Component {
             const input = {
                 id: JSON.parse(localStorage.user).id
             }
-            axios.post("http://localhost:8383/collaborateurs/ByTL", querystring.stringify(input), {
+            axios.post(process.env.REACT_APP_PROXY_Collaborateurs+"/collaborateurs/ByTL", querystring.stringify(input), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -210,7 +210,7 @@ class Besoins extends Component {
             const typeFormation = {
                 type: e.target.value
             }
-            axios.post("http://localhost:8585/themes/type",
+            axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes/type",
                 querystring.stringify(typeFormation), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -241,7 +241,7 @@ class Besoins extends Component {
             id: JSON.parse(e.target.value).id,
         }
 
-        axios.post("http://localhost:8585/themes/modules",
+        axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes/modules",
             querystring.stringify(theme), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -334,7 +334,7 @@ class Besoins extends Component {
                     listModules: this.state.listModulesSelected
                 }
             }
-            axios.post("http://localhost:8686/besoins/addByCollaborateur", besoin).then(res => {
+            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/addByCollaborateur", besoin).then(res => {
 
                 if (res.data.Error) {
                     this.setState({
@@ -384,7 +384,7 @@ class Besoins extends Component {
                     idTeamLead: this.state.idTeamLead
                 }
             }
-            axios.post("http://localhost:8686/besoins/addByTL", besoin).then(res => {
+            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/addByTL", besoin).then(res => {
 
                 if (res.data.Error) {
                     this.setState({
@@ -415,7 +415,7 @@ class Besoins extends Component {
     }
 
     addAction(theme) {
-        axios.post("http://localhost:8585/themes", theme).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes", theme).then(res => {
             const listThemes = this.state.allThemes
             listThemes.push(res.data.Theme)
             this.setState({
@@ -426,14 +426,14 @@ class Besoins extends Component {
     }
 
     addModule(module) {
-        axios.post("http://localhost:8585/modules", module).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/modules", module).then(res => {
 
 
             const obj = {
                 idTheme: this.state.themeSelected.id,
                 idModule: res.data.Module.id
             }
-            axios.post("http://localhost:8585/themes/affecterMAT",
+            axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes/affecterMAT",
                 querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -454,7 +454,7 @@ class Besoins extends Component {
     }
 
     addProjet(projet) {
-        axios.post("http://localhost:8686/projets", projet).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_Besoins+"/projets", projet).then(res => {
             const listProjets = this.state.projets
             listProjets.push(res.data.Projet)
             this.setState({
@@ -467,7 +467,7 @@ class Besoins extends Component {
     onValiderBesoin(besoin) {
 
 
-        axios.post("http://localhost:8686/besoins/valider",
+        axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/valider",
             querystring.stringify(besoin), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -497,7 +497,7 @@ class Besoins extends Component {
                     idBesoin: res.data.Besoin.id,
                     idManager: JSON.parse(localStorage.user).id
                 }
-                axios.post("http://localhost:8686/besoinsPublier/publier",
+                axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoinsPublier/publier",
                     querystring.stringify(obj), {
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
@@ -574,7 +574,7 @@ class Besoins extends Component {
             id: this.state.besoinToDelete
         }
         if (JSON.parse(localStorage.user).role === "COLLABORATEUR" || JSON.parse(localStorage.user).role === "TEAMLEAD") {
-            axios.post("http://localhost:8686/besoins/removeByCollaborateur",
+            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/removeByCollaborateur",
                 querystring.stringify(besoin), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -593,7 +593,7 @@ class Besoins extends Component {
             })
         } else {
 
-            axios.post("http://localhost:8686/besoins/removeByManagerOrSf",
+            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/removeByManagerOrSf",
                 querystring.stringify(besoin), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -618,7 +618,7 @@ class Besoins extends Component {
         const besoin = {
             idBesoin: this.state.besoinToAnnuler
         }
-        axios.post("http://localhost:8686/besoins/annulerValidationTL",
+        axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/annulerValidationTL",
             querystring.stringify(besoin), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -672,7 +672,7 @@ class Besoins extends Component {
             idBesoin: besoin.id,
             idManager: JSON.parse(localStorage.user).id
         }
-        axios.post("http://localhost:8686/besoins/annulerValidationMG",
+        axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/annulerValidationMG",
             querystring.stringify(obj), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -688,7 +688,7 @@ class Besoins extends Component {
                 })
             }
 
-            axios.post("http://localhost:8686/besoinsPublier/retirer",
+            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoinsPublier/retirer",
                 querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -726,7 +726,7 @@ class Besoins extends Component {
             idBesoin: besoin.id,
         }
 
-        axios.post("http://localhost:8686/besoins/validerMG",
+        axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/validerMG",
             querystring.stringify(obj), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -745,7 +745,7 @@ class Besoins extends Component {
                 idManager: JSON.parse(localStorage.user).id
 
             }
-            axios.post("http://localhost:8686/besoinsPublier/publier",
+            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoinsPublier/publier",
                 querystring.stringify(input), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -794,7 +794,7 @@ class Besoins extends Component {
         const obj = {
             id: this.state.besoinToPublier
         }
-        axios.post("http://localhost:8686/besoinsPublier/publierBesoin",
+        axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoinsPublier/publierBesoin",
             querystring.stringify(obj), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -845,7 +845,7 @@ class Besoins extends Component {
                 publier: publier
             }
 
-            axios.post("http://localhost:8686/besoins/rapportsTL",
+            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/rapportsTL",
                 querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -900,7 +900,7 @@ class Besoins extends Component {
                 publier: publier
             }
 
-            axios.post("http://localhost:8686/besoins/rapportsMG",
+            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/rapportsMG",
                 querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -954,7 +954,7 @@ class Besoins extends Component {
                 publier: publier
             }
 
-            axios.post("http://localhost:8686/besoins/rapports",
+            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/rapports",
                 querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"

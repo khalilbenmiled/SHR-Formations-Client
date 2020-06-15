@@ -114,7 +114,7 @@ export default function TransitionsModal(props) {
             oldPassword: passwordActuel,
             newPassword: passwordNew
         }
-        axios.post("http://localhost:8181/users/updatePassword", querystring.stringify(obj), {
+        axios.post(process.env.REACT_APP_PROXY_Utilisateurs+"/users/updatePassword", querystring.stringify(obj), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             }

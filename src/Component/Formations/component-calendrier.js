@@ -107,7 +107,7 @@ export default class DemoApp extends React.Component {
     const input = {
       id: event.event.id
     }
-    axios.post("http://localhost:8585/formations/byId",
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/byId",
       querystring.stringify(input), {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -134,7 +134,7 @@ export default class DemoApp extends React.Component {
       id: id
     }
 
-    axios.post("http://localhost:8585/formations/participants",
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/participants",
       querystring.stringify(input), {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"

@@ -42,7 +42,7 @@ class LayoutNavbar extends Component {
             user: JSON.parse(localStorage.user)
         })
 
-        axios.get("http://localhost:8383/notifications/").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_Collaborateurs+"/notifications/").then(res => {
             if (res.data.Notifications) {
                 this.setState({
                     mesNotifications: res.data.Notifications.filter(n => n.idCollaborateur === JSON.parse(localStorage.user).id),
@@ -59,7 +59,7 @@ class LayoutNavbar extends Component {
         const idUser = {
             id: JSON.parse(localStorage.user).id
         }
-        axios.post("http://localhost:8181/users/logout",
+        axios.post(process.env.REACT_APP_PROXY_Utilisateurs+"/users/logout",
             querystring.stringify(idUser), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -75,7 +75,7 @@ class LayoutNavbar extends Component {
         const obj = {
             id: JSON.parse(localStorage.user).id
         }
-        axios.put("http://localhost:8383/notifications/", obj).then(res => {
+        axios.put(process.env.REACT_APP_PROXY_Collaborateurs+"/notifications/", obj).then(res => {
             if (res.data.Notifications) {
                 this.setState({
                     mesNotifications: res.data.Notifications,
@@ -90,7 +90,7 @@ class LayoutNavbar extends Component {
             id: JSON.parse(localStorage.user).id
         }
 
-        axios.post("http://localhost:8383/notifications/delete",obj).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_Collaborateurs+"/notifications/delete",obj).then(res => {
             if (res.data.Success) {
                 this.setState({
                     mesNotifications: [],

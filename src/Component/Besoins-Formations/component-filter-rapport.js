@@ -243,7 +243,7 @@ export default function CustomizedExpansionPanels(props) {
       const typeFormation = {
         type: values.title
       }
-      axios.post("http://localhost:8585/themes/type",
+      axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes/type",
         querystring.stringify(typeFormation), {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"

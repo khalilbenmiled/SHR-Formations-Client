@@ -334,7 +334,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                             onChange={onChangeFormation}
                             options={props.formations}
                             getOptionLabel={(option) => option.nomTheme + " Du " + option.dateDebut + " Au " + option.dateFin}
-                            style={{ width: 260 }}
+                            style={{ width: 260 , backgroundColor : "white" }}
                             renderInput={(params) => <TextField {...params} label="Formation" variant="outlined" />}
                         />
                     </div>

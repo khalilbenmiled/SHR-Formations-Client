@@ -95,7 +95,7 @@ TablePaginationActions.propTypes = {
 export default function CustomPaginationActionsTable(props) {
     const rows = props.users
     const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(4);
+    const [rowsPerPage, setRowsPerPage] = React.useState(6);
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
     const classes = useStyles1();
     const [participantSelected, setParticipantSelected] = React.useState([]);
@@ -133,7 +133,7 @@ export default function CustomPaginationActionsTable(props) {
     return (
         <>
 
-            <TableContainer className="tableContainerStyles" component={Paper} style={{ marginTop: "30px", width: "100%", height: "250px" }}>
+            <TableContainer className="tableContainerStyles" component={Paper} style={{ marginTop: "30px", width: "100%", height: "auto" }}>
                 <Table size="small" className="tableTheme" aria-label="custom pagination table" >
                     <TableHead className="tableHead" style={{ backgroundColor: "#B51B10" }}>
                         <TableRow>
