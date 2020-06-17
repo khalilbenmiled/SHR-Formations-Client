@@ -27,7 +27,8 @@ import Moment from 'moment';
 import 'moment/locale/fr'
 import SockJS from "sockjs-client"
 import Stomp from "stomp-websocket"
-
+import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
+import ComponentModalAddCabinetFormateur from "./component-modal-add-cabinetFormateur"
 
 
 const useStyles1 = makeStyles(theme => ({
@@ -152,6 +153,9 @@ export default function CustomPaginationActionsTable(props) {
   const [listParticipants, setListParticipants] = React.useState([]);
   const [alertSetParticipants, setAlertSetParticipant] = React.useState(false);
   const [stompClient, setStompClient] = React.useState("");
+  const [openModalAddCF, setOpenModalAddCF] = React.useState(false);
+
+
 
   const [collaborateursAndParticipants, setCollaborateursAndParticipants] = React.useState([]);
   const [cabinetFormateur, setFetchCabinetFormateur] = React.useState({
@@ -202,7 +206,7 @@ export default function CustomPaginationActionsTable(props) {
     const input = {
       id: formationToDelete.id
     }
-    axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/delete",
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/formations/delete",
       querystring.stringify(input), {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -232,7 +236,7 @@ export default function CustomPaginationActionsTable(props) {
 
   const addFormation = () => {
     setOpenAddFormation(true)
-    axios.get(process.env.REACT_APP_PROXY_SessionsFormations+"/themes").then(res => {
+    axios.get(process.env.REACT_APP_PROXY_SessionsFormations + "/themes").then(res => {
       if (res.data.Theme) {
         setThemes(res.data.Theme)
         setAllThemes(res.data.Theme)
@@ -245,7 +249,7 @@ export default function CustomPaginationActionsTable(props) {
       id: id
     }
 
-    axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/participants",
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/formations/participants",
       querystring.stringify(input), {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -263,7 +267,7 @@ export default function CustomPaginationActionsTable(props) {
     const input = {
       id: id
     }
-    axios.post(process.env.REACT_APP_PROXY_FormateursCabinets+"/cabinets/cabinetOrFormateur",
+    axios.post(process.env.REACT_APP_PROXY_FormateursCabinets + "/cabinets/cabinetOrFormateur",
       querystring.stringify(input), {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -295,7 +299,7 @@ export default function CustomPaginationActionsTable(props) {
   }
 
   const addAction = (theme) => {
-    axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes", theme).then(res => {
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/themes", theme).then(res => {
       const listThemes = themes
       listThemes.push(res.data.Theme)
       setThemes(listThemes)
@@ -311,7 +315,7 @@ export default function CustomPaginationActionsTable(props) {
       const typeFormation = {
         type: e.target.value
       }
-      axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes/type",
+      axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/themes/type",
         querystring.stringify(typeFormation), {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
@@ -333,7 +337,7 @@ export default function CustomPaginationActionsTable(props) {
       id: JSON.parse(e.target.value).id,
     }
 
-    axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes/modules",
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/themes/modules",
       querystring.stringify(theme), {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -352,14 +356,14 @@ export default function CustomPaginationActionsTable(props) {
   }
 
   const addModule = (module) => {
-    axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/modules", module).then(res => {
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/modules", module).then(res => {
 
 
       const obj = {
         idTheme: themeSelected.id,
         idModule: res.data.Module.id
       }
-      axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes/affecterMAT",
+      axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/themes/affecterMAT",
         querystring.stringify(obj), {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
@@ -419,7 +423,7 @@ export default function CustomPaginationActionsTable(props) {
       participants: participantToSet
     }
 
-    axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/setListParticipantFormation", obj).then(res => {
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/formations/setListParticipantFormation", obj).then(res => {
       if (res.data.Formation) {
 
         const listFormation = rows
@@ -470,7 +474,7 @@ export default function CustomPaginationActionsTable(props) {
     }
 
 
-    axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/", obj).then(res => {
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/formations/", obj).then(res => {
       if (res.data.Formation) {
         participantsS.map(participant => {
           Moment.locale("fr");
@@ -516,7 +520,7 @@ export default function CustomPaginationActionsTable(props) {
     const obj = {
       id: formation.id
     }
-    axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/collaborateurWithoutParticipant",
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/formations/collaborateurWithoutParticipant",
       querystring.stringify(obj), {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -544,6 +548,11 @@ export default function CustomPaginationActionsTable(props) {
     setAlertSetParticipant(false)
   }
 
+  const openModalCabinetFormateur = (row) => {
+    setIdFormation(row.id)
+    setOpenModalAddCF(true)
+  }
+
   const getEtat = (dateDebut, dateFin) => {
 
     Moment.locale("fr");
@@ -564,7 +573,9 @@ export default function CustomPaginationActionsTable(props) {
   }
 
 
-
+  const closeModalAddCF = () => {
+    setOpenModalAddCF(false)
+  }
 
 
 
@@ -583,7 +594,7 @@ export default function CustomPaginationActionsTable(props) {
               <TableCell style={{ fontSize: 16, color: 'white' }}>Date debut</TableCell>
               <TableCell style={{ fontSize: 16, color: 'white' }}>Date fin</TableCell>
               <TableCell style={{ fontSize: 16, color: 'white' }}>Etat</TableCell>
-              <TableCell colSpan={3} style={{ fontSize: 16, color: 'white' }}></TableCell>
+              <TableCell colSpan={4} style={{ fontSize: 16, color: 'white' }}></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -598,7 +609,9 @@ export default function CustomPaginationActionsTable(props) {
                 <TableCell> {getEtat(row.dateDebut, row.dateFin)} </TableCell>
                 <TableCell> <VisibilityIcon className={classes.iconInfo} onClick={detailsFormations.bind(this, row)} /> </TableCell>
                 <TableCell> <GroupAddIcon hidden={getEtat(row.dateDebut, row.dateFin) === "Programmée" ? false : true} className={classes.iconCheck} onClick={openAddParticipants.bind(this, row)} /> </TableCell>
-                <TableCell> <DeleteForeverIcon hidden={getEtat(row.dateDebut, row.dateFin) === "En cours" ? true : false}  className={classes.iconRemove} onClick={openDeleteFormation.bind(this, row)} /> </TableCell>
+                <TableCell>< AccountBalanceIcon onClick={openModalCabinetFormateur.bind(this, row)} hidden={getEtat(row.dateDebut, row.dateFin) === "Programmée" ? false : true} style={{ cursor: "pointer", color: "#4AA14B" }} /></TableCell>
+                <TableCell> <DeleteForeverIcon hidden={getEtat(row.dateDebut, row.dateFin) === "En cours" ? true : false} className={classes.iconRemove} onClick={openDeleteFormation.bind(this, row)} /> </TableCell>
+
               </TableRow>
             ))}
 
@@ -673,6 +686,13 @@ export default function CustomPaginationActionsTable(props) {
         SetParticipants={SetParticipants}
         limiteParticipant={limiteParticipant}
         listParticipants={listParticipants}
+      />
+
+      <ComponentModalAddCabinetFormateur
+        open={openModalAddCF}
+        handleClose={closeModalAddCF}
+        idFormation={idFormation}
+        affecterCF = {props.affecterCF}
       />
 
       <Snackbar open={alertAction} autoHideDuration={5000} onClose={closeAlertAction}>

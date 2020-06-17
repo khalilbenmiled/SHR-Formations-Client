@@ -112,6 +112,7 @@ export default function FullWidthTabs(props) {
 
     const [buSelected, setBuSelected] = React.useState("");
     const [quarterSelected, setQuarterSelected] = React.useState(0);
+    const [anneeSelected, setAnneeSelected] = React.useState(0);
     const [themeSelected, setThemeSelected] = React.useState("");
 
     const [themeFormationSelected, setThemeFormationSelected] = React.useState("");
@@ -143,7 +144,7 @@ export default function FullWidthTabs(props) {
     ]
 
     React.useEffect(() => {
-        axios.get(process.env.REACT_APP_PROXY_SessionsFormations+"/formations").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_SessionsFormations + "/formations").then(res => {
             if (res.data.Formations) {
                 const tabs = []
                 res.data.Formations.map(formation => {
@@ -169,11 +170,12 @@ export default function FullWidthTabs(props) {
                 setListFormations(tabs)
             }
         })
-        if (JSON.parse(localStorage.user).role === "SERVICEFORMATION") {
+        if (JSON.parse(localStorage.user).role === "SERVICEFORMATIONS") {
             const inputBesoin = {
                 bu: "",
                 theme: "",
                 quarter: 0,
+                annee : 0
             }
             filterBesoins(inputBesoin)
 
@@ -190,6 +192,7 @@ export default function FullWidthTabs(props) {
                 bu: "",
                 theme: "",
                 quarter: 0,
+                annee : 0,
                 id: JSON.parse(localStorage.user).id
             }
             filterBesoins(inputBesoin)
@@ -244,7 +247,8 @@ export default function FullWidthTabs(props) {
             const input = {
                 bu: buSelected,
                 quarter: value.value,
-                theme: themeSelected
+                theme: themeSelected,
+                annee : anneeSelected
             }
             filterBesoins(input)
         } else {
@@ -252,11 +256,34 @@ export default function FullWidthTabs(props) {
             const input = {
                 bu: buSelected,
                 quarter: 0,
-                theme: themeSelected
+                theme: themeSelected,
+                annee : anneeSelected
             }
             filterBesoins(input)
         }
 
+    }
+
+    const onChangeAnnee = (e,value) => {
+        if(value !== null){
+            setAnneeSelected(value)
+            const input = {
+                theme : themeSelected,
+                quarter : quarterSelected,
+                bu : buSelected,
+                annee : value
+            }
+            filterBesoins(input)
+        }else {
+            setAnneeSelected(0)
+            const input = {
+                annee : 0,
+                bu : buSelected,
+                quarter : quarterSelected,
+                theme : themeSelected
+            }
+            filterBesoins(input)
+        }
     }
 
     const onChangeThemeBesoin = (e, value) => {
@@ -266,7 +293,8 @@ export default function FullWidthTabs(props) {
             const input = {
                 theme: value.nom,
                 quarter: quarterSelected,
-                bu: buSelected
+                bu: buSelected,
+                annee : anneeSelected
             }
             filterBesoins(input)
         } else {
@@ -274,7 +302,8 @@ export default function FullWidthTabs(props) {
             const input = {
                 theme: "",
                 quarter: quarterSelected,
-                bu: buSelected
+                bu: buSelected,
+                annee : anneeSelected
             }
             filterBesoins(input)
         }
@@ -290,7 +319,8 @@ export default function FullWidthTabs(props) {
             const input = {
                 bu: value.title,
                 quarter: quarterSelected,
-                theme: themeSelected
+                theme: themeSelected,
+                annee : anneeSelected
             }
             filterBesoins(input)
         } else {
@@ -298,7 +328,8 @@ export default function FullWidthTabs(props) {
             const input = {
                 bu: "",
                 quarter: quarterSelected,
-                theme: themeSelected
+                theme: themeSelected,
+                annee : anneeSelected
             }
             filterBesoins(input)
         }
@@ -412,9 +443,10 @@ export default function FullWidthTabs(props) {
     }
 
     const filterBesoins = (input) => {
+ 
         if (JSON.parse(localStorage.user).role === "SERVICEFORMATIONS") {
 
-            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/reporting/byFilter", querystring.stringify(input), {
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/reporting/byFilter", querystring.stringify(input), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -474,13 +506,15 @@ export default function FullWidthTabs(props) {
                 }
             })
         } else if (JSON.parse(localStorage.user).role === "COLLABORATEUR") {
+            console.log(input)
             const obj = {
                 bu: input.bu,
                 quarter: input.quarter,
                 theme: input.theme,
+                annee : input.annee,
                 id: JSON.parse(localStorage.user).id
             }
-            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/reporting/byFilterCollaborateur", querystring.stringify(obj), {
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/reporting/byFilterCollaborateur", querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -545,9 +579,10 @@ export default function FullWidthTabs(props) {
                 bu: input.bu,
                 quarter: input.quarter,
                 theme: input.theme,
+                annee : input.annee,
                 id: JSON.parse(localStorage.user).id
             }
-            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/reporting/byFilterTeamLead", querystring.stringify(obj), {
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/reporting/byFilterTeamLead", querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -612,9 +647,10 @@ export default function FullWidthTabs(props) {
                 bu: input.bu,
                 quarter: input.quarter,
                 theme: input.theme,
+                annee: input.annee,
                 id: JSON.parse(localStorage.user).id
             }
-            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/reporting/byFilterManager", querystring.stringify(obj), {
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/reporting/byFilterManager", querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -681,7 +717,7 @@ export default function FullWidthTabs(props) {
     const filterFormations = (input) => {
 
         if (JSON.parse(localStorage.user).role === "SERVICEFORMATIONS") {
-            axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/reporting/etat", querystring.stringify(input), {
+            axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/formations/reporting/etat", querystring.stringify(input), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -758,7 +794,7 @@ export default function FullWidthTabs(props) {
                 dateFin: input.dateFin,
                 id: JSON.parse(localStorage.user).id
             }
-            axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/reporting/etatByCollaborateur", querystring.stringify(obj), {
+            axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/formations/reporting/etatByCollaborateur", querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -835,7 +871,7 @@ export default function FullWidthTabs(props) {
                 dateFin: input.dateFin,
                 id: JSON.parse(localStorage.user).id
             }
-            axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/reporting/etatByTL", querystring.stringify(obj), {
+            axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/formations/reporting/etatByTL", querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -912,7 +948,7 @@ export default function FullWidthTabs(props) {
                 dateFin: input.dateFin,
                 id: JSON.parse(localStorage.user).id
             }
-            axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/reporting/etatByManager", querystring.stringify(obj), {
+            axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/formations/reporting/etatByManager", querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -986,7 +1022,7 @@ export default function FullWidthTabs(props) {
     }
 
     const filterTypeTheme = (input) => {
-        axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/reporting/byTypeTheme", querystring.stringify(input), {
+        axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/reporting/byTypeTheme", querystring.stringify(input), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
@@ -1019,7 +1055,7 @@ export default function FullWidthTabs(props) {
     }
 
     const filterProjet = (input) => {
-        axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/reporting/byProjet", querystring.stringify(input), {
+        axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/reporting/byProjet", querystring.stringify(input), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
@@ -1057,7 +1093,7 @@ export default function FullWidthTabs(props) {
                 id: value.id
             }
 
-            axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/reporting/rating", querystring.stringify(input), {
+            axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/formations/reporting/rating", querystring.stringify(input), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -1094,6 +1130,16 @@ export default function FullWidthTabs(props) {
         return date.getDay() === 0
     }
 
+    function range (start , date)  {
+        const ans = []
+        const end = date.getFullYear();
+        for (let i = start ; i <= end+10 ; i++){
+        
+            ans.push(i.toString())
+        }
+        return ans
+    }
+
 
 
 
@@ -1111,7 +1157,7 @@ export default function FullWidthTabs(props) {
                 >
                     <Tab style={{ outline: "none" }} label="Besoins" icon={<HelpOutlineIcon />} />
                     <Tab style={{ outline: "none" }} label="Formations" icon={<LocalLibraryIcon />} />
-                    
+
 
 
                 </Tabs>
@@ -1123,14 +1169,15 @@ export default function FullWidthTabs(props) {
             >
 
                 <TabPanel value={value} index={0} dir={theme.direction} >
-                    <div className="row" style={{ marginTop: "10px", padding: "20px 20px", backgroundColor: "#F5F5F5", boxShadow: "0px 0px 2px" }} >
+                    <div className="row" style={{ marginTop: "10px", padding: "20px 10px", backgroundColor: "#F5F5F5", boxShadow: "0px 0px 2px" }} >
                         <div className="col-lg-12 col-md-12" style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                             <Autocomplete
                                 size="small"
+                                hidden = {JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false}
                                 options={bu}
                                 onChange={onChangeBuBesoin}
                                 getOptionLabel={(option) => option.title}
-                                style={{ backgroundColor: "white", width: 300 }}
+                                style={{ backgroundColor: "white", width: 220 }}
                                 renderInput={(params) => <TextField {...params} label="BU" variant="outlined" />}
                             />
                             <Autocomplete
@@ -1138,15 +1185,23 @@ export default function FullWidthTabs(props) {
                                 options={trimester}
                                 onChange={onChangeTrimesterBesoin}
                                 getOptionLabel={(option) => option.title}
-                                style={{ backgroundColor: "white", width: 300 }}
+                                style={{ backgroundColor: "white", width: 220 }}
                                 renderInput={(params) => <TextField {...params} label="Trimestre" variant="outlined" />}
+                            />
+                            <Autocomplete
+                                size="small"
+                                options={range(2014,new Date())}
+                                onChange={onChangeAnnee}
+                                getOptionLabel={(option) => option}
+                                style={{ backgroundColor: "white", width: 220 }}
+                                renderInput={(params) => <TextField {...params} label="Année" variant="outlined" />}
                             />
                             <Autocomplete
                                 size="small"
                                 options={props.themes}
                                 onChange={onChangeThemeBesoin}
                                 getOptionLabel={(option) => option.nom}
-                                style={{ backgroundColor: "white", width: 300 }}
+                                style={{ backgroundColor: "white", width: 220 }}
                                 renderInput={(params) => <TextField {...params} label="Theme" variant="outlined" />}
                             />
                         </div>

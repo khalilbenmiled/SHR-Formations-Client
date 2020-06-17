@@ -113,6 +113,7 @@ export default function ScrollableTabsButtonAuto(props) {
           quarterSelected={props.quarterSelected}
           ajouterSession={props.ajouterSession}
           refreshCalendrier={props.refreshCalendrier}
+          affecterCF={props.affecterCF}
         />
       </TabPanel>
     </div>

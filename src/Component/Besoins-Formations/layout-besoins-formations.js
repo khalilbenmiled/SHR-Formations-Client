@@ -486,7 +486,7 @@ class Besoins extends Component {
             var now_date = Moment().format("DD/MM/YYYY HH:mm")
             const obj = {
                 idCollaborateur: besoin.idUser,
-                message: "Besoin validé",
+                message: "Besoin de formation validé",
                 opened: false,
                 date: now_date
             }

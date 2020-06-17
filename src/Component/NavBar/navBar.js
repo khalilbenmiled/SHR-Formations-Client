@@ -147,11 +147,13 @@ export default function NavBar(props) {
 
             {rows.map((notif, index) => {
               return (
-                <MenuItem style={{ width: "350px", fontSize: "12px" }} key={index} onClick={closeNotification}  >
-
-                  <div className="row">
-                    <div className="col-lg-12 col-md-12">
-                      {notif.message}
+                <MenuItem style={{ backgroundColor: notif.opened ? "" : "rgba(243,170,93,0.8)" }} key={index} onClick={closeNotification}  >
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    <div style={{ fontSize: "12px" }}>
+                      <p>{notif.message}</p>
+                    </div>
+                    <div style={{ fontSize: "12px" }}>
+                      {notif.date}
                     </div>
                   </div>
                 </MenuItem>
@@ -301,7 +303,7 @@ export default function NavBar(props) {
       </Drawer>
 
 
-   }
+
     </div>
   );
 }

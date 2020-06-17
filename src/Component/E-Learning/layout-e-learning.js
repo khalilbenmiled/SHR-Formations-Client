@@ -285,7 +285,7 @@ class LayoutCabinetsFormateurs extends Component {
             idFormation: idFormation,
         }
 
-        axios.post(process.env.REACT_APP_PROXY_Collaborateurs + "/parcours",
+        axios.post(process.env.REACT_APP_PROXY_Collaborateurs + "/parcours/",
             querystring.stringify(inputParcour), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"

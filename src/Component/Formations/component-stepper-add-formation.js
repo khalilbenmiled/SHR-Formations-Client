@@ -124,6 +124,8 @@ export default function HorizontalLabelPositionBelowStepper(props) {
     const [formateurs, setFormateurs] = React.useState([]);
     const [cabinets, setCabinets] = React.useState([]);
 
+    const [dateDebutDisabled, setDateDebutDisabled] = React.useState(true);
+    const [dateFinDisabled, setDateFinDisabled] = React.useState(true);
 
     const quarter = [
         { title: "Trimestre 1" },
@@ -134,6 +136,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
     const handleDateDebutChange = (date) => {
         Moment.locale("fr");
         setSelectedDateDebut(date);
+        setDateFinDisabled(false)
         props.dateDebutSelected(Moment(date).format("DD/MM/YYYY HH:mm"))
     };
 
@@ -146,7 +149,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 
     const handleNext = () => {
         if (activeStep === 1) {
-            axios.get(process.env.REACT_APP_PROXY_Utilisateurs+"/users/collaborateurs").then(res => {
+            axios.get(process.env.REACT_APP_PROXY_Utilisateurs + "/users/collaborateurs").then(res => {
                 if (res.data.Collaborateurs) {
                     setCollaborateurs(res.data.Collaborateurs)
                 }
@@ -172,7 +175,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
     const onSelectFormateurCabinet = (e, values) => {
         if (values !== null) {
             if (values.title === "Formateur") {
-                axios.get(process.env.REACT_APP_PROXY_FormateursCabinets+"/formateurs").then(res => {
+                axios.get(process.env.REACT_APP_PROXY_FormateursCabinets + "/formateurs").then(res => {
                     if (res.data.formateurs) {
                         setFormateurs(res.data.formateurs)
                         setFormateur(false)
@@ -180,7 +183,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                     }
                 })
             } else if (values.title === "Cabinet") {
-                axios.get(process.env.REACT_APP_PROXY_FormateursCabinets+"/cabinets").then(res => {
+                axios.get(process.env.REACT_APP_PROXY_FormateursCabinets + "/cabinets").then(res => {
                     if (res.data.cabinets) {
                         setCabinets(res.data.cabinets)
                         setFormateur(true)
@@ -213,14 +216,17 @@ export default function HorizontalLabelPositionBelowStepper(props) {
     const quarterSelected = (e, value) => {
         if (value != null) {
             setQuarterS(value.title)
+            setDateDebutDisabled(false)
             props.quarterSelected(value.title === "Trimestre 1" ? "1" : value.title === "Trimestre 2" ? "2" : value.title === "Trimestre 3" ? "3" : value.title === "Trimestre 4" ? "4" : 0)
         } else {
             setQuarterS("")
+            setDateDebutDisabled(true)
+            setDateFinDisabled(true)
         }
     }
 
     function verifierSaisie() {
-        if ( selectedDateDebut === null || selectedDateFin === null || quarterS === "" || quarterS === null || maxParticipants === 0) {
+        if (selectedDateDebut === null || selectedDateFin === null || quarterS === "" || quarterS === null || maxParticipants === 0) {
             return 1
         }
         return 0
@@ -253,6 +259,117 @@ export default function HorizontalLabelPositionBelowStepper(props) {
     const onChangeMaxParticipants = (e) => {
         setMaxParticipants(e.target.value)
         props.onChangeMaxParticipants(e)
+    }
+
+    function maxDateFinFunction(quarter) {
+
+        if (selectedDateDebut === null) {
+            return
+        } else {
+            let date = selectedDateDebut
+            var month = date.getMonth() + 1
+            if (quarter === "Trimestre 1") {
+                if (Math.ceil(month / 3) > 1) {
+                    return "03.31." + (date.getFullYear() + 1).toString()
+                } else {
+                    return "03.31." + date.getFullYear().toString()
+                }
+
+            } else if (quarter === "Trimestre 2") {
+                if (Math.ceil(month / 3) > 2) {
+                    return "06.30." + (date.getFullYear() + 1).toString()
+                } else {
+                    return "06.30." + date.getFullYear().toString()
+                }
+
+            } else if (quarter === "Trimestre 3") {
+                if (Math.ceil(month / 3) > 3) {
+                    return "09.30." + (date.getFullYear() + 1).toString()
+                } else {
+                    return "09.30." + date.getFullYear().toString()
+                }
+
+            } else if (quarter === "Trimestre 4") {
+                if (Math.ceil(month / 3) > 4) {
+                    return "12.31." + (date.getFullYear() + 1).toString()
+                } else {
+                    return "12.31." + date.getFullYear().toString()
+                }
+
+            }
+        }
+
+    }
+
+    function maxDateDebutFunction(quarter) {
+
+        let date = new Date()
+        var month = date.getMonth() + 1
+        if (quarter === "Trimestre 1") {
+            if (Math.ceil(month / 3) > 1) {
+                return "03.31." + (date.getFullYear() + 1).toString()
+            } else {
+                return "03.31." + date.getFullYear().toString()
+            }
+
+        } else if (quarter === "Trimestre 2") {
+            if (Math.ceil(month / 3) > 2) {
+                return "06.30." + (date.getFullYear() + 1).toString()
+            } else {
+                return "06.30." + date.getFullYear().toString()
+            }
+
+        } else if (quarter === "Trimestre 3") {
+            if (Math.ceil(month / 3) > 3) {
+                return "09.30." + (date.getFullYear() + 1).toString()
+            } else {
+                return "09.30." + date.getFullYear().toString()
+            }
+
+        } else if (quarter === "Trimestre 4") {
+            if (Math.ceil(month / 3) > 4) {
+                return "12.31." + (date.getFullYear() + 1).toString()
+            } else {
+                return "12.31." + date.getFullYear().toString()
+            }
+
+        }
+    }
+
+    function minDateDebutFunction(quarter) {
+
+        let date = new Date()
+        var month = date.getMonth() + 1
+        if (quarter === "Trimestre 1") {
+
+            if (Math.ceil(month / 3) > 1) {
+                return "01.01." + (date.getFullYear() + 1).toString()
+            } else {
+                return "01.01." + date.getFullYear().toString()
+            }
+
+        } else if (quarter === "Trimestre 2") {
+            if (Math.ceil(month / 3) > 2) {
+                return "04.01." + (date.getFullYear() + 1).toString()
+            } else {
+                return "04.01." + date.getFullYear().toString()
+            }
+
+        } else if (quarter === "Trimestre 3") {
+            if (Math.ceil(month / 3) > 3) {
+                return "07.01." + (date.getFullYear() + 1).toString()
+            } else {
+                return "07.01." + date.getFullYear().toString()
+            }
+
+        } else if (quarter === "Trimestre 4") {
+            if (Math.ceil(month / 3) > 4) {
+                return "10.01." + (date.getFullYear() + 1).toString()
+            } else {
+                return "10.01." + date.getFullYear().toString()
+            }
+
+        }
     }
 
     return (
@@ -393,6 +510,9 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                                             autoOk
                                             disableToolbar
                                             disablePast
+                                            disabled = {dateDebutDisabled}
+                                            minDate={minDateDebutFunction(quarterS)}
+                                            maxDate={maxDateDebutFunction(quarterS)}
                                             shouldDisableDate={disableWeekends}
                                             keyboardIcon={<EventIcon style={{ outline: "none", "&:focus": { outline: "none" } }} />}
                                             inputVariant="outlined"
@@ -423,6 +543,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                                             autoOk
                                             shouldDisableDate={disableWeekends}
                                             disableToolbar
+                                            disabled = {dateFinDisabled}
                                             disablePast
                                             keyboardIcon={<EventIcon style={{ outline: "none", "&:focus": { outline: "none" } }} />}
                                             inputVariant="outlined"
@@ -430,6 +551,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                                             style={{ width: 200, backgroundColor: "white" }}
                                             label="Date fin"
                                             minDate={selectedDateDebut}
+                                            maxDate={maxDateFinFunction(quarterS)}
                                             minDateMessage="Date doit etre supérieur au date début"
                                             value={selectedDateFin}
                                             onChange={handleDateFinChange}

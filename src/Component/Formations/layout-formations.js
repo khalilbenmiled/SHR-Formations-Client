@@ -33,6 +33,7 @@ class LayoutFormations extends Component {
             closePanel: false,
             nbrParticipants: 0,
             stompClient: null,
+            alertCF : false
         }
     }
 
@@ -52,7 +53,7 @@ class LayoutFormations extends Component {
             }
             const tabs = []
             const tabs2 = []
-            axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/byUser", querystring.stringify(input), {
+            axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/formations/byUser", querystring.stringify(input), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -96,7 +97,7 @@ class LayoutFormations extends Component {
                 }
             })
         } else {
-            axios.get(process.env.REACT_APP_PROXY_Besoins+"/besoinsPublier/all").then(res => {
+            axios.get(process.env.REACT_APP_PROXY_Besoins + "/besoinsPublier/all").then(res => {
                 if (res.data.Besoins) {
                     this.setState({
                         listBesoins: res.data.Besoins
@@ -106,7 +107,7 @@ class LayoutFormations extends Component {
 
             const tabs = []
             const tabs2 = []
-            axios.get(process.env.REACT_APP_PROXY_SessionsFormations+"/formations").then(res => {
+            axios.get(process.env.REACT_APP_PROXY_SessionsFormations + "/formations").then(res => {
                 if (res.data.Formations) {
                     res.data.Formations.map(formation => {
                         var dateDebut = new Date(formation.dateDebut)
@@ -183,7 +184,7 @@ class LayoutFormations extends Component {
         const obj = {
             quarter: quarterSelected
         }
-        axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/sessions/byQuarter",
+        axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/sessions/byQuarter",
             querystring.stringify(obj), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -216,7 +217,7 @@ class LayoutFormations extends Component {
             description: description,
             trimestre: this.state.quarterSelected
         }
-        axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/sessions", session).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/sessions", session).then(res => {
             const sessions = this.state.sessions
             sessions.push(res.data.Session)
             this.setState({
@@ -251,7 +252,7 @@ class LayoutFormations extends Component {
                 id: besoin.id,
                 listParticipants: this.state.participants
             }
-            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/setPlanifier", input).then(res => {
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/setPlanifier", input).then(res => {
                 if (res.data.Besoin) {
                     console.log(res.data.Besoin)
                 }
@@ -275,16 +276,16 @@ class LayoutFormations extends Component {
             idCF: this.state.formateurCabinet
         }
 
-        axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/formations/", obj).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/formations/", obj).then(res => {
             if (res.data.Formation) {
                 this.state.participants.map(participant => {
                     Moment.locale("fr");
                     var now_date = Moment().format("DD/MM/YYYY HH:mm")
                     const obj = {
-                      idCollaborateur: participant.id,
-                      message: "Vous etes inscrit à une formation, consulter votre calendrier",
-                      opened: false,
-                      date: now_date
+                        idCollaborateur: participant.id,
+                        message: "Vous etes inscrit à une formation, consulter votre calendrier",
+                        opened: false,
+                        date: now_date
                     }
                     this.state.stompClient.send("/app/valider", {}, JSON.stringify(obj));
                     return null
@@ -356,7 +357,7 @@ class LayoutFormations extends Component {
             idB: idBesoin,
             idBP: idBesoinPublier
         }
-        axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/deleteBP", querystring.stringify(input), {
+        axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/deleteBP", querystring.stringify(input), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
@@ -381,6 +382,45 @@ class LayoutFormations extends Component {
         })
     }
 
+    affecterCF(input) {
+        axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/formations/setFormateurCabinet", querystring.stringify(input), {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        }).then(res => {
+            if(res.data.Formation){
+                const tabs = this.state.listFormations
+                const index = tabs.findIndex(f=>f.id === res.data.Formation.id)
+                var dateDebut = new Date(res.data.Formation.dateDebut)
+                var dateFin = new Date(res.data.Formation.dateFin)
+                Moment.locale("fr");
+                const obj = {
+                    id: res.data.Formation.id,
+                    nomTheme: res.data.Formation.nomTheme,
+                    typeTheme: res.data.Formation.typeTheme,
+                    dateDebut: Moment(dateDebut).format("DD-MM-YYYY").toString(),
+                    dateFin: Moment(dateFin).format("DD-MM-YYYY").toString(),
+                    listModules: res.data.Formation.listModules,
+                    listParticipants: res.data.Formation.listParticipants,
+                    maxParticipants: res.data.Formation.maxParticipants,
+                    duree: res.data.Formation.duree,
+                    idCF: res.data.Formation.idCF,
+                    etat: res.data.Formation.etat
+                }
+                tabs.splice(index,1,obj)
+                this.setState({
+                    listFormations : tabs,
+                    alertCF : true
+                })
+            }
+        })
+    }
+
+    closeAlertCF() {
+        this.setState({
+            alertCF : false
+        })
+    }
 
     render() {
         return (
@@ -411,6 +451,7 @@ class LayoutFormations extends Component {
                                 deleteBesoin={this.deleteBesoin.bind(this)}
                                 closePanel={this.state.closePanel}
                                 onChangerNbrParticipants={this.onChangerNbrParticipants.bind(this)}
+                                affecterCF={this.affecterCF.bind(this)}
 
                             />
                         </div>
@@ -425,6 +466,12 @@ class LayoutFormations extends Component {
                 <Snackbar open={this.state.alertAjouterSession} autoHideDuration={5000} onClose={this.closeAlertSession.bind(this)}>
                     <Alert onClose={this.closeAlertSession.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
                         Session enregistrer avec succès
+                    </Alert>
+                </Snackbar>
+
+                <Snackbar open={this.state.alertCF} autoHideDuration={5000} onClose={this.closeAlertCF.bind(this)}>
+                    <Alert onClose={this.closeAlertCF.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
+                        Cabinet / formateur ajouter à cette formation
                     </Alert>
                 </Snackbar>
             </>
