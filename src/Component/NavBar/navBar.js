@@ -217,13 +217,13 @@ export default function NavBar(props) {
           </Link>
 
 
-          <Link hidden={JSON.parse(localStorage.user).role !== "COLLABORATEUR" ? true : false} to="/collaborateurs" className="navlink">
+          <Link to="/collaborateurs" className="navlink">
             <ListItem button style={{ backgroundColor: location.pathname === "/collaborateurs" ? "rgba(238,134,24,0.7)" : "" }}>
               <ListItemIcon>
 
                 < PersonIcon style={{ color: "#B51B10" }} />
               </ListItemIcon>
-              <ListItemText primary="Collaborateurs" />
+              <ListItemText primary={JSON.parse(localStorage.user).role === "COLLABORATEUR" ? "Collaborateurs" : JSON.parse(localStorage.user).role === "MANAGER" ? "Manager" : JSON.parse(localStorage.user).role === "TEAMLEAD" ? "TeamLead" : "Service-Formation"} />
             </ListItem>
           </Link>
 
@@ -255,7 +255,7 @@ export default function NavBar(props) {
             </ListItem>
           </Link>
 
-          <Link to="/salles" className="navlink">
+          <Link hidden to="/salles" className="navlink">
             <ListItem hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} button style={{ backgroundColor: location.pathname === "/salles" ? "rgba(238,134,24,0.7)" : "" }}>
               <ListItemIcon>
                 < MeetingRoomIcon style={{ color: "#B51B10" }} />

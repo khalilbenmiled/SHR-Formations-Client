@@ -83,8 +83,8 @@ export default function FullWidthTabs(props) {
                     variant="fullWidth"
                     aria-label="full width tabs example"
                 >
-                    <Tab hidden={JSON.parse(localStorage.user).role !== "COLLABORATEUR" ? true : false} style={{ outline: "none" }} label="Gerer profile" icon={<AccountCircleIcon />} />
-                    <Tab style={{ outline: "none" }} label="Parcours" icon={<SchoolIcon />} />
+                    <Tab  style={{ outline: "none" }} label="Gerer profile" icon={<AccountCircleIcon />} />
+                    <Tab  hidden={JSON.parse(localStorage.user).role !== "COLLABORATEUR" ? true : false} style={{ outline: "none" }} label="Parcours" icon={<SchoolIcon />} />
                 </Tabs>
             </AppBar>
             <SwipeableViews

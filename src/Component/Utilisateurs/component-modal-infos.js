@@ -107,8 +107,8 @@ export default function TransitionsModal(props) {
                                 </div>
                             </div>
 
-                            <div className="row" style={{ width: "98%", margin: "auto", backgroundColor: "#FAFAFA", boxShadow: "0px 0px 1px", padding: "30px 10px" }}>
-                                <div className="col-lg-4 col-md-4">
+                            <div className="row" style={{ width: "100%", margin: "auto", backgroundColor: "#FAFAFA", boxShadow: "0px 0px 1px", padding: "30px 10px" }}>
+                                <div className="col-lg-5 col-md-5">
                                     <Card className={classes.rootCard}>
                                         <CardContent>
                                             <div className="row" style={{ paddingLeft: 60, marginBottom: 40 }}>
@@ -157,7 +157,7 @@ export default function TransitionsModal(props) {
                                     </Card>
                                 </div>
 
-                                <div className="col-lg-8 col-md-8">
+                                <div className="col-lg-7 col-md-7">
                                     <Card className={classes.rootCard}>
                                         <CardContent>
                                             <div className="row" style={{ marginBottom: "20px" }}>

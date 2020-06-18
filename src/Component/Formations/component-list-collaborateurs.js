@@ -95,7 +95,7 @@ TablePaginationActions.propTypes = {
 export default function CustomPaginationActionsTable(props) {
     const rows = props.listParticipants
     const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(4);
+    const [rowsPerPage, setRowsPerPage] = React.useState(6);
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
     const classes = useStyles1();
     const [participantSelected, setParticipantSelected] = React.useState([]);

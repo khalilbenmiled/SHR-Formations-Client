@@ -111,6 +111,7 @@ export default function FullWidthTabs(props) {
                         updateManagerTeamLead={props.updateManagerTeamLead}
                         updateTeamLeadManager={props.updateTeamLeadManager}
                         updateCollaborateur={props.updateCollaborateur}
+                        activateUser={props.activateUser}
                     />
                     <Button className={classes.buttonStyles} size="small" variant="outlined" onClick={openModalUtilisateur}>
                         Ajouter un utilisateur

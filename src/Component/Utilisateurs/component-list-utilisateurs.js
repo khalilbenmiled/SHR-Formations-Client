@@ -20,6 +20,7 @@ import ComponentModalInfos from "./component-modal-infos"
 import ComponentModalEdit from "./component-modal-edit"
 import axios from "axios"
 import querystring from 'querystring'
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 const useStyles1 = makeStyles(theme => ({
   root: {
@@ -151,13 +152,17 @@ export default function CustomPaginationActionsTable(props) {
     setAlertDelete(false)
   }
 
+  const activateUser = (row) => {
+    props.activateUser(row.id)
+  }
+
   const openInfosUser = (user) => {
     if (user.role === "COLLABORATEUR") {
 
       const obj = {
         id: user.id
       }
-      axios.post(process.env.REACT_APP_PROXY_Utilisateurs+"/users/getInfosCollaborateur",
+      axios.post(process.env.REACT_APP_PROXY_Utilisateurs + "/users/getInfosCollaborateur",
         querystring.stringify(obj), {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
@@ -166,7 +171,7 @@ export default function CustomPaginationActionsTable(props) {
         if (!res.data.Error) {
           const infos = {
             teamlead: res.data.TeamLead,
-            manager: res.data.Manager === null ? {nom : "" , prenom : ""} : res.data.Manager
+            manager: res.data.Manager === null ? { nom: "", prenom: "" } : res.data.Manager
           }
           setInfosCollaborateur(infos)
         }
@@ -177,7 +182,7 @@ export default function CustomPaginationActionsTable(props) {
       const obj = {
         id: user.id
       }
-      axios.post(process.env.REACT_APP_PROXY_Utilisateurs+"/users/getInfosTL",
+      axios.post(process.env.REACT_APP_PROXY_Utilisateurs + "/users/getInfosTL",
         querystring.stringify(obj), {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
@@ -186,8 +191,8 @@ export default function CustomPaginationActionsTable(props) {
         if (!res.data.Error) {
           const infos = {
             teamlead: {
-              nom : "",
-              prenom : ""
+              nom: "",
+              prenom: ""
             },
             manager: res.data.Manager
           }
@@ -215,9 +220,9 @@ export default function CustomPaginationActionsTable(props) {
   }
 
   const openEditUser = (user) => {
-    if(user.role === "MANAGER") {
-      axios.get(process.env.REACT_APP_PROXY_Utilisateurs+"/users/getFreeTL").then(res => {
-        if(res.data.TeamLeads){
+    if (user.role === "MANAGER") {
+      axios.get(process.env.REACT_APP_PROXY_Utilisateurs + "/users/getFreeTL").then(res => {
+        if (res.data.TeamLeads) {
           setListFreeTeamLead(res.data.TeamLeads)
         }
       })
@@ -241,8 +246,8 @@ export default function CustomPaginationActionsTable(props) {
               <TableCell style={{ fontSize: 16, color: 'white' }}>Bu</TableCell>
               <TableCell style={{ fontSize: 16, color: 'white' }}>Nom et Prenom</TableCell>
               <TableCell style={{ fontSize: 16, color: 'white' }}>Email</TableCell>
-              <TableCell style={{ fontSize: 16, color: 'white' }}>Adresse</TableCell>
-              <TableCell style={{ fontSize: 16, color: 'white' }}>Telephone</TableCell>
+              {/* <TableCell style={{ fontSize: 16, color: 'white' }}>Adresse</TableCell>
+              <TableCell style={{ fontSize: 16, color: 'white' }}>Telephone</TableCell> */}
               <TableCell style={{ fontSize: 16, color: 'white' }}>Role</TableCell>
               <TableCell colSpan={3} style={{ fontSize: 16, color: 'white' }}></TableCell>
             </TableRow>
@@ -252,20 +257,30 @@ export default function CustomPaginationActionsTable(props) {
               ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : rows
             ).map((row, index) => (
-              <TableRow key={index}>
+              <TableRow key={index} style={{backgroundColor : row.deleted === true ? "#F5F5F5" : ""}}>
                 <TableCell> {row.bu} </TableCell>
                 <TableCell> {row.nom} {row.prenom} </TableCell>
                 <TableCell> {row.email} </TableCell>
-                <TableCell> {row.adresse} </TableCell>
-                <TableCell> {row.tel} </TableCell>
+                {/* <TableCell> {row.adresse} </TableCell>
+                <TableCell> {row.tel} </TableCell> */}
                 <TableCell> {row.role} </TableCell>
-                <TableCell><GroupWorkIcon onClick={openInfosUser.bind(this, row)} className={classes.iconInfo} /></TableCell>
-                {row.role !== "SERVICEFORMATIONS" 
-                  ? <TableCell><AccountTreeIcon onClick={openEditUser.bind(this, row)} className={classes.iconCheck} /></TableCell>
+                <TableCell><GroupWorkIcon hidden= {row.deleted === true ? true : false}  onClick={openInfosUser.bind(this, row)} className={classes.iconInfo} /></TableCell>
+                {row.role !== "SERVICEFORMATIONS"
+                  ? <TableCell><AccountTreeIcon hidden= {row.deleted === true ? true : false} onClick={openEditUser.bind(this, row)} className={classes.iconCheck} /></TableCell>
                   :
                   <TableCell></TableCell>
                 }
-                <TableCell><DeleteForeverIcon onClick={openDeleteUser.bind(this, row)} className={classes.iconRemove} /></TableCell>
+                <TableCell>
+                  {row.deleted === true ?
+
+                    <CheckCircleIcon className={classes.iconCheck} onClick={activateUser.bind(this,row)} />
+
+                    :
+                    <DeleteForeverIcon onClick={openDeleteUser.bind(this, row)} className={classes.iconRemove} />
+
+                  }
+
+                </TableCell>
 
 
               </TableRow>
@@ -324,10 +339,10 @@ export default function CustomPaginationActionsTable(props) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle className="titleDialog">Supprimer utilisateur</DialogTitle>
+        <DialogTitle className="titleDialog">Désactiver utilisateur</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Voulez-vous vraiment supprimer cet utilisateur ?
+            Voulez-vous vraiment désactiver cet utilisateur ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -335,7 +350,7 @@ export default function CustomPaginationActionsTable(props) {
             Retour
           </Button>
           <Button className="supprimerBtn" onClick={deleteUser} style={{ backgroundColor: "#B51B10", color: "white" }} >
-            Supprimer
+            Désactiver
           </Button>
         </DialogActions>
       </Dialog>

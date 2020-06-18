@@ -25,19 +25,20 @@ class LayoutCabinetsFormateurs extends Component {
             alertDeleteUser: false,
             listTeamLeadSelected: [],
             alertUpdateUser: false,
-            listFreeTeamLead: []
+            listFreeTeamLead: [],
+            alertActivate : false
         }
     }
 
     componentWillMount() {
-        if(JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS"){
+        if (JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS") {
             this.props.history.push({
                 pathname: "/404NOTFOUND"
             })
-        } 
+        }
     }
     componentDidMount() {
-        axios.get(process.env.REACT_APP_PROXY_Utilisateurs+"/users").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_Utilisateurs + "/users").then(res => {
             if (res.data.Users) {
                 this.setState({
                     users: res.data.Users
@@ -46,7 +47,7 @@ class LayoutCabinetsFormateurs extends Component {
 
         })
 
-        axios.get(process.env.REACT_APP_PROXY_Utilisateurs+"/users/tl").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_Utilisateurs + "/users/tl").then(res => {
             if (res.data.Users) {
                 this.setState({
                     listTeamLead: res.data.Users
@@ -54,7 +55,7 @@ class LayoutCabinetsFormateurs extends Component {
             }
         })
 
-        axios.get(process.env.REACT_APP_PROXY_Utilisateurs+"/users/getFreeTL").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_Utilisateurs + "/users/getFreeTL").then(res => {
             if (res.data.TeamLeads) {
                 this.setState({
                     listFreeTeamLead: res.data.TeamLeads
@@ -62,7 +63,7 @@ class LayoutCabinetsFormateurs extends Component {
             }
         })
 
-        axios.get(process.env.REACT_APP_PROXY_Utilisateurs+"/users/mg").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_Utilisateurs + "/users/mg").then(res => {
             if (res.data.Users) {
                 this.setState({
                     listManager: res.data.Users
@@ -83,7 +84,7 @@ class LayoutCabinetsFormateurs extends Component {
         this.setState({
             progressShow: true
         })
-        axios.post(process.env.REACT_APP_PROXY_Utilisateurs+"/users", user.user).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_Utilisateurs + "/users", user.user).then(res => {
             console.log(res.data)
             if (res.data.Error) {
                 this.setState({
@@ -107,12 +108,12 @@ class LayoutCabinetsFormateurs extends Component {
                         listTeamLead: this.state.listTeamLeadSelected,
                         idManager: res.data.Collaborateur.id
                     }
-                    axios.post(process.env.REACT_APP_PROXY_Besoins+"/teamlead/affecterTLMG", obj).then(res => {
+                    axios.post(process.env.REACT_APP_PROXY_Besoins + "/teamlead/affecterTLMG", obj).then(res => {
                         this.setState({
                             alertUser: true,
                             listTeamLeadSelected: []
                         })
-                        axios.get(process.env.REACT_APP_PROXY_Utilisateurs+"/users/getFreeTL").then(res => {
+                        axios.get(process.env.REACT_APP_PROXY_Utilisateurs + "/users/getFreeTL").then(res => {
                             if (res.data.TeamLeads) {
                                 this.setState({
                                     listFreeTeamLead: res.data.TeamLeads
@@ -127,7 +128,7 @@ class LayoutCabinetsFormateurs extends Component {
                         idCollaborateur: res.data.Collaborateur.id,
                         idTeamLead: user.teamlead === "" ? 0 : user.teamlead.id
                     }
-                    axios.post(process.env.REACT_APP_PROXY_Collaborateurs+"/collaborateurs/", querystring.stringify(input), {
+                    axios.post(process.env.REACT_APP_PROXY_Collaborateurs + "/collaborateurs/", querystring.stringify(input), {
                         headers: {
                             "Content-Type": "application/x-www-form-urlencoded"
                         }
@@ -155,7 +156,7 @@ class LayoutCabinetsFormateurs extends Component {
                         idTL: res.data.Collaborateur.id,
                         idMG: user.manager === "" ? 0 : user.manager.id
                     }
-                    axios.post(process.env.REACT_APP_PROXY_Besoins+"/teamlead", querystring.stringify(input), {
+                    axios.post(process.env.REACT_APP_PROXY_Besoins + "/teamlead/", querystring.stringify(input), {
                         headers: {
                             "Content-Type": "application/x-www-form-urlencoded"
                         }
@@ -185,44 +186,69 @@ class LayoutCabinetsFormateurs extends Component {
         })
     }
 
-    deleteUser(user) {
-        axios.delete(process.env.REACT_APP_PROXY_Utilisateurs+"/users/" + user.id).then(res => {
-            if (res.data.Success) {
+    activateUser(id) {
+       
+        const input = {
+            id: id
+        }
+
+        axios.post(process.env.REACT_APP_PROXY_Utilisateurs + "/users/activate", querystring.stringify(input), {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        }).then(res => {
+            if(res.data.User){
                 const tabs = this.state.users
-                const index = tabs.findIndex(u => u.id === user.id)
-                tabs.splice(index, 1)
+                const index = tabs.findIndex(u => u.id === res.data.User.id)
+                tabs.splice(index, 1,res.data.User)
                 this.setState({
-                    users: tabs
+                    users : tabs,
+                    alertActivate : true
+                })
+            }
+        })
+    }
+
+    deleteUser(user) {
+        axios.delete(process.env.REACT_APP_PROXY_Utilisateurs + "/users/" + user.id).then(res => {
+            if (res.data.User) {
+                const tabs = this.state.users
+                const index = tabs.findIndex(u => u.id === res.data.User.id)
+               
+                tabs.splice(index, 1,res.data.User)
+                this.setState({
+                    users: tabs,
+                    alertDeleteUser: true
                 })
 
-                if (user.role === "COLLABORATEUR") {
-                    axios.delete(process.env.REACT_APP_PROXY_Collaborateurs+"/collaborateurs/" + user.id).then(res => {
-                        if (res.data.Success) {
-                            this.setState({
-                                alertDeleteUser: true
-                            })
-                        }
-                    })
-                }
-                if (user.role === "TEAMLEAD") {
-                    axios.delete(process.env.REACT_APP_PROXY_Besoins+"/teamlead/" + user.id).then(res => {
-                        if (res.data.Success) {
-                            this.setState({
-                                alertDeleteUser: true
-                            })
-                        }
-                    })
-                }
+                // if (user.role === "COLLABORATEUR") {
+                //     axios.delete(process.env.REACT_APP_PROXY_Collaborateurs+"/collaborateurs/" + user.id).then(res => {
+                //         if (res.data.Success) {
+                //             this.setState({
+                //                 alertDeleteUser: true
+                //             })
+                //         }
+                //     })
+                // }
+                // if (user.role === "TEAMLEAD") {
+                //     axios.delete(process.env.REACT_APP_PROXY_Besoins+"/teamlead/" + user.id).then(res => {
+                //         if (res.data.Success) {
+                //             this.setState({
+                //                 alertDeleteUser: true
+                //             })
+                //         }
+                //     })
+                // }
 
-                if (user.role === "MANAGER") {
-                    axios.delete(process.env.REACT_APP_PROXY_Besoins+"/teamlead/manager/" + user.id).then(res => {
-                        if (res.data.Success) {
-                            this.setState({
-                                alertDeleteUser: true
-                            })
-                        }
-                    })
-                }
+                // if (user.role === "MANAGER") {
+                //     axios.delete(process.env.REACT_APP_PROXY_Besoins+"/teamlead/manager/" + user.id).then(res => {
+                //         if (res.data.Success) {
+                //             this.setState({
+                //                 alertDeleteUser: true
+                //             })
+                //         }
+                //     })
+                // }
             }
         })
     }
@@ -244,7 +270,7 @@ class LayoutCabinetsFormateurs extends Component {
             listTeamLead: this.state.listTeamLeadSelected,
             idManager: user.id
         }
-        axios.post(process.env.REACT_APP_PROXY_Besoins+"/teamlead/affecterTLMG", obj).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_Besoins + "/teamlead/affecterTLMG", obj).then(res => {
             this.setState({
                 alertUpdateUser: true,
                 listTeamLeadSelected: []
@@ -265,7 +291,7 @@ class LayoutCabinetsFormateurs extends Component {
             idTL: user.id,
             idMG: manager.id
         }
-        axios.post(process.env.REACT_APP_PROXY_Besoins+"/teamlead/setManager", querystring.stringify(input), {
+        axios.post(process.env.REACT_APP_PROXY_Besoins + "/teamlead/setManager", querystring.stringify(input), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
@@ -283,7 +309,7 @@ class LayoutCabinetsFormateurs extends Component {
             idC: user.id,
             idTL: teamlead.id
         }
-        axios.post(process.env.REACT_APP_PROXY_Collaborateurs+"/collaborateurs/setCollaborateur", querystring.stringify(input), {
+        axios.post(process.env.REACT_APP_PROXY_Collaborateurs + "/collaborateurs/setCollaborateur", querystring.stringify(input), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
@@ -293,6 +319,12 @@ class LayoutCabinetsFormateurs extends Component {
                     alertUpdateUser: true
                 })
             }
+        })
+    }
+
+    closeAlertActivate() {
+        this.setState({
+            alertActivate : false
         })
     }
 
@@ -315,6 +347,7 @@ class LayoutCabinetsFormateurs extends Component {
                                 listFreeTeamLead={this.state.listFreeTeamLead}
                                 updateTeamLeadManager={this.updateTeamLeadManager.bind(this)}
                                 updateCollaborateur={this.updateCollaborateur.bind(this)}
+                                activateUser={this.activateUser.bind(this)}
                             />
                         </div>
                     </div>
@@ -335,13 +368,19 @@ class LayoutCabinetsFormateurs extends Component {
 
                 <Snackbar open={this.state.alertDeleteUser} autoHideDuration={5000} onClose={this.closeAlertDeleteUser.bind(this)}>
                     <Alert onClose={this.closeAlertDeleteUser.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
-                        Utilisateur supprimé avec succès
+                        Utilisateur désactiver avec succès
                     </Alert>
                 </Snackbar>
 
                 <Snackbar open={this.state.alertUpdateUser} autoHideDuration={5000} onClose={this.closeAlertUpdateUser.bind(this)}>
                     <Alert onClose={this.closeAlertUpdateUser.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
                         Utilisateur modifié
+                    </Alert>
+                </Snackbar>
+
+                <Snackbar open={this.state.alertActivate} autoHideDuration={5000} onClose={this.closeAlertActivate.bind(this)}>
+                    <Alert onClose={this.closeAlertActivate.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
+                        Utilisateur activer de nouveau
                     </Alert>
                 </Snackbar>
 
