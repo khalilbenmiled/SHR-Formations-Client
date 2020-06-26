@@ -29,6 +29,11 @@ import SockJS from "sockjs-client"
 import Stomp from "stomp-websocket"
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import ComponentModalAddCabinetFormateur from "./component-modal-add-cabinetFormateur"
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
+import ListIcon from '@material-ui/icons/List';
+import Workbook from 'react-xlsx-workbook'
+import EditIcon from '@material-ui/icons/Edit';
+import ComponentModalEdit from "./component-modal-edit"
 
 
 const useStyles1 = makeStyles(theme => ({
@@ -154,8 +159,17 @@ export default function CustomPaginationActionsTable(props) {
   const [alertSetParticipants, setAlertSetParticipant] = React.useState(false);
   const [stompClient, setStompClient] = React.useState("");
   const [openModalAddCF, setOpenModalAddCF] = React.useState(false);
-
-
+  const [alertConvoquer, setAlertConvoquer] = React.useState(false);
+  const [formationToConvoquer, setFormationToConvoquer] = React.useState("");
+  const [listPresence, setListPresence] = React.useState([]);
+  const [openGenerateCSV, setOpenGenerateCSV] = React.useState(false);
+  const [nombreDeJours, setNombreDeJours] = React.useState(0);
+  const [dateUne, setDateUne] = React.useState("");
+  const [openEdit, setOpenEdit] = React.useState(false);
+  const [formationToEdit, setFormationToEdit] = React.useState("");
+  const [actualNbrParticipant, setActualNbrParticipant] = React.useState(0);
+  
+  
 
   const [collaborateursAndParticipants, setCollaborateursAndParticipants] = React.useState([]);
   const [cabinetFormateur, setFetchCabinetFormateur] = React.useState({
@@ -577,11 +591,133 @@ export default function CustomPaginationActionsTable(props) {
     setOpenModalAddCF(false)
   }
 
+  const closerAlertConvoquer = () => {
+    setAlertConvoquer(false)
+  }
+
+  const openConvoquerParticipants = (row) => {
+
+    setAlertConvoquer(true)
+    setFormationToConvoquer(row)
+  }
+
+  const onConvoquer = () => {
+    const obj = {
+      listParticipants: formationToConvoquer.listParticipants,
+      formation: formationToConvoquer
+    }
+
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/formations/convoquer", obj).then(res => {
+
+    })
+    props.showLine(true)
+    setAlertConvoquer(false)
+    setTimeout(() => {
+      props.showLine(false)
+      props.showAlertConvoquer(true)
+    }, 3000);
+
+  }
+
+  const generateListPresence = (row) => {
+
+    const input = {
+      id: row.id
+    }
+    Moment.locale("fr");
+    var d1 = Moment(row.dateDebut, "DD-MM-YYYY").add(-1, "days").format("DD-MM-YYYY")
+
+    setDateUne(d1)
+    var admission = Moment(row.dateDebut, 'DD-MM-YYYY');
+    var discharge = Moment(row.dateFin, 'DD-MM-YYYY');
+    const nbr = discharge.diff(admission, 'days')
+
+    setNombreDeJours(nbr)
 
 
 
 
+    axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/formations/participants",
+      querystring.stringify(input), {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      }
+    }).then(res => {
+      if (res.data.Participants) {
+        const csvFile = [{ formation: row.nomTheme }]
+        res.data.Participants.map(participant => {
+          csvFile.push({
+            nomPrenom: participant.nom + " " + participant.prenom,
+            bu: participant.bu,
 
+          })
+          return null
+        })
+
+        console.log(csvFile)
+        setListPresence(csvFile)
+        setOpenGenerateCSV(true)
+      }
+    })
+  }
+
+
+
+  const closeGenerateCSV = () => {
+    setOpenGenerateCSV(false)
+  }
+
+  const getNombreDeJours = () => {
+
+    const tabs = []
+    for (let i = 0; i < nombreDeJours; i++) {
+      tabs.push(<Workbook.Column label={Moment(dateUne, "DD-MM-YYYY").add(i + 1, "days").format("DD-MM-YYYY")} value="" />)
+
+    }
+    return tabs;
+  }
+  const GenererListPresence = () => {
+    return (
+
+      <Workbook filename="liste-présence.xlsx" element={
+        <Button className="supprimerBtn" onClick={() => {
+          setOpenGenerateCSV(false)
+        }} style={{ backgroundColor: "#B51B10", color: "white" }} >
+          Générer
+          </Button>
+      }>
+        <Workbook.Sheet data={listPresence} name="Feuille 1">
+          <Workbook.Column label="Formation" value="formation" />
+          <Workbook.Column label="" value="" />
+          <Workbook.Column label="Nom et Prénom" value="nomPrenom" />
+          <Workbook.Column label="BU" value="bu" />
+          {getNombreDeJours()}
+
+
+
+        </Workbook.Sheet>
+      </Workbook>
+
+
+    )
+
+  }
+
+  const openModalEdit = (row) => {
+    console.log(row)
+    setFormationToEdit(row)
+    setActualNbrParticipant(row.maxParticipants)
+    setOpenEdit(true)
+  }
+
+  const modifierNbrParticipantsSelected = (nbr) => {
+    props.modifierNbrParticipantsSelected(nbr)
+    setActualNbrParticipant(nbr)
+  }
+
+  const closeModalEdit = () => {
+    setOpenEdit(false)
+  }
 
   return (
     <>
@@ -594,7 +730,7 @@ export default function CustomPaginationActionsTable(props) {
               <TableCell style={{ fontSize: 16, color: 'white' }}>Date debut</TableCell>
               <TableCell style={{ fontSize: 16, color: 'white' }}>Date fin</TableCell>
               <TableCell style={{ fontSize: 16, color: 'white' }}>Etat</TableCell>
-              <TableCell colSpan={4} style={{ fontSize: 16, color: 'white' }}></TableCell>
+              <TableCell colSpan={7} style={{ fontSize: 16, color: 'white' }}></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -609,9 +745,13 @@ export default function CustomPaginationActionsTable(props) {
                 <TableCell> {getEtat(row.dateDebut, row.dateFin)} </TableCell>
                 <TableCell> <VisibilityIcon className={classes.iconInfo} onClick={detailsFormations.bind(this, row)} /> </TableCell>
                 <TableCell> <GroupAddIcon hidden={getEtat(row.dateDebut, row.dateFin) === "Programmée" ? false : true} className={classes.iconCheck} onClick={openAddParticipants.bind(this, row)} /> </TableCell>
-                <TableCell>< AccountBalanceIcon onClick={openModalCabinetFormateur.bind(this, row)} hidden={getEtat(row.dateDebut, row.dateFin) === "Programmée" ? false : true} style={{ cursor: "pointer", color: "#4AA14B" }} /></TableCell>
-                <TableCell> <DeleteForeverIcon hidden={getEtat(row.dateDebut, row.dateFin) === "En cours" ? true : false} className={classes.iconRemove} onClick={openDeleteFormation.bind(this, row)} /> </TableCell>
+                <TableCell> <AccountBalanceIcon onClick={openModalCabinetFormateur.bind(this, row)} hidden={getEtat(row.dateDebut, row.dateFin) === "Programmée" ? false : true} style={{ cursor: "pointer", color: "#4AA14B" }} /></TableCell>
+                <TableCell> <SupervisorAccountIcon hidden={getEtat(row.dateDebut, row.dateFin) !== "Programmée" ? true : false} style={{ cursor: "pointer" }} onClick={openConvoquerParticipants.bind(this, row)} /> </TableCell>
 
+                <TableCell><ListIcon style={{ cursor: "pointer" }} hidden={getEtat(row.dateDebut, row.dateFin) !== "Programmée" ? true : false} onClick={generateListPresence.bind(this, row)} /></TableCell>
+                <TableCell> <EditIcon hidden={getEtat(row.dateDebut, row.dateFin) !== "Programmée" ? true : false} onClick={openModalEdit.bind(this, row)} style={{ cursor: "pointer", color: "#4AA14B" }} /></TableCell>
+
+                <TableCell> <DeleteForeverIcon hidden={getEtat(row.dateDebut, row.dateFin) !== "Programmée" ? true : false} className={classes.iconRemove} onClick={openDeleteFormation.bind(this, row)} /> </TableCell>
               </TableRow>
             ))}
 
@@ -692,12 +832,23 @@ export default function CustomPaginationActionsTable(props) {
         open={openModalAddCF}
         handleClose={closeModalAddCF}
         idFormation={idFormation}
-        affecterCF = {props.affecterCF}
+        affecterCF={props.affecterCF}
+      />
+
+      <ComponentModalEdit 
+        open = {openEdit}
+        handleClose={closeModalEdit}
+        formation={formationToEdit}
+        modfiferDateDebutSelected={props.modfiferDateDebutSelected}
+        modifierDateFinSelected={props.modifierDateFinSelected}
+        modifierNbrParticipantsSelected={modifierNbrParticipantsSelected}
+        actualNbrParticipant={actualNbrParticipant}
+        modifierFormation={props.modifierFormation}
       />
 
       <Snackbar open={alertAction} autoHideDuration={5000} onClose={closeAlertAction}>
         <Alert onClose={closeAlertAction} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
-          Action de formation enregistrer
+          Action de formation enregistré
         </Alert>
       </Snackbar>
 
@@ -715,13 +866,13 @@ export default function CustomPaginationActionsTable(props) {
 
       <Snackbar open={alertFormation} autoHideDuration={5000} onClose={closeAlertFormation}>
         <Alert onClose={closeAlertFormation} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
-          Formation ajouter avec succées !
+          Formation ajouté avec succées !
         </Alert>
       </Snackbar>
 
       <Snackbar open={alertSetParticipants} autoHideDuration={5000} onClose={closeAlertSetParticipant}>
         <Alert onClose={closeAlertSetParticipant} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
-          Participants ajouter avec succées !
+          Participants ajoutés avec succées !
         </Alert>
       </Snackbar>
 
@@ -744,6 +895,50 @@ export default function CustomPaginationActionsTable(props) {
           <Button className="supprimerBtn" onClick={deleteFormation} style={{ backgroundColor: "#B51B10", color: "white" }} >
             Supprimer
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={alertConvoquer}
+        onClose={closerAlertConvoquer}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle className="titleDialog">Convoquer participants</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Voulez-vous vraiment convoquer les participants de cette formation ?
+            </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button className="annulerBtn" onClick={closerAlertConvoquer} style={{ backgroundColor: "#E67A0A", color: "white" }}>
+            Retour
+          </Button>
+          <Button className="supprimerBtn" onClick={onConvoquer} style={{ backgroundColor: "#B51B10", color: "white" }} >
+            Convoquer
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openGenerateCSV}
+        onClose={closeGenerateCSV}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle className="titleDialog">Générer une liste de présence</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Voulez-vous vraiment générer une liste de présence ?
+            </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button className="annulerBtn" onClick={closeGenerateCSV} style={{ backgroundColor: "#E67A0A", color: "white" }}>
+            Retour
+          </Button>
+          <div className="supprimerBtn" style={{ backgroundColor: "#B51B10", color: "white" }} >
+            {GenererListPresence()}
+          </div>
         </DialogActions>
       </Dialog>
     </>

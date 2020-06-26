@@ -480,7 +480,7 @@ export default function FullWidthTabs(props) {
                                 data: tabsDataAll
                             },
                             {
-                                label: 'Besoins Planifiés',
+                                label: 'Besoins planifiés',
                                 backgroundColor: 'rgba(2,119,150,0.8)',
                                 borderColor: 'rgba(2,119,150,1)',
                                 borderWidth: 1,
@@ -489,7 +489,7 @@ export default function FullWidthTabs(props) {
                                 data: tabsDataPlanifier
                             },
                             {
-                                label: 'Besoins Non Planifié',
+                                label: 'Besoins non planifiés',
                                 backgroundColor: 'rgba(181, 27, 16, 0.8)',
                                 borderColor: 'rgba(181, 27, 16, 1)',
                                 borderWidth: 1,
@@ -548,7 +548,7 @@ export default function FullWidthTabs(props) {
                                 data: tabsDataAll
                             },
                             {
-                                label: 'Besoins Planifiés',
+                                label: 'Besoins planifiés',
                                 backgroundColor: 'rgba(2,119,150,0.8)',
                                 borderColor: 'rgba(2,119,150,1)',
                                 borderWidth: 1,
@@ -557,7 +557,7 @@ export default function FullWidthTabs(props) {
                                 data: tabsDataPlanifier
                             },
                             {
-                                label: 'Besoins Non Planifié',
+                                label: 'Besoins non planifiés',
                                 backgroundColor: 'rgba(181, 27, 16, 0.8)',
                                 borderColor: 'rgba(181, 27, 16, 1)',
                                 borderWidth: 1,
@@ -617,7 +617,7 @@ export default function FullWidthTabs(props) {
                                 data: tabsDataAll
                             },
                             {
-                                label: 'Besoins Planifiés',
+                                label: 'Besoins planifiés',
                                 backgroundColor: 'rgba(2,119,150,0.8)',
                                 borderColor: 'rgba(2,119,150,1)',
                                 borderWidth: 1,
@@ -626,7 +626,7 @@ export default function FullWidthTabs(props) {
                                 data: tabsDataPlanifier
                             },
                             {
-                                label: 'Besoins Non Planifié',
+                                label: 'Besoins non planifiés',
                                 backgroundColor: 'rgba(181, 27, 16, 0.8)',
                                 borderColor: 'rgba(181, 27, 16, 1)',
                                 borderWidth: 1,
@@ -685,7 +685,7 @@ export default function FullWidthTabs(props) {
                                 data: tabsDataAll
                             },
                             {
-                                label: 'Besoins Planifiés',
+                                label: 'Besoins planifiés',
                                 backgroundColor: 'rgba(2,119,150,0.8)',
                                 borderColor: 'rgba(2,119,150,1)',
                                 borderWidth: 1,
@@ -694,7 +694,7 @@ export default function FullWidthTabs(props) {
                                 data: tabsDataPlanifier
                             },
                             {
-                                label: 'Besoins Non Planifié',
+                                label: 'Besoins non planifiés',
                                 backgroundColor: 'rgba(181, 27, 16, 0.8)',
                                 borderColor: 'rgba(181, 27, 16, 1)',
                                 borderWidth: 1,
@@ -743,7 +743,7 @@ export default function FullWidthTabs(props) {
                         labels: tabsNom,
                         datasets: [
                             {
-                                label: 'Tous les formations',
+                                label: 'Toutes les formations',
                                 backgroundColor: 'rgba(237,126,10,0.8)',
                                 borderColor: 'rgba(237,126,132,1)',
                                 borderWidth: 1,
@@ -752,7 +752,7 @@ export default function FullWidthTabs(props) {
                                 data: tabsDataAll
                             },
                             {
-                                label: 'Formation en cours',
+                                label: 'Formations en cours',
                                 backgroundColor: 'rgba(2,119,150,0.8)',
                                 borderColor: 'rgba(2,119,150,1)',
                                 borderWidth: 1,
@@ -761,7 +761,7 @@ export default function FullWidthTabs(props) {
                                 data: tabsDataEnCours
                             },
                             {
-                                label: 'Formation programmée',
+                                label: 'Formations programmées',
                                 backgroundColor: 'rgba(181, 27, 16, 0.8)',
                                 borderColor: 'rgba(181, 27, 16, 1)',
                                 borderWidth: 1,
@@ -771,7 +771,7 @@ export default function FullWidthTabs(props) {
                                 data: tabsDataProgrammer
                             },
                             {
-                                label: 'Formation terminée',
+                                label: 'Formations terminées',
                                 backgroundColor: 'rgba(0, 128, 16, 0.8)',
                                 borderColor: 'rgba(0, 128, 16, 1)',
                                 borderWidth: 1,
@@ -820,7 +820,7 @@ export default function FullWidthTabs(props) {
                         labels: tabsNom,
                         datasets: [
                             {
-                                label: 'Tous les formations',
+                                label: 'Toutes les formations',
                                 backgroundColor: 'rgba(237,126,10,0.8)',
                                 borderColor: 'rgba(237,126,132,1)',
                                 borderWidth: 1,
@@ -829,7 +829,7 @@ export default function FullWidthTabs(props) {
                                 data: tabsDataAll
                             },
                             {
-                                label: 'Formation en cours',
+                                label: 'Formations en cours',
                                 backgroundColor: 'rgba(2,119,150,0.8)',
                                 borderColor: 'rgba(2,119,150,1)',
                                 borderWidth: 1,
@@ -838,7 +838,7 @@ export default function FullWidthTabs(props) {
                                 data: tabsDataEnCours
                             },
                             {
-                                label: 'Formation programmée',
+                                label: 'Formations programmées',
                                 backgroundColor: 'rgba(181, 27, 16, 0.8)',
                                 borderColor: 'rgba(181, 27, 16, 1)',
                                 borderWidth: 1,
@@ -848,7 +848,7 @@ export default function FullWidthTabs(props) {
                                 data: tabsDataProgrammer
                             },
                             {
-                                label: 'Formation terminée',
+                                label: 'Formations terminées',
                                 backgroundColor: 'rgba(0, 128, 16, 0.8)',
                                 borderColor: 'rgba(0, 128, 16, 1)',
                                 borderWidth: 1,
@@ -897,7 +897,7 @@ export default function FullWidthTabs(props) {
                         labels: tabsNom,
                         datasets: [
                             {
-                                label: 'Tous les formations',
+                                label: 'Toutes les formations',
                                 backgroundColor: 'rgba(237,126,10,0.8)',
                                 borderColor: 'rgba(237,126,132,1)',
                                 borderWidth: 1,
@@ -906,7 +906,7 @@ export default function FullWidthTabs(props) {
                                 data: tabsDataAll
                             },
                             {
-                                label: 'Formation en cours',
+                                label: 'Formations en cours',
                                 backgroundColor: 'rgba(2,119,150,0.8)',
                                 borderColor: 'rgba(2,119,150,1)',
                                 borderWidth: 1,
@@ -915,7 +915,7 @@ export default function FullWidthTabs(props) {
                                 data: tabsDataEnCours
                             },
                             {
-                                label: 'Formation programmée',
+                                label: 'Formations programmées',
                                 backgroundColor: 'rgba(181, 27, 16, 0.8)',
                                 borderColor: 'rgba(181, 27, 16, 1)',
                                 borderWidth: 1,
@@ -925,7 +925,7 @@ export default function FullWidthTabs(props) {
                                 data: tabsDataProgrammer
                             },
                             {
-                                label: 'Formation terminée',
+                                label: 'Formations terminées',
                                 backgroundColor: 'rgba(0, 128, 16, 0.8)',
                                 borderColor: 'rgba(0, 128, 16, 1)',
                                 borderWidth: 1,
@@ -974,7 +974,7 @@ export default function FullWidthTabs(props) {
                         labels: tabsNom,
                         datasets: [
                             {
-                                label: 'Tous les formations',
+                                label: 'Toutes les formations',
                                 backgroundColor: 'rgba(237,126,10,0.8)',
                                 borderColor: 'rgba(237,126,132,1)',
                                 borderWidth: 1,
@@ -983,7 +983,7 @@ export default function FullWidthTabs(props) {
                                 data: tabsDataAll
                             },
                             {
-                                label: 'Formation en cours',
+                                label: 'Formations en cours',
                                 backgroundColor: 'rgba(2,119,150,0.8)',
                                 borderColor: 'rgba(2,119,150,1)',
                                 borderWidth: 1,
@@ -992,7 +992,7 @@ export default function FullWidthTabs(props) {
                                 data: tabsDataEnCours
                             },
                             {
-                                label: 'Formation programmée',
+                                label: 'Formations programmées',
                                 backgroundColor: 'rgba(181, 27, 16, 0.8)',
                                 borderColor: 'rgba(181, 27, 16, 1)',
                                 borderWidth: 1,
@@ -1002,7 +1002,7 @@ export default function FullWidthTabs(props) {
                                 data: tabsDataProgrammer
                             },
                             {
-                                label: 'Formation terminée',
+                                label: 'Formations terminées',
                                 backgroundColor: 'rgba(0, 128, 16, 0.8)',
                                 borderColor: 'rgba(0, 128, 16, 1)',
                                 borderWidth: 1,

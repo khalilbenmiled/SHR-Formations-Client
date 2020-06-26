@@ -14,6 +14,10 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import ComponentListFormations from "./component-list-formations"
 import ComponentListMesFormations from "./component-list-mes-formations"
 import CreateIcon from '@material-ui/icons/Create';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import { Snackbar } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 
 function TabPanel(props) {
@@ -52,10 +56,24 @@ const useStyles = makeStyles((theme) => ({
 export default function ScrollableTabsButtonAuto(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
+  const [progressShowLine, setProgressShowLine] = React.useState(false);
+  const [alertConvoquer, setAlertConvoquer] = React.useState(false);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const showLine = (bool) => {
+    setProgressShowLine(bool)
+  }
+
+  const showAlertConvoquer = (bool) => {
+    setAlertConvoquer(bool)
+  }
+
+  const closeAlertConvoquer = () => {
+    setAlertConvoquer(false)
+  }
 
   return (
     <div className={classes.root}>
@@ -70,7 +88,7 @@ export default function ScrollableTabsButtonAuto(props) {
           aria-label="scrollable auto tabs example"
 
         >
-          <Tab style={{ outline: "none" }} label={JSON.parse(localStorage.user).role === "SERVICEFORMATIONS" ? "Planifier des formations" : "Consulter mes formations"} icon={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? < LocalLibraryIcon style={{ color: "#B51B10" }} /> : < CreateIcon style={{ color: "#B51B10" }} /> } />
+          <Tab style={{ outline: "none" }} label={JSON.parse(localStorage.user).role === "SERVICEFORMATIONS" ? "Planifier des formations" : "Consulter mes formations"} icon={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? < LocalLibraryIcon style={{ color: "#B51B10" }} /> : < CreateIcon style={{ color: "#B51B10" }} />} />
           <Tab style={{ outline: "none" }} label="Calendrier" icon={<EventNoteIcon style={{ color: "#B51B10" }} />} />
           <Tab hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false} style={{ outline: "none" }} label="Gérer les formations" icon={< SettingsIcon style={{ color: "#B51B10" }} />} />
         </Tabs>
@@ -99,7 +117,7 @@ export default function ScrollableTabsButtonAuto(props) {
             closePanel={props.closePanel}
           />
           :
-          <ComponentListMesFormations formations={props.listFormations}/>
+          <ComponentListMesFormations formations={props.listFormations} />
         }
 
       </TabPanel>
@@ -114,8 +132,22 @@ export default function ScrollableTabsButtonAuto(props) {
           ajouterSession={props.ajouterSession}
           refreshCalendrier={props.refreshCalendrier}
           affecterCF={props.affecterCF}
+          showLine={showLine}
+          showAlertConvoquer={showAlertConvoquer}
+          modfiferDateDebutSelected={props.modfiferDateDebutSelected}
+          modifierDateFinSelected={props.modifierDateFinSelected}
+          modifierNbrParticipantsSelected={props.modifierNbrParticipantsSelected}
+          modifierFormation={props.modifierFormation}
         />
+        <LinearProgress hidden={!progressShowLine} style={{ marginTop: "-50px", marginBottom: "15px" }} variant="query" />
+
       </TabPanel>
+
+      <Snackbar open={alertConvoquer} autoHideDuration={5000} onClose={closeAlertConvoquer}>
+        <Alert onClose={closeAlertConvoquer} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
+          Participants convoqués
+          </Alert>
+      </Snackbar>
     </div>
   );
 }

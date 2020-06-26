@@ -43,7 +43,7 @@ class LayoutCabinetsFormateurs extends Component {
 
 
     componentDidMount() {
-        axios.get(process.env.REACT_APP_PROXY_SessionsFormations + "/formations").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_SessionsFormations + "/formations/").then(res => {
             const tabs = []
             if (res.data.Formations) {
                 res.data.Formations.map(formation => {

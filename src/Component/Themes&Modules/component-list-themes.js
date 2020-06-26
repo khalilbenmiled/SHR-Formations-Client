@@ -14,8 +14,8 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import { TableHead, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@material-ui/core';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-
-
+import EditIcon from '@material-ui/icons/Edit';
+import ComponentModalEdit  from "./component-modal-edit"
 
 
 const useStyles1 = makeStyles(theme => ({
@@ -103,6 +103,8 @@ export default function CustomPaginationActionsTable(props) {
     const [page, setPage] = React.useState(0);
     const [themeToDelete, setThemeToDelete] = React.useState("");
     const [alertDelete, setAlertDelete] = React.useState(false);
+    const [openModal, setOpenModalEdit] = React.useState(false);
+    const [theme, setTheme] = React.useState("");
     const [rowsPerPage, setRowsPerPage] = React.useState(4);
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
@@ -130,6 +132,16 @@ export default function CustomPaginationActionsTable(props) {
         setAlertDelete(false)
     }
 
+    const openModalEdit = (row) => {
+        console.log(row)
+        setOpenModalEdit(true)
+        setTheme(row)
+    }
+
+    const handleClose = () => {
+        setOpenModalEdit(false)
+    }
+
 
 
 
@@ -154,6 +166,7 @@ export default function CustomPaginationActionsTable(props) {
                                 <TableCell> {row.nom} </TableCell>
                                 <TableCell> {row.type} </TableCell>
                                 <TableCell> <DeleteForeverIcon onClick={openModalDelete.bind(this, row)} className={classes.iconAnnuler} /> </TableCell>
+                                <TableCell> <EditIcon onClick={openModalEdit.bind(this, row)} style={{ cursor: "pointer", color: "#4AA14B" }} /></TableCell>
                             </TableRow>
                         ))}
 
@@ -206,6 +219,8 @@ export default function CustomPaginationActionsTable(props) {
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            <ComponentModalEdit theme={theme} open={openModal} handleClose={handleClose} modifierTheme={props.modifierTheme} />
         </>
 
     );

@@ -217,7 +217,7 @@ export default function NavBar(props) {
           </Link>
 
 
-          <Link to="/collaborateurs" className="navlink">
+          <Link hidden={JSON.parse(localStorage.user).role !== "COLLABORATEUR"} to="/collaborateurs" className="navlink">
             <ListItem button style={{ backgroundColor: location.pathname === "/collaborateurs" ? "rgba(238,134,24,0.7)" : "" }}>
               <ListItemIcon>
 
@@ -242,7 +242,7 @@ export default function NavBar(props) {
               <ListItemIcon>
                 < GroupWorkIcon style={{ color: "#B51B10" }} />
               </ListItemIcon>
-              <ListItemText primary="Themes/Modules" />
+              <ListItemText primary="Themes" />
             </ListItem>
           </Link>
 
@@ -282,7 +282,7 @@ export default function NavBar(props) {
               <ListItemIcon >
                 < CastForEducationIcon style={{ color: "#B51B10" }} />
               </ListItemIcon>
-              <ListItemText primary="E-Learning" />
+              <ListItemText primary="Ressources" />
             </ListItem>
           </Link>
 

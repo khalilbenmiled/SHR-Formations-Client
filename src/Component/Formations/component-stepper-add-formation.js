@@ -249,6 +249,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
     const getModules = (e, values) => {
         if (values.length !== 0) {
             setModulesSelect(values)
+            console.log(modulesSelect)
             props.getModules(values)
         } else {
             setModulesSelect([])
@@ -654,7 +655,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                                 <Button
                                     size="small"
                                     disabled={
-                                        (activeStep === 0 && modulesSelect.length === 0) ||
+                                        // (activeStep === 0 && modulesSelect.length === 0) ||
                                             (activeStep === 1 && verifierSaisie() === 1) ? true : false
                                     }
                                     variant="contained" color="primary" onClick={handleNext} className={classes.button}

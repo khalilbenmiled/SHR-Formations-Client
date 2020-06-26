@@ -22,6 +22,9 @@ import querystring from 'querystring'
 import ComponentModalValidate from "./component-modal-validate"
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import ComponentModalValidateByMG from "./component-modal-validateByManager"
+import EditIcon from '@material-ui/icons/Edit';
+import ComponentModalEdit from "./component-modal-edit"
+
 
 const useStyles1 = makeStyles(theme => ({
   root: {
@@ -104,7 +107,11 @@ export default function CustomPaginationActionsTable(props) {
   const [idBesoin, setIdBesoin] = React.useState("");
   const [idUser, setIdUser] = React.useState("");
   const [idCollaborateur, setIdCollaborateur] = React.useState("");
-  
+  const [openEdit, setOpenEdit] = React.useState(false);
+  const [besoinId, setBesoinId] = React.useState(0);
+  const [nomBesoinToEdit, setNomBesoinToEdit] = React.useState("");
+  const [quarterBesoinToEdit, setQuarterBesoinToEdit] = React.useState("");
+
 
 
   const openInfos = (besoin) => {
@@ -112,7 +119,7 @@ export default function CustomPaginationActionsTable(props) {
     const user = {
       id: besoin.idUser
     }
-    axios.post(process.env.REACT_APP_PROXY_Utilisateurs+"/users/byId",
+    axios.post(process.env.REACT_APP_PROXY_Utilisateurs + "/users/byId",
       querystring.stringify(user), {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -174,7 +181,7 @@ export default function CustomPaginationActionsTable(props) {
 
     const obj = {
       idBesoin: idBesoin,
-      idUser:idUser,
+      idUser: idUser,
       trimestre: trimestre,
       idProjet: projet,
       validerMG: false
@@ -186,7 +193,7 @@ export default function CustomPaginationActionsTable(props) {
   const onValiderBesoinByManager = () => {
     const obj = {
       idBesoin: idBesoin,
-      idUser : idCollaborateur ,
+      idUser: idCollaborateur,
       trimestre: trimestre,
       idProjet: projet,
       validerMG: true
@@ -209,6 +216,17 @@ export default function CustomPaginationActionsTable(props) {
     setOpenValiderMG(false)
   }
 
+  const openModalEdit = (row) => {
+    setBesoinId(row.id)
+    setNomBesoinToEdit(row.theme.nom)
+    setQuarterBesoinToEdit(row.quarter)
+    setOpenEdit(true)
+  }
+
+  const closeModalEdit = () => {
+    setOpenEdit(false)
+  }
+
 
   return (
     <>
@@ -224,9 +242,9 @@ export default function CustomPaginationActionsTable(props) {
 
               <TableCell style={{ fontSize: 16, color: 'white' }}>Team Leader</TableCell>
               {JSON.parse(localStorage.user).role !== "COLLABORATEUR" ?
-                <TableCell colSpan={4} style={{ fontSize: 16, color: 'white' }}>Manager</TableCell>
+                <TableCell colSpan={5} style={{ fontSize: 16, color: 'white' }}>Manager</TableCell>
                 :
-                <TableCell colSpan={4}></TableCell>
+                <TableCell colSpan={5}></TableCell>
               }
             </TableRow>
           </TableHead>
@@ -276,9 +294,24 @@ export default function CustomPaginationActionsTable(props) {
                     :
                     <TableCell > </TableCell>
                 }
-                <TableCell hidden={JSON.parse(localStorage.user).role === "SERVICEFORMATIONS" || (JSON.parse(localStorage.user).id !== row.idUser && JSON.parse(localStorage.user).role === "COLLABORATEUR")} >
-                  <DeleteForeverIcon onClick={props.openAlertRemoveBesoin.bind(this, row)} className={classess.iconRemove} />
-                </TableCell>
+                {(JSON.parse(localStorage.user).id !== row.idUser && JSON.parse(localStorage.user).role === "COLLABORATEUR") || JSON.parse(localStorage.user).role === "SERVICEFORMATIONS"
+                  ?
+                  <TableCell></TableCell>
+                  :
+                  <TableCell> <EditIcon hidden = {JSON.parse(localStorage.user).role === "MANAGER" && row.validerMG === true} onClick={openModalEdit.bind(this, row)} style={{ cursor: "pointer", color: "#4AA14B" }} /></TableCell>
+
+                }
+
+                {JSON.parse(localStorage.user).role === "SERVICEFORMATIONS" || (JSON.parse(localStorage.user).id !== row.idUser && JSON.parse(localStorage.user).role === "COLLABORATEUR")
+                  ?
+                  <TableCell></TableCell>
+                  :
+                  <TableCell>
+                    <DeleteForeverIcon onClick={props.openAlertRemoveBesoin.bind(this, row)} className={classess.iconRemove} />
+                  </TableCell>
+
+                }
+
 
 
               </TableRow>
@@ -316,6 +349,7 @@ export default function CustomPaginationActionsTable(props) {
       <ComponentModalInfos open={open} handleClose={handleClose} besoinToModal={besoinToModal} modulesToModal={modulesToModal} />
       <ComponentModalValidate addProjet={props.addProjet} open={openValider} handleClose={handleClose} projets={props.projets} onChangeProjet={onChangeProjet} onChangeTrimestre={onChangeTrimestre} onValiderBesoin={onValiderBesoin} />
       <ComponentModalValidateByMG addProjet={props.addProjet} open={openValiderMG} handleClose={closeValiderMG} projets={props.projets} onChangeProjet={onChangeProjet} onChangeTrimestre={onChangeTrimestre} onValiderBesoinByManager={onValiderBesoinByManager} />
+      <ComponentModalEdit quarterBesoinToEdit={quarterBesoinToEdit} nomBesoinToEdit={nomBesoinToEdit} open={openEdit} handleClose={closeModalEdit} onChangeTheme={props.onChangeTheme} themes={props.themes} projets={props.projets} actionSelected={props.actionSelected} modifierBesoin={props.modifierBesoin} id={besoinId} onChangeTrimeter={props.onChangeTrimeter} getProjet={props.getProjet} />
     </>
 
   );

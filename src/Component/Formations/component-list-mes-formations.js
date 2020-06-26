@@ -17,6 +17,8 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import ComponentModalFormation from "./component-modal-formation"
 import axios from "axios"
 import querystring from 'querystring'
+import Moment from 'moment';
+import 'moment/locale/fr'
 
 
 
@@ -200,6 +202,26 @@ export default function CustomPaginationActionsTable(props) {
     })
   }
 
+  
+  const getEtat = (dateDebut, dateFin) => {
+
+    Moment.locale("fr");
+    var now_date = Moment().format("YYYY-MM-DD")
+    var date_debut = Moment(dateDebut, 'DD-MM-YYYY').format('YYYY-MM-DD')
+    var date_fin = Moment(dateFin, 'DD-MM-YYYY').format('YYYY-MM-DD')
+
+    if (Moment(now_date).isBefore(date_debut) && Moment(now_date).isBefore(date_fin)) {
+      return "Programmée"
+    } else if (Moment(now_date).isAfter(date_debut) && Moment(now_date).isAfter(date_fin)) {
+      return "Terminée"
+    } else if (Moment(now_date).isBetween(date_debut, date_fin)) {
+      return "En cours"
+    } else if (Moment(now_date).isSameOrAfter(date_debut) && Moment(now_date).isSameOrBefore(date_fin)) {
+      return "En cours"
+    }
+
+  }
+
   return (
     <>
 
@@ -223,7 +245,7 @@ export default function CustomPaginationActionsTable(props) {
                 <TableCell> {row.nomTheme} </TableCell>
                 <TableCell> {row.dateDebut} </TableCell>
                 <TableCell> {row.dateFin} </TableCell>
-                <TableCell> {row.etat} </TableCell>
+                <TableCell> {row.deleted === true ? "Annulée" : getEtat(row.dateDebut , row.dateFin)} </TableCell>
                 <TableCell> <VisibilityIcon className={classes.iconInfo} onClick={detailsFormations.bind(this, row)} /> </TableCell>
               </TableRow>
             ))}

@@ -12,7 +12,7 @@ import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import Checkbox from '@material-ui/core/Checkbox';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import ComponentModalModules from "./component-modal-modules"
+// import ComponentModalModules from "./component-modal-modules"
 import ComponentModalProjet from "./component-modal-projet"
 
 
@@ -173,7 +173,7 @@ export default function VerticalLinearStepper(props) {
           </StepContent>
         </Step>
 
-        <Step key="2">
+        {/* <Step key="2">
           <StepLabel StepIconProps={{ classes: { root: classes.icon, active: classes.activeIcon, completed: classes.completedIcon } }}>Modules de formations</StepLabel>
           <StepContent>
 
@@ -234,7 +234,7 @@ export default function VerticalLinearStepper(props) {
               </div>
             </div>
           </StepContent>
-        </Step>
+        </Step> */}
 
         <Step key="3">
           <StepLabel StepIconProps={{ classes: { root: classes.icon, active: classes.activeIcon, completed: classes.completedIcon } }}>
@@ -333,7 +333,7 @@ export default function VerticalLinearStepper(props) {
         </Step>
       </Stepper>
 
-      {activeStep === 3 && (
+      {activeStep === 2 && (
         <Paper square elevation={0} className={classes.resetContainer}>
 
           <Button size="small" onClick={handleReset} className={classes.button}>

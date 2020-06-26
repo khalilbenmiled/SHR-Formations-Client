@@ -109,7 +109,7 @@ export default function FullWidthTabs(props) {
                     aria-label="full width tabs example"
                 >
                     <Tab style={{ outline: "none" }} label="Gerer themes" icon={<SettingsIcon />} />
-                    <Tab style={{ outline: "none" }} label="Gerer modules" icon={<SettingsIcon />} />
+                    <Tab hidden style={{ outline: "none" }} label="Gerer modules" icon={<SettingsIcon />} />
                 </Tabs>
             </AppBar>
             <SwipeableViews
@@ -119,13 +119,13 @@ export default function FullWidthTabs(props) {
             >
 
                 <TabPanel value={value} index={0} dir={theme.direction} >
-                    <ComponentListThemes themes={props.themes} deleteTheme={props.deleteTheme} />
+                    <ComponentListThemes themes={props.themes} deleteTheme={props.deleteTheme} modifierTheme={props.modifierTheme}/>
                     <Button className={classes.buttonStyles} size="small" variant="outlined" onClick={openModalTheme} >
                         Ajouter un theme
                     </Button>
                 </TabPanel>
 
-                <TabPanel value={value} index={1} dir={theme.direction}>
+                <TabPanel hidden value={value} index={1} dir={theme.direction}>
                     <div className="row">
                         <div className="col-lg-12 col-md-12">
                             <Autocomplete

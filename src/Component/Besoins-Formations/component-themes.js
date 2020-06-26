@@ -113,7 +113,7 @@ export default function CustomPaginationActionsTable(props) {
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell>
+            <TableCell hidden>
               <ComponentModalAction addAction={props.addAction} />    </TableCell>
             <TablePagination
               rowsPerPageOptions={[]}

@@ -9,6 +9,8 @@ import { TextField, Grid } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Switch from '@material-ui/core/Switch';
 import Alert from '@material-ui/lab/Alert';
+import Moment from 'moment';
+import 'moment/locale/fr'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -78,6 +80,19 @@ const useStyles = makeStyles((theme) => ({
             color: "white"
         }
     },
+    container: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        marginLeft : "160px",
+        marginBottom : "30px",
+    
+      },
+      textField: {
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
+        width: 300,
+        backgroundColor : "white",
+      },
 }));
 
 function getSteps() {
@@ -102,7 +117,8 @@ export default function HorizontalLabelPositionBelowStepper(props) {
     const [checked2, setChecked2] = React.useState(false);
     const [checked3, setChecked3] = React.useState(false);
     const [checked4, setChecked4] = React.useState(false);
-
+    const [dateQuiz, setDateQuiz] = React.useState("");
+    
     const [listQuestionReponse, setListQuestionReponse] = React.useState([]);
 
 
@@ -121,10 +137,11 @@ export default function HorizontalLabelPositionBelowStepper(props) {
         }
         if (activeStep === 1) {
             const obj = {
-                nomQuiz : nomQuiz,
-                idFormation : formation.id,
-                nbrQuestion : nombreQuestions,
-                listQuestionReponse : listQuestionReponse
+                nomQuiz: nomQuiz,
+                idFormation: formation.id,
+                nbrQuestion: nombreQuestions,
+                listQuestionReponse: listQuestionReponse,
+                date : dateQuiz
             }
 
             props.ajouterQuiz(obj)
@@ -295,7 +312,10 @@ export default function HorizontalLabelPositionBelowStepper(props) {
     }))(Switch);
 
 
-
+    const getDateQuiz = (date) => {
+        Moment.locale("fr");
+        setDateQuiz(Moment(date.target.value).add(1,'hours').format("DD/MM/YYYY HH:mm"))
+    }
 
 
     return (
@@ -308,23 +328,23 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                     </Step>
                 ))}
             </Stepper>
-            <div hidden={activeContent === 0 ? false : true} className="row" style={{marginTop : "10px" , width : "90%" , margin : "auto" , paddingTop :"20px" , backgroundColor : "#FAFAFA" , boxShadow : "0px 0px 1px"}}>
-                <div className="col-lg-12 col-md-12" > 
-                    <div className="input-group mb-3" style={{marginLeft : "130px"}}>
+            <div hidden={activeContent === 0 ? false : true} className="row" style={{ marginTop: "10px", width: "90%", margin: "auto", paddingTop: "20px", backgroundColor: "#FAFAFA", boxShadow: "0px 0px 1px" }}>
+                <div className="col-lg-12 col-md-12" >
+                    <div className="input-group mb-3" style={{ marginLeft: "130px" }}>
                         <div className="input-group-prepend">
                             <label style={{ width: 130 }} className="input-group-text" >Nom </label>
                         </div>
                         <TextField onChange={onChangeNom} size="small" label="Nom" variant="outlined" style={{ width: 260, backgroundColor: "white" }}  > </TextField>
                     </div>
 
-                    <div className="input-group mb-3 "  style={{marginLeft : "130px"}}>
+                    <div className="input-group mb-3 " style={{ marginLeft: "130px" }}>
                         <div className="input-group-prepend">
                             <label style={{ width: 130 }} className="input-group-text" >Nbr Questions </label>
                         </div>
                         <TextField type="number" onChange={onChangeNombreQuestion} size="small" label="Nombre de questions" variant="outlined" style={{ width: 260, backgroundColor: "white" }}  > </TextField>
                     </div>
 
-                    <div className="input-group mb-3 "  style={{marginLeft : "130px"}}>
+                    <div className="input-group mb-3 " style={{ marginLeft: "130px" }}>
                         <div className="input-group-prepend">
                             <label style={{ width: 130 }} className="input-group-text" >Formation </label>
                         </div>
@@ -334,14 +354,29 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                             onChange={onChangeFormation}
                             options={props.formations}
                             getOptionLabel={(option) => option.nomTheme + " Du " + option.dateDebut + " Au " + option.dateFin}
-                            style={{ width: 260 , backgroundColor : "white" }}
+                            style={{ width: 260, backgroundColor: "white" }}
                             renderInput={(params) => <TextField {...params} label="Formation" variant="outlined" />}
                         />
                     </div>
+
+                    <form className={classes.container} noValidate>
+                        <TextField
+                            id="datetime-local"
+                            variant="outlined"
+                            label="Date quiz"
+                            type="datetime-local"
+                            defaultValue={Moment(new Date()).format("YYYY-MM-DDTHH:mm").toString()}
+                            className={classes.textField}
+                            onChange={getDateQuiz}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
+                    </form>
                 </div>
             </div>
 
-            <div hidden={activeContent === 1 ? false : true} className="row" style={{ paddingTop : "10px", width : "98%" , margin : "auto" ,marginBottom : "20px", backgroundColor : "#FAFAFA" , boxShadow : "0px 0px 1px"}}>
+            <div hidden={activeContent === 1 ? false : true} className="row" style={{ paddingTop: "10px", width: "98%", margin: "auto", marginBottom: "20px", backgroundColor: "#FAFAFA", boxShadow: "0px 0px 1px" }}>
                 <div className="col-lg-12 col-md-12">
                     <div className="row">
                         <div className="col-lg-8 col-md-8 offset-lg-3 offset-md-3">

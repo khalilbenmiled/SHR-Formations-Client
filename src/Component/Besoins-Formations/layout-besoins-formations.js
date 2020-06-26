@@ -56,11 +56,12 @@ class Besoins extends Component {
             mesCollaborateurs: [],
             mesCollaborateursSelected: [],
             stompClient: null,
+            alertModifierBesoin: false
         }
     }
 
     componentDidMount() {
-        
+
         var socket = new SockJS("http://localhost:8383/notifications");
         var stompClient = Stomp.over(socket);
 
@@ -72,7 +73,7 @@ class Besoins extends Component {
             id: JSON.parse(localStorage.user).id
         }
 
-        axios.get(process.env.REACT_APP_PROXY_SessionsFormations+"/themes").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_SessionsFormations + "/themes").then(res => {
             if (res.data.Theme) {
                 this.setState({
                     themes: res.data.Theme,
@@ -83,7 +84,7 @@ class Besoins extends Component {
 
         if (JSON.parse(localStorage.user).role === "TEAMLEAD") {
 
-            axios.post(process.env.REACT_APP_PROXY_Besoins+"/projets/byTL", querystring.stringify(user), {
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/projets/byTL", querystring.stringify(user), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -95,7 +96,7 @@ class Besoins extends Component {
                 }
             })
         } else {
-            axios.post(process.env.REACT_APP_PROXY_Besoins+"/projets/byMG", querystring.stringify(user), {
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/projets/byMG", querystring.stringify(user), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -113,7 +114,7 @@ class Besoins extends Component {
 
         if (JSON.parse(localStorage.user).role === "TEAMLEAD") {
 
-            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/byTL", querystring.stringify(user), {
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/byTL", querystring.stringify(user), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -128,7 +129,7 @@ class Besoins extends Component {
 
         } else if (JSON.parse(localStorage.user).role === "COLLABORATEUR") {
 
-            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/byUser", querystring.stringify(user), {
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/byUser", querystring.stringify(user), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -141,7 +142,7 @@ class Besoins extends Component {
             })
 
         } else if (JSON.parse(localStorage.user).role === "MANAGER") {
-            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/byMG", querystring.stringify(user), {
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/byMG", querystring.stringify(user), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -153,7 +154,7 @@ class Besoins extends Component {
                 }
             })
         } else {
-            axios.get(process.env.REACT_APP_PROXY_Besoins+"/besoins").then(res => {
+            axios.get(process.env.REACT_APP_PROXY_Besoins + "/besoins").then(res => {
                 if (res.data.Besoins) {
                     this.setState({
                         listBesoins: res.data.Besoins
@@ -168,7 +169,7 @@ class Besoins extends Component {
             const input = {
                 id: JSON.parse(localStorage.user).id
             }
-            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoinsPublier/", querystring.stringify(input), {
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoinsPublier/", querystring.stringify(input), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -187,7 +188,7 @@ class Besoins extends Component {
             const input = {
                 id: JSON.parse(localStorage.user).id
             }
-            axios.post(process.env.REACT_APP_PROXY_Collaborateurs+"/collaborateurs/ByTL", querystring.stringify(input), {
+            axios.post(process.env.REACT_APP_PROXY_Collaborateurs + "/collaborateurs/ByTL", querystring.stringify(input), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
@@ -210,7 +211,7 @@ class Besoins extends Component {
             const typeFormation = {
                 type: e.target.value
             }
-            axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes/type",
+            axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/themes/type",
                 querystring.stringify(typeFormation), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -241,7 +242,7 @@ class Besoins extends Component {
             id: JSON.parse(e.target.value).id,
         }
 
-        axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes/modules",
+        axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/themes/modules",
             querystring.stringify(theme), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -334,7 +335,7 @@ class Besoins extends Component {
                     listModules: this.state.listModulesSelected
                 }
             }
-            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/addByCollaborateur", besoin).then(res => {
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/addByCollaborateur", besoin).then(res => {
 
                 if (res.data.Error) {
                     this.setState({
@@ -384,7 +385,7 @@ class Besoins extends Component {
                     idTeamLead: this.state.idTeamLead
                 }
             }
-            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/addByTL", besoin).then(res => {
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/addByTL", besoin).then(res => {
 
                 if (res.data.Error) {
                     this.setState({
@@ -415,7 +416,7 @@ class Besoins extends Component {
     }
 
     addAction(theme) {
-        axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes", theme).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/themes", theme).then(res => {
             const listThemes = this.state.allThemes
             listThemes.push(res.data.Theme)
             this.setState({
@@ -426,14 +427,14 @@ class Besoins extends Component {
     }
 
     addModule(module) {
-        axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/modules", module).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/modules", module).then(res => {
 
 
             const obj = {
                 idTheme: this.state.themeSelected.id,
                 idModule: res.data.Module.id
             }
-            axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes/affecterMAT",
+            axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/themes/affecterMAT",
                 querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -454,7 +455,7 @@ class Besoins extends Component {
     }
 
     addProjet(projet) {
-        axios.post(process.env.REACT_APP_PROXY_Besoins+"/projets", projet).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_Besoins + "/projets", projet).then(res => {
             const listProjets = this.state.projets
             listProjets.push(res.data.Projet)
             this.setState({
@@ -467,7 +468,7 @@ class Besoins extends Component {
     onValiderBesoin(besoin) {
 
 
-        axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/valider",
+        axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/valider",
             querystring.stringify(besoin), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -491,13 +492,13 @@ class Besoins extends Component {
                 date: now_date
             }
             this.state.stompClient.send("/app/valider", {}, JSON.stringify(obj));
-            
+
             if (JSON.parse(localStorage.user).role === "MANAGER") {
                 const obj = {
                     idBesoin: res.data.Besoin.id,
                     idManager: JSON.parse(localStorage.user).id
                 }
-                axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoinsPublier/publier",
+                axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoinsPublier/publier",
                     querystring.stringify(obj), {
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
@@ -574,7 +575,7 @@ class Besoins extends Component {
             id: this.state.besoinToDelete
         }
         if (JSON.parse(localStorage.user).role === "COLLABORATEUR" || JSON.parse(localStorage.user).role === "TEAMLEAD") {
-            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/removeByCollaborateur",
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/removeByCollaborateur",
                 querystring.stringify(besoin), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -593,7 +594,7 @@ class Besoins extends Component {
             })
         } else {
 
-            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/removeByManagerOrSf",
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/removeByManagerOrSf",
                 querystring.stringify(besoin), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -618,7 +619,7 @@ class Besoins extends Component {
         const besoin = {
             idBesoin: this.state.besoinToAnnuler
         }
-        axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/annulerValidationTL",
+        axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/annulerValidationTL",
             querystring.stringify(besoin), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -672,7 +673,7 @@ class Besoins extends Component {
             idBesoin: besoin.id,
             idManager: JSON.parse(localStorage.user).id
         }
-        axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/annulerValidationMG",
+        axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/annulerValidationMG",
             querystring.stringify(obj), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -688,7 +689,7 @@ class Besoins extends Component {
                 })
             }
 
-            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoinsPublier/retirer",
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoinsPublier/retirer",
                 querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -726,7 +727,7 @@ class Besoins extends Component {
             idBesoin: besoin.id,
         }
 
-        axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/validerMG",
+        axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/validerMG",
             querystring.stringify(obj), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -745,7 +746,7 @@ class Besoins extends Component {
                 idManager: JSON.parse(localStorage.user).id
 
             }
-            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoinsPublier/publier",
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoinsPublier/publier",
                 querystring.stringify(input), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -794,7 +795,7 @@ class Besoins extends Component {
         const obj = {
             id: this.state.besoinToPublier
         }
-        axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoinsPublier/publierBesoin",
+        axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoinsPublier/publierBesoin",
             querystring.stringify(obj), {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -845,7 +846,7 @@ class Besoins extends Component {
                 publier: publier
             }
 
-            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/rapportsTL",
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/rapportsTL",
                 querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -900,7 +901,7 @@ class Besoins extends Component {
                 publier: publier
             }
 
-            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/rapportsMG",
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/rapportsMG",
                 querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -954,7 +955,7 @@ class Besoins extends Component {
                 publier: publier
             }
 
-            axios.post(process.env.REACT_APP_PROXY_Besoins+"/besoins/rapports",
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/rapports",
                 querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -1006,6 +1007,112 @@ class Besoins extends Component {
         })
     }
 
+    modifierBesoin(id) {
+
+        if (JSON.parse(localStorage.user).role === "TEAMLEAD") {
+            const besoin = {
+                id: id,
+                validerTL: true,
+                validerMG: false,
+                quarter: this.state.quarter,
+                theme: {
+                    id: this.state.themeSelected.id,
+                    nom: this.state.themeSelected.nom,
+                    type: this.state.themeSelected.type,
+                    listModules: this.state.listModulesSelected
+                },
+                projet: {
+                    id: this.state.projetSelected.id,
+                    nom: this.state.projetSelected.nom,
+                    idTeamLead: this.state.idTeamLead
+                }
+            }
+
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/modifier", besoin).then(res => {
+                if (res.data.Besoin) {
+                    const listBesoins = this.state.listBesoins
+                    const index = listBesoins.findIndex(b => b.id === res.data.Besoin.id)
+                    listBesoins.splice(index, 1, res.data.Besoin)
+                    this.setState({
+                        listBesoins: listBesoins,
+                        alertModifierBesoin: true
+                    })
+                }
+            })
+        } else if (JSON.parse(localStorage.user).role === "COLLABORATEUR") {
+
+            const besoin = {
+                id: id,
+                validerTL: false,
+                validerMG: false,
+                quarter: -1,
+                theme: {
+                    id: this.state.themeSelected.id,
+                    nom: this.state.themeSelected.nom,
+                    type: this.state.themeSelected.type,
+                    listModules: this.state.listModulesSelected
+                },
+                projet: {
+                    id: -1,
+                    nom: null,
+                    idTeamLead: this.state.idTeamLead
+                }
+            }
+
+
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/modifier", besoin).then(res => {
+                if (res.data.Besoin) {
+                    const listBesoins = this.state.listBesoins
+                    const index = listBesoins.findIndex(b => b.id === res.data.Besoin.id)
+                    listBesoins.splice(index, 1, res.data.Besoin)
+                    this.setState({
+                        listBesoins: listBesoins,
+                        alertModifierBesoin: true
+                    })
+                }
+            })
+        } else {
+            const besoin = {
+                id: id,
+                validerTL: true,
+                validerMG: false,
+                quarter: this.state.quarter,
+                theme: {
+                    id: this.state.themeSelected.id,
+                    nom: this.state.themeSelected.nom,
+                    type: this.state.themeSelected.type,
+                    listModules: this.state.listModulesSelected
+                },
+                projet: {
+                    id: this.state.projetSelected.id,
+                    nom: this.state.projetSelected.nom,
+                    idTeamLead: this.state.idTeamLead
+                }
+            }
+
+            axios.post(process.env.REACT_APP_PROXY_Besoins + "/besoins/modifier", besoin).then(res => {
+                if (res.data.Besoin) {
+                    const listBesoins = this.state.listBesoins
+                    const index = listBesoins.findIndex(b => b.id === res.data.Besoin.id)
+                    listBesoins.splice(index, 1, res.data.Besoin)
+                    this.setState({
+                        listBesoins: listBesoins,
+                        alertModifierBesoin: true
+                    })
+                }
+            })
+        }
+
+
+
+
+    }
+
+    closeAlertModifierBesoin() {
+        this.setState({
+            alertModifierBesoin: false
+        })
+    }
 
     render() {
         return (
@@ -1045,6 +1152,7 @@ class Besoins extends Component {
                                 rapports={this.state.rapports}
                                 mesCollaborateurs={this.state.mesCollaborateurs}
                                 getCollaborateurs={this.getCollaborateurs.bind(this)}
+                                modifierBesoin={this.modifierBesoin.bind(this)}
 
                             />
                         </div>
@@ -1052,12 +1160,12 @@ class Besoins extends Component {
                 </div>
                 <Snackbar open={this.state.alertBesoin} autoHideDuration={5000} onClose={this.closeAlertBesoin.bind(this)}>
                     <Alert onClose={this.closeAlertBesoin.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
-                        Besoin enregistrer avec succès
+                        Besoin enregistré avec succès
                     </Alert>
                 </Snackbar>
                 <Snackbar open={this.state.alertAction} autoHideDuration={5000} onClose={this.closeAlertAction.bind(this)}>
                     <Alert onClose={this.closeAlertAction.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
-                        Action de formation enregistrer
+                        Action de formation enregistrée
                     </Alert>
                 </Snackbar>
                 <Snackbar open={this.state.alertModule} autoHideDuration={5000} onClose={this.closeAlertModule.bind(this)}>
@@ -1067,32 +1175,37 @@ class Besoins extends Component {
                 </Snackbar>
                 <Snackbar open={this.state.alertProjet} autoHideDuration={5000} onClose={this.closeAlertProjet.bind(this)}>
                     <Alert onClose={this.closeAlertProjet.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
-                        Projet enregistrer
+                        Projet enregistré
                     </Alert>
                 </Snackbar>
                 <Snackbar open={this.state.alertValiderBesoin} autoHideDuration={5000} onClose={this.closeAlertValiderBesoin.bind(this)}>
                     <Alert onClose={this.closeAlertValiderBesoin.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
-                        Besoin valider
+                        Besoin validé
                     </Alert>
                 </Snackbar>
                 <Snackbar open={this.state.alertBesoinSupprimer} autoHideDuration={5000} onClose={this.closeAlertBesoinSupprimer.bind(this)}>
                     <Alert onClose={this.closeAlertBesoinSupprimer.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
-                        Besoin supprimer
+                        Besoin supprimé
                     </Alert>
                 </Snackbar>
                 <Snackbar open={this.state.alertBesoinAnnuler} autoHideDuration={5000} onClose={this.closeAlertBesoinAnnuler.bind(this)}>
                     <Alert onClose={this.closeAlertBesoinAnnuler.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
-                        Besoin annuler
+                        Besoin annulé
                     </Alert>
                 </Snackbar>
                 <Snackbar open={this.state.snackBesoinPublier} autoHideDuration={5000} onClose={this.closeSnackBesoinPublier.bind(this)}>
                     <Alert onClose={this.closeSnackBesoinPublier.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
-                        Besoin publier
+                        Besoin publié
                     </Alert>
                 </Snackbar>
                 <Snackbar open={this.state.alertBesoinError} autoHideDuration={2200} onClose={this.closeAlertBesoinError.bind(this)}>
                     <Alert onClose={this.closeAlertBesoinError.bind(this)} icon={<WarningIcon style={{ color: "white" }} />} style={{ backgroundColor: "#FF9800", color: "white" }}>
                         Vous avez déja demandé ce besoin de formation !
+                    </Alert>
+                </Snackbar>
+                <Snackbar open={this.state.alertModifierBesoin} autoHideDuration={2200} onClose={this.closeAlertModifierBesoin.bind(this)}>
+                    <Alert onClose={this.closeAlertModifierBesoin.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white" }}>
+                        Besoin modifié !
                     </Alert>
                 </Snackbar>
                 <Dialog

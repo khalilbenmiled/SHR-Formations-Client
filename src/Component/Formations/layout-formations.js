@@ -33,7 +33,12 @@ class LayoutFormations extends Component {
             closePanel: false,
             nbrParticipants: 0,
             stompClient: null,
-            alertCF : false
+            alertCF: false,
+            modifierDateDebut: null,
+            modifierDateFin: null,
+            modifierNbrParticipants: null,
+            alertFormationModifier: false
+
         }
     }
 
@@ -84,7 +89,8 @@ class LayoutFormations extends Component {
                             maxParticipants: formation.maxParticipants,
                             duree: formation.duree,
                             idCF: formation.idCF,
-                            etat: formation.etat
+                            etat: formation.etat,
+                            deleted : formation.deleted
 
                         })
                         return null
@@ -388,9 +394,9 @@ class LayoutFormations extends Component {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
         }).then(res => {
-            if(res.data.Formation){
+            if (res.data.Formation) {
                 const tabs = this.state.listFormations
-                const index = tabs.findIndex(f=>f.id === res.data.Formation.id)
+                const index = tabs.findIndex(f => f.id === res.data.Formation.id)
                 var dateDebut = new Date(res.data.Formation.dateDebut)
                 var dateFin = new Date(res.data.Formation.dateFin)
                 Moment.locale("fr");
@@ -407,10 +413,10 @@ class LayoutFormations extends Component {
                     idCF: res.data.Formation.idCF,
                     etat: res.data.Formation.etat
                 }
-                tabs.splice(index,1,obj)
+                tabs.splice(index, 1, obj)
                 this.setState({
-                    listFormations : tabs,
-                    alertCF : true
+                    listFormations: tabs,
+                    alertCF: true
                 })
             }
         })
@@ -418,7 +424,69 @@ class LayoutFormations extends Component {
 
     closeAlertCF() {
         this.setState({
-            alertCF : false
+            alertCF: false
+        })
+    }
+
+    modfiferDateDebutSelected(date) {
+        this.setState({
+            modifierDateDebut: date
+        })
+    }
+
+    modifierDateFinSelected(date) {
+        this.setState({
+            modifierDateFin: date
+        })
+    }
+
+    modifierNbrParticipantsSelected(nbr) {
+        this.setState({
+            modifierNbrParticipants: nbr
+        })
+    }
+
+    modifierFormation(formation) {
+
+        const obj = {
+            id: formation.id,
+            dateDebut: this.state.modifierDateDebut === null ? null : this.state.modifierDateDebut.toString(),
+            dateFin: this.state.modifierDateFin === null ? null : this.state.modifierDateFin.toString(),
+            maxParticipants: this.state.modifierNbrParticipants,
+        }
+
+        axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/formations/modifier", obj).then(res => {
+            if (res.data.Formation) {
+                const tabs = this.state.listFormations
+                const index = tabs.findIndex(f => f.id === res.data.Formation.id)
+                const obj = {
+                    id: res.data.Formation.id,
+                    nomTheme: res.data.Formation.nomTheme,
+                    typeTheme: res.data.Formation.typeTheme,
+                    dateDebut: Moment(res.data.Formation.dateDebut).format("DD-MM-YYYY").toString() ,
+                    dateFin: Moment(res.data.Formation.dateFin).format("DD-MM-YYYY").toString(),
+                    listModules: res.data.Formation.listModules,
+                    listParticipants: res.data.Formation.listParticipants,
+                    maxParticipants: res.data.Formation.maxParticipants,
+                    duree: res.data.Formation.duree,
+                    idCF: res.data.Formation.idCF,
+                    etat: res.data.Formation.etat
+
+                }
+                tabs.splice(index, 1, obj)
+                this.setState({
+                    listFormations: tabs,
+                    alertFormationModifier: true
+                })
+            }
+         
+        })
+
+    }
+
+    closeAlertFormationModifier() {
+        this.setState({
+            alertFormationModifier : false
         })
     }
 
@@ -452,6 +520,10 @@ class LayoutFormations extends Component {
                                 closePanel={this.state.closePanel}
                                 onChangerNbrParticipants={this.onChangerNbrParticipants.bind(this)}
                                 affecterCF={this.affecterCF.bind(this)}
+                                modfiferDateDebutSelected={this.modfiferDateDebutSelected.bind(this)}
+                                modifierDateFinSelected={this.modifierDateFinSelected.bind(this)}
+                                modifierNbrParticipantsSelected={this.modifierNbrParticipantsSelected.bind(this)}
+                                modifierFormation={this.modifierFormation.bind(this)}
 
                             />
                         </div>
@@ -459,7 +531,13 @@ class LayoutFormations extends Component {
                 </div>
                 <Snackbar open={this.state.alertFormation} autoHideDuration={5000} onClose={this.closeAlertFormation.bind(this)}>
                     <Alert onClose={this.closeAlertFormation.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
-                        Formation enregistrer avec succès
+                        Formation enregistrée avec succès
+                    </Alert>
+                </Snackbar>
+
+                <Snackbar open={this.state.alertFormationModifier} autoHideDuration={5000} onClose={this.closeAlertFormationModifier.bind(this)}>
+                    <Alert onClose={this.closeAlertFormationModifier.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
+                        Formation modifiée avec succès
                     </Alert>
                 </Snackbar>
 
@@ -471,7 +549,7 @@ class LayoutFormations extends Component {
 
                 <Snackbar open={this.state.alertCF} autoHideDuration={5000} onClose={this.closeAlertCF.bind(this)}>
                     <Alert onClose={this.closeAlertCF.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
-                        Cabinet / formateur ajouter à cette formation
+                        Cabinet / formateur ajoute à cette formation
                     </Alert>
                 </Snackbar>
             </>

@@ -229,6 +229,12 @@ export default function FullWidthTabs(props) {
             validerByManager={props.validerByManager}
             annulerByManager={props.annulerByManager}
             addProjet={props.addProjet}
+            themes={props.themes}
+            onChangeTheme={props.onChangeTheme}
+            actionSelected={props.actionSelected}
+            modifierBesoin={props.modifierBesoin}
+            onChangeTrimeter={props.onChangeTrimeter} 
+            getProjet={props.getProjet}
           />
         </TabPanel>
 

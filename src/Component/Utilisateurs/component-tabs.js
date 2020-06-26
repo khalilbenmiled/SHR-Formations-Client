@@ -11,7 +11,7 @@ import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import ComponentListUtilisateurs from "./component-list-utilisateurs"
 import { Button } from '@material-ui/core';
 import ComponentModalUtilisateur from "./component-modal-utilisateur"
-
+import ExcelReader from './ExcelReader';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -116,6 +116,10 @@ export default function FullWidthTabs(props) {
                     <Button className={classes.buttonStyles} size="small" variant="outlined" onClick={openModalUtilisateur}>
                         Ajouter un utilisateur
                     </Button>
+
+                    <div>
+                        <ExcelReader />
+                    </div>
                 </TabPanel>
 
 

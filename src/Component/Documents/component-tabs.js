@@ -8,7 +8,6 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
-import ComponentConvocation from "./component-convocation"
 import ComponentAttestation from "./component-attestation"
 
 function TabPanel(props) {
@@ -81,7 +80,6 @@ export default function FullWidthTabs(props) {
                     variant="fullWidth"
                     aria-label="full width tabs example"
                 >
-                    <Tab style={{ outline: "none" }} label="Convocation" icon={<FileCopyIcon />} />
                     <Tab style={{ outline: "none" }} label="Attestation" icon={<FileCopyIcon />} />
                 </Tabs>
             </AppBar>
@@ -91,11 +89,7 @@ export default function FullWidthTabs(props) {
                 onChangeIndex={handleChangeIndex}
             >
 
-                <TabPanel value={value} index={0} dir={theme.direction} >
-                    <ComponentConvocation />
-                </TabPanel>
-
-                <TabPanel value={value} index={1} dir={theme.direction}>
+                <TabPanel value={value} index={0} dir={theme.direction}>
                     <ComponentAttestation />
                 </TabPanel>
 

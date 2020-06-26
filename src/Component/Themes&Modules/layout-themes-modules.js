@@ -16,13 +16,13 @@ class LayoutCabinetsFormateurs extends Component {
             alertTheme: false,
             alertDelete: false,
             modules: [],
-            alertModule : false,
-            alertDeleteModule : false
+            alertModule: false,
+            alertDeleteModule: false
         }
     }
 
     componentDidMount() {
-        axios.get(process.env.REACT_APP_PROXY_SessionsFormations+"/themes").then(res => {
+        axios.get(process.env.REACT_APP_PROXY_SessionsFormations + "/themes").then(res => {
             if (res.data.Theme) {
                 this.setState({
                     themes: res.data.Theme
@@ -38,7 +38,7 @@ class LayoutCabinetsFormateurs extends Component {
     }
 
     addAction(theme) {
-        axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes", theme).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/themes", theme).then(res => {
             const listThemes = this.state.themes
             listThemes.push(res.data.Theme)
             this.setState({
@@ -49,7 +49,7 @@ class LayoutCabinetsFormateurs extends Component {
     }
 
     deleteTheme(theme) {
-        axios.delete(process.env.REACT_APP_PROXY_SessionsFormations+"/themes/" + theme.id).then(res => {
+        axios.delete(process.env.REACT_APP_PROXY_SessionsFormations + "/themes/" + theme.id).then(res => {
             if (res.data.Success) {
                 const tabs = this.state.themes
                 const index = tabs.findIndex(t => t.id === theme.id)
@@ -76,14 +76,14 @@ class LayoutCabinetsFormateurs extends Component {
 
 
     addModule(module, theme) {
-        axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/modules", module).then(res => {
+        axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/modules", module).then(res => {
 
 
             const obj = {
                 idTheme: theme.id,
                 idModule: res.data.Module.id
             }
-            axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes/affecterMAT",
+            axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/themes/affecterMAT",
                 querystring.stringify(obj), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -104,21 +104,20 @@ class LayoutCabinetsFormateurs extends Component {
     }
 
     deleteModule(module) {
-        axios.delete(process.env.REACT_APP_PROXY_SessionsFormations+"/modules/"+module.id).then(res=>{
-            console.log(res.data)
+        axios.delete(process.env.REACT_APP_PROXY_SessionsFormations + "/modules/" + module.id).then(res => {
             const tabs = this.state.modules
-            const index = tabs.findIndex(m=>m.id === module.id)
-            tabs.splice(index,1)
+            const index = tabs.findIndex(m => m.id === module.id)
+            tabs.splice(index, 1)
             this.setState({
-                modules : tabs,
-                alertDeleteModule : true
+                modules: tabs,
+                alertDeleteModule: true
             })
         })
     }
 
     closeAlertModule() {
         this.setState({
-            alertModule : false
+            alertModule: false
         })
     }
 
@@ -129,7 +128,7 @@ class LayoutCabinetsFormateurs extends Component {
                 id: value.id
             }
 
-            axios.post(process.env.REACT_APP_PROXY_SessionsFormations+"/themes/modules",
+            axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/themes/modules",
                 querystring.stringify(theme), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -138,24 +137,40 @@ class LayoutCabinetsFormateurs extends Component {
 
                 if (res.data.Modules) {
                     this.setState({
-                        modules : res.data.Modules
+                        modules: res.data.Modules
                     })
                 }
 
             })
         } else {
             this.setState({
-                modules : []
+                modules: []
             })
         }
     }
-    
+
 
     closeAlertDeleteModule() {
         this.setState({
-            alertDeleteModule : false
+            alertDeleteModule: false
         })
     }
+
+    modifierTheme(theme) {
+        axios.post(process.env.REACT_APP_PROXY_SessionsFormations + "/themes/modifier", theme).then(res => {
+            if(res.data.Theme) {
+                const tabs = this.state.themes
+                const index = tabs.findIndex(t=> t.id === res.data.Theme.id)
+                tabs.splice(index, 1 , res.data.Theme)
+
+                this.setState({
+                    themes : tabs
+                })
+            }
+        })
+    }
+
+
 
     render() {
         return (
@@ -172,6 +187,7 @@ class LayoutCabinetsFormateurs extends Component {
                                 addModule={this.addModule.bind(this)}
                                 deleteModule={this.deleteModule.bind(this)}
                                 onChangeTheme={this.onChangeTheme.bind(this)}
+                                modifierTheme={this.modifierTheme.bind(this)}
                             />
                         </div>
                     </div>

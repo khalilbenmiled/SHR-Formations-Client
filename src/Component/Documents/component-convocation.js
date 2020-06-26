@@ -16,6 +16,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import logo from "../../images/logo.jpg"
 
 
+
 const useStyles = makeStyles(theme => ({
     buttonStyles: {
         border: "1px solid #B51B10",
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#B51B10',
         borderBottomStyle: 'solid',
         color: "black",
-        paddingLeft : "70px"
+        paddingLeft: "70px"
     },
     title: {
         borderBottomWidth: 1,
@@ -80,7 +81,7 @@ const styles = StyleSheet.create({
     },
     logo: {
         width: "35%",
-        paddingLeft : "20px"
+        paddingLeft: "20px"
     },
     logoImg: {
         width: "150px",
@@ -91,45 +92,45 @@ const styles = StyleSheet.create({
         borderBottomWidth: 3,
         borderBottomColor: '#B51B10',
         borderBottomStyle: 'solid',
-        width : "100%"
+        width: "100%"
     },
-    collaborateur : {
-        marginTop : "30px",
-        textAlign : "center",
+    collaborateur: {
+        marginTop: "30px",
+        textAlign: "center",
         fontSize: 16,
         fontWeight: "900px",
-        textDecoration : "underline"
+        textDecoration: "underline"
     },
-    corp : {
-        marginTop : "15px",
-        textAlign : "center",
+    corp: {
+        marginTop: "15px",
+        textAlign: "center",
         fontSize: 14,
     },
-    formationNom : {
+    formationNom: {
         fontSize: 18,
         fontWeight: "900px",
-        textAlign : "center",
-        marginTop : "15px"
+        textAlign: "center",
+        marginTop: "15px"
     },
-    date : {
-        fontSize : 14,
-        textAlign : "center"
-    },  
-    soprahr : {
-        textAlign : "center",
-        marginTop : "60px",
-        fontSize : 16,
-        fontWeight : "900px"
+    date: {
+        fontSize: 14,
+        textAlign: "center"
     },
-    adresse : {
-        textAlign : "center",
-        fontSize : 14,
+    soprahr: {
+        textAlign: "center",
+        marginTop: "60px",
+        fontSize: 16,
+        fontWeight: "900px"
     },
-    cordialement : {
-        fontSize : 12,
-        marginTop : "50px",
-        marginLeft : "70px",
-        marginBottom : "20px"
+    adresse: {
+        textAlign: "center",
+        fontSize: 14,
+    },
+    cordialement: {
+        fontSize: 12,
+        marginTop: "50px",
+        marginLeft: "70px",
+        marginBottom: "20px"
     },
     table: {
         display: "table",
@@ -215,6 +216,8 @@ export default function TransitionsModal(props) {
     const [prenom, setPrenom] = React.useState("");
     const [showPDF, setShowPDF] = React.useState(false);
 
+
+
     function disableWeekends(date) {
         return date.getDay() === 0
     }
@@ -248,9 +251,9 @@ export default function TransitionsModal(props) {
     }
 
     const verifPDF = () => {
-        if(nom === "" || prenom === ""  || nomFormation === "" ||dateDebut === "" || dateFin === ""){
+        if (nom === "" || prenom === "" || nomFormation === "" || dateDebut === "" || dateFin === "") {
             return 0
-        }else {
+        } else {
             return 1
         }
     }
@@ -264,7 +267,7 @@ export default function TransitionsModal(props) {
                             <div className="input-group-prepend">
                                 <label style={{ width: 100 }} className="input-group-text" >Formation </label>
                             </div>
-                            <TextField onChange={onChangeNomFormation} style={{ width: 200 , backgroundColor : "white" }} size="small" label="Formation" variant="outlined" />
+                            <TextField onChange={onChangeNomFormation} style={{ width: 200, backgroundColor: "white" }} size="small" label="Formation" variant="outlined" />
                         </div>
                     </div>
 
@@ -334,7 +337,7 @@ export default function TransitionsModal(props) {
                             <div className="input-group-prepend">
                                 <label style={{ width: 100 }} className="input-group-text" >Nom </label>
                             </div>
-                            <TextField onChange={onChangeNom} style={{ width: 200 , backgroundColor : "white" }} size="small" label="Nom" variant="outlined" />
+                            <TextField onChange={onChangeNom} style={{ width: 200, backgroundColor: "white" }} size="small" label="Nom" variant="outlined" />
                         </div>
                     </div>
 
@@ -343,22 +346,22 @@ export default function TransitionsModal(props) {
                             <div className="input-group-prepend">
                                 <label style={{ width: 100 }} className="input-group-text" >Prenom </label>
                             </div>
-                            <TextField onChange={onChangePrenom}  style={{ width: 200 , backgroundColor : "white" }} size="small" label="Prenom" variant="outlined" />
+                            <TextField onChange={onChangePrenom} style={{ width: 200, backgroundColor: "white" }} size="small" label="Prenom" variant="outlined" />
                         </div>
                     </div>
 
                     <div className="col-lg-4 col-md-4">
-                     
+
                     </div>
 
                     <div className="col-lg-4 col-md-4">
-                        <Button disabled = {verifPDF() === 0 ? true : false} onClick={onClickPDF} className={classes.buttonStyles} size="small" variant="outlined" >
+                        <Button disabled={verifPDF() === 0 ? true : false} onClick={onClickPDF} className={classes.buttonStyles} size="small" variant="outlined" >
                             Valider
                         </Button>
                     </div>
                 </div>
 
-                <div hidden={showPDF === true ? false : true } className="row" style={{  paddingTop: "30px", width: "99%", backgroundColor: "#FAFAFA", margin: " 20px auto", boxShadow: "0px 0px 1px" }}>
+                <div hidden={showPDF === true ? false : true} className="row" style={{ paddingTop: "30px", width: "99%", backgroundColor: "#FAFAFA", margin: " 20px auto", boxShadow: "0px 0px 1px" }}>
 
                     <div className="col-lg-12 col-md-12">
                         <PDFViewer style={{ width: "100%", height: "200mm", marginTop: "30px" }}>
@@ -383,12 +386,14 @@ export default function TransitionsModal(props) {
                                         <Text style={styles.soprahr}>SOPRA HR SOFTWARE</Text>
                                         <Text style={styles.adresse}>Rue du Lac de Constance, Tunis</Text>
                                         <Text style={styles.cordialement}>Veuillez recevoir, l'expression de nos sincères salutations.</Text>
-                                        
+
                                     </View>
                                 </Page>
                             </Document>
                         </PDFViewer>
                     </div>
+
+     
 
                 </div>
             </div>

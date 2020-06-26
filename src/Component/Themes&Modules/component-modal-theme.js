@@ -124,7 +124,7 @@ export default function TransitionsModal(props) {
                 <div className="col-lg-12 col-md-12">
                   <div className="input-group mb-3 ">
                     <div className="input-group-prepend">
-                      <label style={{ width: 173 }} className="input-group-text" >Nom du formation</label>
+                      <label style={{ width: 173 }} className="input-group-text" >Nom du theme</label>
                     </div>
                     <TextField style={{ width: 396 }} size="small" id="outlined-basic" label="Nom" variant="outlined" onChange={actionName} />
                   </div>

@@ -154,7 +154,7 @@ export default function CustomPaginationActionsTable(props) {
                 <TableCell>{row.nom}</TableCell>
                 <TableCell>{row.description}</TableCell>
                 <TableCell><a href={process.env.REACT_APP_PROXY_ELearning + "/docs/downloadFile/" + row.id}>{row.docName}</a></TableCell>
-                <TableCell> <DeleteForeverIcon onClick={OnOpenModalDeleteDocs.bind(this, row)} className={classes.iconAnnuler} /> </TableCell>
+                <TableCell> <DeleteForeverIcon hidden = {JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false } onClick={OnOpenModalDeleteDocs.bind(this, row)} className={classes.iconAnnuler} /> </TableCell>
               </TableRow>
             ))}
 

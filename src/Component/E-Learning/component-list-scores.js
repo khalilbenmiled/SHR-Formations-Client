@@ -96,8 +96,6 @@ TablePaginationActions.propTypes = {
 
 export default function CustomPaginationActionsTable(props) {
   const rows = props.scores
-  const allFormations = props.formations
-
 //   const classes = useStyles1();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(4);
@@ -114,11 +112,6 @@ export default function CustomPaginationActionsTable(props) {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
-  const getFormationNom = (row) => {
-    return allFormations.find(f => f.id === row.Score.quiz.idFormation).nomTheme
-  }
-
 
 
 
@@ -142,7 +135,7 @@ export default function CustomPaginationActionsTable(props) {
             ).map((row, index) => (
               <TableRow key={index} >
                   <TableCell> {row.Score.quiz.nomQuiz}</TableCell>
-                  <TableCell> {getFormationNom(row)}</TableCell>
+                  <TableCell> {row.Formation.nomTheme} </TableCell>
                   <TableCell> {row.User.nom} {row.User.prenom}</TableCell>
                   <TableCell> {row.Score.resultat} % </TableCell>
               </TableRow>
