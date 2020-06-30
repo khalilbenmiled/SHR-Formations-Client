@@ -29,7 +29,8 @@ class LayoutCabinetsFormateurs extends Component {
             scoreNow: "",
             showQuiz: false,
             listQuizWithFormation: [],
-            alertDocsDeleted : false
+            alertDocsDeleted : false,
+            alertDateQuiz : false
         }
     }
 
@@ -161,6 +162,7 @@ class LayoutCabinetsFormateurs extends Component {
 
     ajouterQuiz(quiz) {
 
+        console.log(quiz.date)
 
         axios.post(process.env.REACT_APP_PROXY_ELearning + "/quiz/", quiz).then(res => {
             if (res.data.Quiz) {
@@ -357,6 +359,28 @@ class LayoutCabinetsFormateurs extends Component {
         })
     }
 
+    modifierDateQuiz(input) {
+        axios.post(process.env.REACT_APP_PROXY_ELearning+"/quiz/modifierDate" , input).then(res=>{
+            console.log(res.data)
+            if(res.data.Quiz) {
+                axios.get(process.env.REACT_APP_PROXY_ELearning + "/quiz").then(res => {
+                    if (res.data.Resultats) {
+                        this.setState({
+                            listQuiz: res.data.Resultats.sort((a, b) => (a.Quiz.id < b.Quiz.id) ? 1 : -1),
+                            alertDateQuiz : true
+                        })
+                    }
+                })
+            }
+        })
+    }
+
+    closeAlertDateQuiz () {
+        this.setState({
+            alertDateQuiz : false
+        })
+    }
+
     render() {
         return (
             <>
@@ -381,31 +405,38 @@ class LayoutCabinetsFormateurs extends Component {
                                 addParcour={this.addParcour.bind(this)}
                                 showQuiz={this.state.showQuiz}
                                 deleteDocs={this.deleteDocs.bind(this)}
+                                modifierDateQuiz={this.modifierDateQuiz.bind(this)}
                             />
                         </div>
                     </div>
                 </div>
                 <Snackbar open={this.state.alertQuiz} autoHideDuration={5000} onClose={this.closeAletQuiz.bind(this)}>
                     <Alert onClose={this.closeAletQuiz.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
-                        Quiz ajouter !
+                        Quiz ajouté !
                     </Alert>
                 </Snackbar>
 
                 <Snackbar open={this.state.alertAddDocs} autoHideDuration={5000} onClose={this.closeAletDocs.bind(this)}>
                     <Alert onClose={this.closeAletDocs.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
-                        Document ajouter !
+                        Document ajouté !
                     </Alert>
                 </Snackbar>
 
                 <Snackbar open={this.state.alertDeleteQuiz} autoHideDuration={5000} onClose={this.closeAletDeleteQuiz.bind(this)}>
                     <Alert onClose={this.closeAletDeleteQuiz.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
-                        Quiz supprimer !
+                        Quiz supprimé !
                     </Alert>
                 </Snackbar>
 
                 <Snackbar open={this.state.alerAddQTF} autoHideDuration={5000} onClose={this.closeAletAddQTF.bind(this)}>
                     <Alert onClose={this.closeAletAddQTF.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
-                        Quiz ajouter !
+                        Quiz ajouté !
+                    </Alert>
+                </Snackbar>
+
+                <Snackbar open={this.state.alertDateQuiz} autoHideDuration={5000} onClose={this.closeAlertDateQuiz.bind(this)}>
+                    <Alert onClose={this.closeAlertDateQuiz.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
+                        Date quiz modifié !
                     </Alert>
                 </Snackbar>
 

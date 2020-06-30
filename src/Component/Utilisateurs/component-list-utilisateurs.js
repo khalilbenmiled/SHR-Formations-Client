@@ -15,12 +15,15 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import AccountTreeIcon from '@material-ui/icons/AccountTree';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { TableHead, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@material-ui/core';
-import GroupWorkIcon from '@material-ui/icons/GroupWork';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import ComponentModalInfos from "./component-modal-infos"
 import ComponentModalEdit from "./component-modal-edit"
 import axios from "axios"
 import querystring from 'querystring'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import EditIcon from '@material-ui/icons/Edit';
+import ComponentModalEditInfos from "./component-modal-edit-infos"
+
 
 const useStyles1 = makeStyles(theme => ({
   root: {
@@ -105,7 +108,7 @@ export default function CustomPaginationActionsTable(props) {
   const rows = props.users.sort((a, b) => (a.id < b.id) ? 1 : -1)
   const classes = useStyles1();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(6);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   const [alertDelete, setAlertDelete] = React.useState(false);
@@ -127,7 +130,8 @@ export default function CustomPaginationActionsTable(props) {
     }
   });
   const [listFreeTeamLead, setListFreeTeamLead] = React.useState([]);
-  
+  const [openEditInfos, setOpenEditInfos] = React.useState(false);
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -235,6 +239,15 @@ export default function CustomPaginationActionsTable(props) {
     setOpenEdit(false)
   }
 
+  const openModalEdit = (user) => {
+    setUserToEdit(user)
+    setOpenEditInfos(true)
+  }
+
+  const closeEditInfos = () => {
+    setOpenEditInfos(false)
+  }
+
 
   return (
     <>
@@ -249,7 +262,7 @@ export default function CustomPaginationActionsTable(props) {
               {/* <TableCell style={{ fontSize: 16, color: 'white' }}>Adresse</TableCell>
               <TableCell style={{ fontSize: 16, color: 'white' }}>Telephone</TableCell> */}
               <TableCell style={{ fontSize: 16, color: 'white' }}>Role</TableCell>
-              <TableCell colSpan={3} style={{ fontSize: 16, color: 'white' }}></TableCell>
+              <TableCell colSpan={4} style={{ fontSize: 16, color: 'white' }}></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -257,23 +270,26 @@ export default function CustomPaginationActionsTable(props) {
               ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : rows
             ).map((row, index) => (
-              <TableRow key={index} style={{backgroundColor : row.deleted === true ? "#F5F5F5" : ""}}>
+              <TableRow key={index} style={{ backgroundColor: row.deleted === true ? "#F5F5F5" : "" }}>
                 <TableCell> {row.bu} </TableCell>
                 <TableCell> {row.nom} {row.prenom} </TableCell>
                 <TableCell> {row.email} </TableCell>
                 {/* <TableCell> {row.adresse} </TableCell>
                 <TableCell> {row.tel} </TableCell> */}
                 <TableCell> {row.role} </TableCell>
-                <TableCell><GroupWorkIcon hidden= {row.deleted === true ? true : false}  onClick={openInfosUser.bind(this, row)} className={classes.iconInfo} /></TableCell>
+                <TableCell><VisibilityIcon hidden={row.deleted === true ? true : false} onClick={openInfosUser.bind(this, row)} className={classes.iconInfo} /></TableCell>
+
                 {row.role !== "SERVICEFORMATIONS"
-                  ? <TableCell><AccountTreeIcon hidden= {row.deleted === true ? true : false} onClick={openEditUser.bind(this, row)} className={classes.iconCheck} /></TableCell>
+                  ? <TableCell><AccountTreeIcon hidden={row.deleted === true ? true : false} onClick={openEditUser.bind(this, row)} className={classes.iconCheck} /></TableCell>
                   :
                   <TableCell></TableCell>
                 }
+                <TableCell> <EditIcon onClick={openModalEdit.bind(this, row)} style={{ cursor: "pointer", color: "#4AA14B" }} /></TableCell>
+
                 <TableCell>
                   {row.deleted === true ?
 
-                    <CheckCircleIcon className={classes.iconCheck} onClick={activateUser.bind(this,row)} />
+                    <CheckCircleIcon className={classes.iconCheck} onClick={activateUser.bind(this, row)} />
 
                     :
                     <DeleteForeverIcon onClick={openDeleteUser.bind(this, row)} className={classes.iconRemove} />
@@ -331,6 +347,13 @@ export default function CustomPaginationActionsTable(props) {
         updateManagerTeamLead={props.updateManagerTeamLead}
         updateTeamLeadManager={props.updateTeamLeadManager}
         updateCollaborateur={props.updateCollaborateur}
+      />
+
+      <ComponentModalEditInfos
+        open={openEditInfos}
+        handleClose={closeEditInfos}
+        user={userToEdit}
+        modifierUtilisateur={props.modifierUtilisateur}
       />
 
       <Dialog

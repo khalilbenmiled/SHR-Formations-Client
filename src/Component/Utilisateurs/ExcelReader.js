@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import XLSX from 'xlsx';
 import { make_cols } from './makeColumns';
 import { SheetJSFT } from './types';
-import axios from "axios"
+
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 class ExcelReader extends Component {
     constructor(props) {
@@ -10,7 +11,7 @@ class ExcelReader extends Component {
         this.state = {
             file: {},
             data: [],
-            cols: []
+            cols: [],
         }
         this.handleFile = this.handleFile.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -35,19 +36,17 @@ class ExcelReader extends Component {
             const ws = wb.Sheets[wsname];
             /* Convert array of arrays */
             const data = XLSX.utils.sheet_to_json(ws);
-            console.log(data)
+
             /* Update state */
             this.setState({ data: data, cols: make_cols(ws['!ref']) }, () => {
                 // console.log(JSON.stringify(this.state.data, null, 2));
             });
 
+
             const input = {
-                users : data
+                users: data
             }
-            axios.post(process.env.REACT_APP_PROXY_Utilisateurs+ "/users/registerFromFile",input).then(res => {
-
-            })
-
+            this.props.ajouterUtilisateursFromFile(input)
 
         };
 
@@ -60,15 +59,10 @@ class ExcelReader extends Component {
 
     render() {
         return (
-            <div>
-                <label htmlFor="file">Upload an excel to Process Triggers</label>
-                <br />
-                <input type="file" className="form-control" id="file" accept={SheetJSFT} onChange={this.handleChange} />
-                <br />
-                <input type='submit'
-                    value="Process Triggers"
-                    onClick={this.handleFile} />
-            </div>
+            <>
+                <input style={{ width: 400 }} type="file" accept={SheetJSFT} onChange={this.handleChange} />
+                <CloudUploadIcon style={{cursor : "pointer" , width : "30px" , height : "30px" , color : "#B51B10"}} onClick={this.handleFile} />
+            </>
 
         )
     }

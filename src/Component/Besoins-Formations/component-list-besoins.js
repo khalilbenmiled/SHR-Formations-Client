@@ -257,7 +257,7 @@ export default function CustomPaginationActionsTable(props) {
               <TableRow key={index} style={{ backgroundColor: row.idUser === JSON.parse(localStorage.user).id && JSON.parse(localStorage.user).role === "TEAMLEAD" ? "rgba(42,255,42,0.3)" : "" }}>
                 <TableCell hidden={JSON.parse(localStorage.user).role !== "SERVICEFORMATIONS" ? true : false}>{row.bu}</TableCell>
                 <TableCell >{row.theme.nom}</TableCell>
-                <TableCell > {row.theme.type}</TableCell>
+                <TableCell > {row.theme.type === "SOFTWARE" ? "PRODUIT" : row.theme.type}</TableCell>
                 <TableCell >{row.quarter === 1 ? "1ere trimestre" : row.quarter === 2 ? "2eme trimestre" : row.quarter === 3 ? "3eme trimestre" : row.quarter === 4 ? "4eme trimestre" : ""}</TableCell>
                 {JSON.parse(localStorage.user).id === row.idUser && JSON.parse(localStorage.user).role === "TEAMLEAD" ?
                   <TableCell ></TableCell>

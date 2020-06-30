@@ -71,7 +71,7 @@ class LayoutLogIn extends Component {
         return (
             <>
                 <Login onLogIn={this.onLogIn} onChangeEmail={this.onChangeEmail} onChangePassword={this.onChangePassword} />
-                <Snackbar open={this.state.openError} autoHideDuration={2200} onClose={this.closeError.bind(this)}>
+                <Snackbar open={this.state.openError} autoHideDuration={5000} onClose={this.closeError.bind(this)}>
                     <Alert onClose={this.closeError.bind(this)} icon = {<WarningIcon style={{color : "white" }}/>} style={{backgroundColor : "#FF9800" , color : "white"}}>
                             {this.state.msg}
                     </Alert>

@@ -24,6 +24,9 @@ import axios from "axios"
 import Alert from '@material-ui/lab/Alert';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import AddToQueueIcon from '@material-ui/icons/AddToQueue';
+import AccessTimeIcon from '@material-ui/icons/AccessTime';
+import ComponentModalSetDate from "./component-modal-SetDate"
+
 
 const useStyles1 = makeStyles(theme => ({
   root: {
@@ -117,8 +120,10 @@ export default function CustomPaginationActionsTable(props) {
   const [listQuestions, setListQuestions] = React.useState([]);
   const [openAddQTF, setOpenAddQTF] = React.useState(false);
   const [idQuiz, setIdQuiz] = React.useState("");
+  const [openModalDate, setOpenModalDate] = React.useState(false);
+  const [quizInfosToDateModal, setQuizInfosToDateModal] = React.useState(false);
   // const [formations, setFormations] = React.useState([]);
-
+  
 
 
   const handleChangePage = (event, newPage) => {
@@ -147,7 +152,7 @@ export default function CustomPaginationActionsTable(props) {
   }
 
   const updateQuestion = (question) => {
-    axios.put(process.env.REACT_APP_PROXY_ELearning+"/quiz/", question).then(res => {
+    axios.put(process.env.REACT_APP_PROXY_ELearning + "/quiz/", question).then(res => {
       if (res.data.Question) {
         const tabs = listQuestions
         const index = tabs.findIndex(q => q.id === res.data.Question.id)
@@ -184,6 +189,15 @@ export default function CustomPaginationActionsTable(props) {
     props.addQTF(obj)
   }
 
+  const openModalSetDate = (row) => {
+
+    setQuizInfosToDateModal(row.Quiz)
+    setOpenModalDate(true)
+  }
+
+  const closeModalDate = () => {
+    setOpenModalDate(false)
+  }
 
 
 
@@ -215,6 +229,7 @@ export default function CustomPaginationActionsTable(props) {
                 <TableCell>{row.Formation.dateFin}</TableCell>
                 <TableCell><VisibilityIcon onClick={openModalInfos.bind(this, row)} className={classes.iconInfo} /></TableCell>
                 <TableCell> <AddToQueueIcon onClick={openModalAddQuizToFormation.bind(this, row)} className={classes.iconCheck} /> </TableCell>
+                <TableCell> <AccessTimeIcon onClick={openModalSetDate.bind(this, row)} style={{ cursor: "pointer", color: "#4AA14B" }} /> </TableCell>
                 <TableCell> <DeleteForeverIcon onClick={openModalDeleteQuiz.bind(this, row)} className={classes.iconAnnuler} /> </TableCell>
 
 
@@ -271,6 +286,12 @@ export default function CustomPaginationActionsTable(props) {
         addQTF={addQTF}
       />
 
+      <ComponentModalSetDate
+        open={openModalDate}
+        handleClose={closeModalDate}
+        quiz={quizInfosToDateModal}
+        modifierDateQuiz={props.modifierDateQuiz}
+      />
 
       <Snackbar open={alertQuiz} autoHideDuration={5000} onClose={closeAlertQuiz}>
         <Alert onClose={closeAlertQuiz} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>

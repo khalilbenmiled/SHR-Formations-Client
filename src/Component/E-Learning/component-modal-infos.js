@@ -9,7 +9,8 @@ import { TextField, Button } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { Grid } from '@material-ui/core';
 import Switch from '@material-ui/core/Switch';
-
+import Moment from 'moment';
+import 'moment/locale/fr'
 
 const useStyles = makeStyles(theme => ({
     modal: {
@@ -273,7 +274,7 @@ export default function TransitionsModal(props) {
 
                             <div className="row headerModal">
                                 <div className="col-lg-11 col-md-11">
-                                    <h4 className="titreAction">Détails {props.quizInfos.nomQuiz}</h4>
+                                    <h4 className="titreAction">{props.quizInfos.nomQuiz} : {Moment(props.quizInfos.date).add(-1, "hours").format("DD-MM-YYYY HH:mm").toString()}</h4>
                                 </div>
                                 <div className="col-lg-1 col-md-1" align="center">
                                     <CancelIcon onClick={handleClose} className={classes.cancelcon} />

@@ -112,13 +112,14 @@ export default function FullWidthTabs(props) {
                         updateTeamLeadManager={props.updateTeamLeadManager}
                         updateCollaborateur={props.updateCollaborateur}
                         activateUser={props.activateUser}
+                        modifierUtilisateur={props.modifierUtilisateur}
                     />
                     <Button className={classes.buttonStyles} size="small" variant="outlined" onClick={openModalUtilisateur}>
                         Ajouter un utilisateur
                     </Button>
 
-                    <div>
-                        <ExcelReader />
+                    <div style={{ borderRadius : "6px" , width : "480px" , marginTop : "20px" , border : "1px solid #B51B10" , padding : "5px" }}>
+                        <ExcelReader ajouterUtilisateursFromFile = {props.ajouterUtilisateursFromFile}/>
                     </div>
                 </TabPanel>
 

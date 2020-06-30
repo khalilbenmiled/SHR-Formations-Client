@@ -217,10 +217,10 @@ export default function CustomizedExpansionPanels(props) {
   ]
 
   const quarter = [
-    { title: "Q1" },
-    { title: "Q2" },
-    { title: "Q3" },
-    { title: "Q4" }
+    { title: "Trimestre 1" },
+    { title: "Trimestre 2" },
+    { title: "Trimestre 3" },
+    { title: "Trimestre 4" }
   ]
 
   const TLMG = [
@@ -267,7 +267,7 @@ export default function CustomizedExpansionPanels(props) {
 
   const onQuarterSelect = (e, values) => {
     if (values != null) {
-      setQuarterSelected(values.title === "Q1" ? "1" : values.title === "Q2" ? "2" : values.title === "Q3" ? "3" : values.title === "Q4" ? "4" : 0);
+      setQuarterSelected(values.title === "Trimestre 1" ? "1" : values.title === "Trimestre 2" ? "2" : values.title === "Trimestre 3" ? "3" : values.title === "Trimestre 4" ? "4" : 0);
     } else {
       setQuarterSelected(0)
     }
@@ -335,7 +335,7 @@ export default function CustomizedExpansionPanels(props) {
                       disableCloseOnSelect={false}
                       size="small"
                       options={typeTheme}
-                      getOptionLabel={option => option.title}
+                      getOptionLabel={option => option.title === "SOFTWARE" ? "PRODUIT" : option.title}
                       style={{ width: 220 }}
                       renderInput={params => <TextField {...params} label="Type theme" variant="outlined" />}
                     />
@@ -466,7 +466,7 @@ export default function CustomizedExpansionPanels(props) {
                       <Text style={styles.tableCellHeader}>Nombre Prévus</Text>
                     </View>
                     <View style={styles.tableColHeader}>
-                      <Text style={styles.tableCellHeader}>Quarter</Text>
+                      <Text style={styles.tableCellHeader}>Trimestre</Text>
                     </View>
 
                   </View>
@@ -479,7 +479,7 @@ export default function CustomizedExpansionPanels(props) {
                         <Text style={styles.tableCell}>{rapport.theme}</Text>
                       </View>
                       <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>{rapport.besoins[0].theme.type}</Text>
+                        <Text style={styles.tableCell}>{rapport.besoins[0].theme.type === "SOFTWARE" ? "PRODUIT" : rapport.besoins[0].theme.type}</Text>
                       </View>
                       <View style={styles.tableCol1}>
                         {rapport.listModules.map((module, i) => (

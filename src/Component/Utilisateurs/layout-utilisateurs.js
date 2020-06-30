@@ -26,7 +26,12 @@ class LayoutCabinetsFormateurs extends Component {
             listTeamLeadSelected: [],
             alertUpdateUser: false,
             listFreeTeamLead: [],
-            alertActivate : false
+            alertActivate: false,
+            loadDataExcelFile: false,
+            alertAddFromFile: false,
+            alertUserModifier : false,
+            alertUserModifierError : false
+
         }
     }
 
@@ -187,7 +192,7 @@ class LayoutCabinetsFormateurs extends Component {
     }
 
     activateUser(id) {
-       
+
         const input = {
             id: id
         }
@@ -197,13 +202,13 @@ class LayoutCabinetsFormateurs extends Component {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
         }).then(res => {
-            if(res.data.User){
+            if (res.data.User) {
                 const tabs = this.state.users
                 const index = tabs.findIndex(u => u.id === res.data.User.id)
-                tabs.splice(index, 1,res.data.User)
+                tabs.splice(index, 1, res.data.User)
                 this.setState({
-                    users : tabs,
-                    alertActivate : true
+                    users: tabs,
+                    alertActivate: true
                 })
             }
         })
@@ -214,8 +219,8 @@ class LayoutCabinetsFormateurs extends Component {
             if (res.data.User) {
                 const tabs = this.state.users
                 const index = tabs.findIndex(u => u.id === res.data.User.id)
-               
-                tabs.splice(index, 1,res.data.User)
+
+                tabs.splice(index, 1, res.data.User)
                 this.setState({
                     users: tabs,
                     alertDeleteUser: true
@@ -324,10 +329,70 @@ class LayoutCabinetsFormateurs extends Component {
 
     closeAlertActivate() {
         this.setState({
-            alertActivate : false
+            alertActivate: false
         })
     }
 
+    ajouterUtilisateursFromFile(input) {
+        this.setState({
+            loadDataExcelFile: true
+        })
+        axios.post(process.env.REACT_APP_PROXY_Utilisateurs + "/users/registerFromFile", input).then(res => {
+            const users = res.data.Users
+            axios.get(process.env.REACT_APP_PROXY_Utilisateurs + "/users").then(res => {
+                if (res.data.Users) {
+                    this.setState({
+                        users: res.data.Users,
+                        loadDataExcelFile: false,
+                        alertAddFromFile: true
+
+                    })
+                }
+                axios.post(process.env.REACT_APP_PROXY_Utilisateurs + "/users/sendEmail" , users ).then(res=>{
+                    
+                })
+                
+
+            })
+        })
+    }
+
+    closeAlertAddFromFile() {
+        this.setState({
+            alertAddFromFile: false
+        })
+    }
+
+    modifierUtilisateur (user) {
+        console.log(user)
+        axios.post(process.env.REACT_APP_PROXY_Utilisateurs+"/users/modifier",user).then(res => {
+            if(res.data.User) {
+                const tabs = this.state.users
+                const index = tabs.findIndex(u=>u.id === res.data.User.id)
+                tabs.splice(index , 1,res.data.User)
+                this.setState({
+                    users : tabs,
+                    alertUserModifier : true
+                })
+            }else {
+                this.setState({
+                    alertUserModifierError : true
+                })
+            }
+        })
+    }
+
+    closeAlertUserModifier () {
+        this.setState({
+            alertUserModifier : false
+        })
+    }
+
+    closeAlertUserModifierError () {
+        this.setState({
+            alertUserModifierError : false
+        })
+    }
     render() {
         return (
 
@@ -348,10 +413,13 @@ class LayoutCabinetsFormateurs extends Component {
                                 updateTeamLeadManager={this.updateTeamLeadManager.bind(this)}
                                 updateCollaborateur={this.updateCollaborateur.bind(this)}
                                 activateUser={this.activateUser.bind(this)}
+                                ajouterUtilisateursFromFile={this.ajouterUtilisateursFromFile.bind(this)}
+                                modifierUtilisateur={this.modifierUtilisateur.bind(this)}
                             />
                         </div>
                     </div>
                     <CircularProgress hidden={!this.state.progressShow ? true : false} style={{ color: "red", position: "absolute", top: "90%", left: "55%" }} />
+                    <CircularProgress hidden={!this.state.loadDataExcelFile ? true : false} style={{ color: "red", position: "absolute", top: "90%", left: "55%" }} />
                 </div>
 
                 <Snackbar open={this.state.alertError} autoHideDuration={2200} onClose={this.closeError.bind(this)}>
@@ -362,13 +430,13 @@ class LayoutCabinetsFormateurs extends Component {
 
                 <Snackbar open={this.state.alertUser} autoHideDuration={5000} onClose={this.closeAlertUser.bind(this)}>
                     <Alert onClose={this.closeAlertUser.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
-                        Utilisateur enregistrer avec succès
+                        Utilisateur enregistré avec succès
                     </Alert>
                 </Snackbar>
 
                 <Snackbar open={this.state.alertDeleteUser} autoHideDuration={5000} onClose={this.closeAlertDeleteUser.bind(this)}>
                     <Alert onClose={this.closeAlertDeleteUser.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
-                        Utilisateur désactiver avec succès
+                        Utilisateur désactivé avec succès
                     </Alert>
                 </Snackbar>
 
@@ -380,7 +448,25 @@ class LayoutCabinetsFormateurs extends Component {
 
                 <Snackbar open={this.state.alertActivate} autoHideDuration={5000} onClose={this.closeAlertActivate.bind(this)}>
                     <Alert onClose={this.closeAlertActivate.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
-                        Utilisateur activer de nouveau
+                        Utilisateur activé de nouveau
+                    </Alert>
+                </Snackbar>
+
+                <Snackbar open={this.state.alertAddFromFile} autoHideDuration={5000} onClose={this.closeAlertAddFromFile.bind(this)}>
+                    <Alert onClose={this.closeAlertAddFromFile.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
+                        Utilisateurs ajoutés
+                    </Alert>
+                </Snackbar>
+
+                <Snackbar open={this.state.alertUserModifier} autoHideDuration={5000} onClose={this.closeAlertUserModifier.bind(this)}>
+                    <Alert onClose={this.closeAlertUserModifier.bind(this)} icon={<CheckCircleIcon style={{ color: "white" }} />} style={{ backgroundColor: "#4CAF50", color: "white", width: 400, fontSize: 16 }}>
+                        Utilisateurs modifié
+                    </Alert>
+                </Snackbar>
+
+                <Snackbar open={this.state.alertUserModifierError} autoHideDuration={5000} onClose={this.closeAlertUserModifierError.bind(this)}>
+                    <Alert onClose={this.closeAlertUserModifierError.bind(this)} icon = {<WarningIcon style={{color : "white" }}/>} style={{backgroundColor : "#FF9800" , color : "white"}}>
+                            Email invalid !
                     </Alert>
                 </Snackbar>
 

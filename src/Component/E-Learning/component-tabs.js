@@ -162,6 +162,7 @@ export default function FullWidthTabs(props) {
                         formations={props.formations}
                         openModalDeleteQuiz={openModalDeleteQuiz}
                         addQTF={props.addQTF}
+                        modifierDateQuiz={props.modifierDateQuiz}
                     />
                     <LinearProgress style={{ marginTop: "-17px", marginBottom: "15px" }} hidden={props.showQuiz} variant="query" />
 

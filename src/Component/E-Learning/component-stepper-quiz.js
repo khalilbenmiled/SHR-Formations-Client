@@ -314,7 +314,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 
     const getDateQuiz = (date) => {
         Moment.locale("fr");
-        setDateQuiz(Moment(date.target.value).add(1,'hours').format("DD/MM/YYYY HH:mm"))
+        setDateQuiz(Moment(date.target.value).format("DD/MM/YYYY HH:mm"))
     }
 
 
@@ -365,7 +365,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
                             variant="outlined"
                             label="Date quiz"
                             type="datetime-local"
-                            defaultValue={Moment(new Date()).format("YYYY-MM-DDTHH:mm").toString()}
+                            // defaultValue={Moment(new Date()).format("YYYY-MM-DDTHH:mm").toString()}
                             className={classes.textField}
                             onChange={getDateQuiz}
                             InputLabelProps={{
