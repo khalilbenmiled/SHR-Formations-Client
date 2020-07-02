@@ -83,7 +83,7 @@ export default function TransitionsModal(props) {
 
     const getDateQuiz = (date) => {
         Moment.locale("fr");
-        setDateQuiz(Moment(date.target.value).format("DD/MM/YYYY HH:mm"))
+        setDateQuiz(Moment(date.target.value).add(-1,'hours').format("DD/MM/YYYY HH:mm"))
     }
 
     const modifierDateQuiz = () => {

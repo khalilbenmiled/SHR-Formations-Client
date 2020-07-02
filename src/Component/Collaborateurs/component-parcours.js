@@ -105,9 +105,6 @@ const useStyles = makeStyles(theme => ({
 export default function TransitionsModal(props) {
     const classes = useStyles();
 
-    const getScore = (row) => {
-        return props.mesScores.find(score => score.Score.quiz.idFormation === row.id).Score.resultat
-    }
 
     const getDateDebut = (row) => {
         Moment.locale("fr");
@@ -124,13 +121,13 @@ export default function TransitionsModal(props) {
     return (
         <div className="row" >
             <div className="col-lg-12 col-md-12">
-                {props.parcours.Formations.map((formation, index) => (
+                {props.mesScores.map((data, index) => (
                     <div key={index} className="row" style={{ height: "150px", backgroundColor: index % 2 === 0 ? "#E1E1E1" : "#F5F5F5" }}>
                         <div className="col-lg-2 col-md-2" style={{ borderRight: "4px solid #B51B10" }}>
                             <Avatar className={classes.avatar}>{index + 1}</Avatar>
                             <div>
                                 <label>Formation </label> <br />
-                                <label>{formation.nomTheme} </label>
+                                <label>{data.Formation.nomTheme} </label>
                             </div>
                         </div>
 
@@ -141,25 +138,25 @@ export default function TransitionsModal(props) {
                                         <CardContent style={{ fontSize: "16px", margin: "10px 35px" }}>
                                             <div className="row" >
                                                 <div className="col-lg-12 col-md-12">
-                                                    Formation {formation.nomTheme}
+                                                    Formation {data.Formation.nomTheme}
                                                 </div>
                                             </div>
 
                                             <div className="row">
                                                 <div className="col-lg-12 col-md-12">
-                                                    Type {formation.typeTheme === "SOFTWARE" ? "PRODUIT" : formation.typeTheme}
+                                                    Type {data.Formation.typeTheme === "SOFTWARE" ? "PRODUIT" : data.Formation.typeTheme}
                                                 </div>
                                             </div>
 
                                             <div className="row">
                                                 <div className="col-lg-12 col-md-12">
-                                                    Du {getDateDebut(formation)}
+                                                    Du {getDateDebut(data.Formation)}
                                         </div>
                                             </div>
 
                                             <div className="row">
                                                 <div className="col-lg-12 col-md-12">
-                                                    AU {getDateFin(formation)}
+                                                    AU {getDateFin(data.Formation)}
                                         </div>
                                             </div>
                                         </CardContent>
@@ -171,7 +168,7 @@ export default function TransitionsModal(props) {
                                         <CardContent>
                                             <div className="row">
                                                 <div className="col-lg-12 col-md-12" style={{ fontSize: "20px", padding: "35px 60px" }}>
-                                                    Score {getScore(formation)}%
+                                                    Score {data.Score.resultat}%
                                                 </div>
                                             </div>
                                         </CardContent>

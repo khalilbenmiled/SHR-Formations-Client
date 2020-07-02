@@ -63,12 +63,16 @@ class LayoutCabinetsFormateurs extends Component {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
             }).then(res => {
+               console.log(res.data)
                 if (res.data.Results) {
-
+                   
                     this.setState({
                         parcours: res.data.Results
                     })
 
+                    const objQuiz = {
+                        id: JSON.parse(localStorage.user).id
+                    }
                     axios.post(process.env.REACT_APP_PROXY_ELearning + "/quiz/getListScoreByCollaborateur",
                         querystring.stringify(objQuiz), {
                         headers: {
@@ -76,6 +80,7 @@ class LayoutCabinetsFormateurs extends Component {
                         }
                     }).then(res => {
                         if (res.data.Scores) {
+                            console.log(res.data.Scores)
                             this.setState({
                                 mesScores: res.data.Scores
                             })
@@ -89,9 +94,7 @@ class LayoutCabinetsFormateurs extends Component {
                 }
             })
 
-            const objQuiz = {
-                id: JSON.parse(localStorage.user).id
-            }
+        
 
 
         }
